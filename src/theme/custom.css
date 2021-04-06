@@ -1,0 +1,16 @@
+ion-toolbar {
+	--background: var(--ion-color-primary);
+	--color: var(--ion-color-primary-contrast);
+}
+.background-image {
+	background: url('../assets/img/auth-bg.jpg');
+}
+.coffee-card {
+	margin: 0;
+	padding-bottom: 129%;
+	background-size: cover;
+	background-position-x: 50%;
+	background-position-y: 50%;
+	width: 100%;
+	border-radius: 10px;
+}

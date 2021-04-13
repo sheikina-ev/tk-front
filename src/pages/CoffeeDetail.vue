@@ -1,7 +1,7 @@
 <template>
-	<base-layout :page-title="loadedItem ? loadedItem.title : 'Loading...'" page-default-back-link="/coffee">
+	<base-layout :page-title="loadedItem ? loadedItem.product_name : 'Loading...'" page-default-back-link="/coffee">
 		<h2 v-if="!loadedItem">Item not found</h2>
-		<coffee-overview v-else :title="loadedItem.title" :image="loadedItem.image" :description="loadedItem.description"></coffee-overview>
+		<coffee-overview v-else :name="loadedItem.product_name" :loadedItem="loadedItem"></coffee-overview>
 	</base-layout>
 </template>
 
@@ -14,12 +14,13 @@ export default {
 	},
 	data() {
 		return {
-			coffeeId: this.$route.params.id
+			productId: this.$route.params.id
 		}
 	},
 	computed: {
 		loadedItem() {
-			return this.$store.getters.coffee(this.coffeeId);
+			console.log(this.$store.getters.product(this.productId));
+			return this.$store.getters.product(this.productId);
 		}
 	}
 }

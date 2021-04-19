@@ -1,13 +1,13 @@
 <template>
 	<ion-tabs>
-		<ion-tab-bar slot="bottom">
+		<ion-tab-bar>
 			<ion-tab-button tab="null">
 				<ion-icon :icon="homeOutline"></ion-icon>
 			</ion-tab-button>
 			<ion-tab-button tab="null">
 				<ion-icon :icon="basketOutline"></ion-icon>
 			</ion-tab-button>
-			<ion-tab-button tab="null">
+			<ion-tab-button tab="null" @click="openMenu">
 				<ion-icon :icon="menuOutline"></ion-icon>
 			</ion-tab-button>
 		</ion-tab-bar>
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { IonTabs, IonTabBar, IonTabButton, IonIcon } from '@ionic/vue';
+import { IonTabs, IonTabBar, IonTabButton, IonIcon, menuController } from '@ionic/vue';
 import { homeOutline, basketOutline, menuOutline } from 'ionicons/icons';
 
 export default {
@@ -30,6 +30,12 @@ export default {
 			homeOutline,
 			basketOutline,
 			menuOutline
+		}
+	},
+	methods: {
+		openMenu() {
+			menuController.enable(true, 'main');
+			menuController.open('main');
 		}
 	}
 };

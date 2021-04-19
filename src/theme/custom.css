@@ -42,3 +42,39 @@ div.coffee-item-info {
 span.coffee-item-name {
 	font-size: 16px;
 }
+.coffee-picture-container {
+	position: relative;
+	margin: 0;
+	margin-bottom: 20px;
+	padding-bottom: 100%;
+	background-size: cover;
+	background-position-x: 50%;
+	background-position-y: 50%;
+	width: 100%;
+	border-radius: 5px;
+	overflow: hidden;
+	color: var(--ion-color-primary-contrast);
+}
+.coffee-picture-container > .coffee-picture-info-wrap {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: 10px;
+	width: 100%;
+	height: 100%;
+}
+.coffee-picture-info-wrap > .coffee-picture-info-top,
+.coffee-picture-info-wrap > .coffee-picture-info-bottom {
+	display: flex;
+	flex-direction: column;
+}
+.coffee-info-container {
+	padding: 0 20px;
+}
+
+.inline-flex {display: inline-flex !important;}
+.flex-start {align-self: flex-start !important;}
+.flex-end {align-self: flex-end !important;}

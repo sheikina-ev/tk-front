@@ -1,6 +1,6 @@
 <template>
 	<ion-col size="6">
-		<ion-card class="coffee-card" :style="`background-image:url('../assets/img/no-image.png')`" :router-link="`/coffee/${coffeeItem.id}`"></ion-card>
+		<ion-card class="coffee-card" :style="`background-image:url('../assets/img/no-image.jpg')`" :router-link="`/coffee/${coffeeItem.id}`"></ion-card>
 		<div class="coffee-item-info">
 			<span class="ion-text-center coffee-item-name">{{ coffeeItem.product_name }}</span>
 			<p :v-if="coffeeItem.price" class="ion-text-center coffee-item-price">от {{ coffeeItem.price }}₽</p>

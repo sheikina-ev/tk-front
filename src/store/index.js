@@ -4,6 +4,7 @@ const store = createStore({
 	state: {
 		sections: [],
 		products: [],
+		product: {},
 		activeSection: 0
 	},
 	getters: {
@@ -21,23 +22,24 @@ const store = createStore({
 			return state.coffeeList;
 		},
 		product(state) {
-			return (productId) => {
-				return state.products.find(product => product.id === productId);
-			};
+			return state.product;
 		}
 	},
 	mutations: {
+		clearState(state, propertyName) {
+			state[propertyName] = [];
+		},
 		setActiveSection(state, id) {
 			state.activeSection = id;
 		},
 		updateSections(state, sections) {
 			state.sections = sections;
 		},
-		clearProducts(state) {
-			state.products = [];
-		},
 		updateProducts(state, products) {
 			state.products = products;
+		},
+		setProduct(state, product) {
+			state.product = product;
 		}
 	}
 });

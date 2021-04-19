@@ -28,6 +28,9 @@ export default {
 			this.$store.commit('updateSections', response.data.categories);
 			this.$store.commit('setActiveSection', response.data.defaultCategory.id);
 			loading.dismiss();
+		}).catch((err) => {
+			console.log(err);
+			loading.dismiss();
 		});
 	},
 	computed: {

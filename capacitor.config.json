@@ -9,5 +9,12 @@
       "launchShowDuration": 0
     }
   },
-  "cordova": {}
+  "cordova": {},
+  "linuxAndroidStudioPath": "/home/victor/android-studio/bin/studio.sh",
+  "server": {
+    "andriodScheme": "http",
+    "allowNavigation": [
+      "coffee.dev.webstripe.ru/public/api/"
+    ]
+  }
 }

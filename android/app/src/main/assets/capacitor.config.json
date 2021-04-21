@@ -1,0 +1,19 @@
+{
+  "appId": "io.ionic.starter",
+  "appName": "coffee",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {},
+  "linuxAndroidStudioPath": "/home/victor/android-studio/bin/studio.sh",
+  "server": {
+    "allowNavigation": [
+      "coffee.dev.webstripe.ru"
+    ]
+  }
+}

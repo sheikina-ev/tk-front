@@ -2,21 +2,33 @@
 	<ion-menu side="end" type="overlay" menu-id="main" content-id="main">
 		<ion-content>
 			<ion-list>
-				<ion-item>Аккаунт</ion-item>
-				<ion-item>Разделы и скидки</ion-item>
-				<ion-item>Акции</ion-item>
-				<ion-item>Истории заказов</ion-item>
-				<ion-item>Оставить отзыв</ion-item>
-				<ion-item>Сообщить о технической проблеме</ion-item>
+				<ion-menu-toggle auto-hide="false">
+					<ion-item router-direction="root" href="/coffee">Аккаунт</ion-item>
+				</ion-menu-toggle>
+				<ion-menu-toggle auto-hide="false">
+					<ion-item router-direction="root" href="/coffee">Разделы и скидки</ion-item>
+				</ion-menu-toggle>
+				<ion-menu-toggle auto-hide="false">
+					<ion-item router-direction="root" href="/coffee">Акции</ion-item>
+				</ion-menu-toggle>
+				<ion-menu-toggle auto-hide="false">
+					<ion-item router-direction="root" href="/coffee">Истории заказов</ion-item>
+				</ion-menu-toggle>
+				<ion-menu-toggle auto-hide="false">
+					<ion-item router-direction="root" href="/coffee">Оставить отзыв</ion-item>
+				</ion-menu-toggle>
+				<ion-menu-toggle auto-hide="false">
+					<ion-item router-direction="root" href="/coffee">Сообщить о технической проблеме</ion-item>
+				</ion-menu-toggle>
 			</ion-list>
 		</ion-content>
 	</ion-menu>
 </template>
 
 <script>
-import { IonContent, IonItem, IonList, IonMenu } from '@ionic/vue';
+import { IonContent, IonItem, IonList, IonMenu, IonMenuToggle } from '@ionic/vue';
 
 export default {
-	components: { IonContent, IonItem, IonList, IonMenu }
+	components: { IonContent, IonItem, IonList, IonMenu, IonMenuToggle }
 };
 </script>

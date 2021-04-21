@@ -27,7 +27,7 @@ export default {
 		this.$store.commit('clearState', 'products');
 		await loading.present();
 
-		await axios.get('http://coffee.dev.webstripe.ru/public/api/catalog/getProducts', {params: {id: this.$props.sectionId}}).then((response) => {
+		await axios.get('https://coffee.dev.webstripe.ru/public/api/catalog/getProducts', {params: {id: this.$props.sectionId}}).then((response) => {
 			this.$store.commit('updateProducts', response.data.products);
 			loading.dismiss();
 		}).catch((err) => {

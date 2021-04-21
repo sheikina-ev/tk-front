@@ -1,10 +1,10 @@
 <template>
 	<ion-tabs>
 		<ion-tab-bar>
-			<ion-tab-button tab="null">
+			<ion-tab-button tab="coffee" router-direction="root" href="/coffee">
 				<ion-icon :icon="homeOutline"></ion-icon>
 			</ion-tab-button>
-			<ion-tab-button tab="null">
+			<ion-tab-button tab="cart" router-direction="root" href="/cart">
 				<ion-icon :icon="basketOutline"></ion-icon>
 			</ion-tab-button>
 			<ion-tab-button tab="null" @click="openMenu">

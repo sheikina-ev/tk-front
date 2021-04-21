@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from '@ionic/vue-router';
 
 import AuthorizationPage from '../pages/AuthorizationPage';
 import CoffeePage from '../pages/CoffeePage.vue';
+import CartPage from '../pages/CartPage.vue';
 
 const routes = [
   {
@@ -19,6 +20,10 @@ const routes = [
   {
     path: '/coffee/:id',
     component: () => import('../pages/CoffeeDetail.vue')
+  },
+  {
+    path: '/cart',
+    component: CartPage
   }
 ]
 

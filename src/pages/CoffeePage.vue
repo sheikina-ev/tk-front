@@ -1,5 +1,5 @@
 <template>
-	<base-layout page-title="Coffee list">
+	<base-layout page-title="Каталог">
 		<coffee-sections-list :sections="sections" :sectionId="activeSection"></coffee-sections-list>
 		<coffee-list v-if="activeSection > 0" :sectionId="activeSection" :key="activeSection"></coffee-list>
 	</base-layout>
@@ -24,7 +24,7 @@ export default {
 
 		await loading.present();
 
-		await axios.get('http://coffee.dev.webstripe.ru/public/api/catalog/getCategories').then((response) => {
+		await axios.get('https://coffee.dev.webstripe.ru/public/api/catalog/getCategories').then((response) => {
 			this.$store.commit('updateSections', response.data.categories);
 			this.$store.commit('setActiveSection', response.data.defaultCategory.id);
 			loading.dismiss();

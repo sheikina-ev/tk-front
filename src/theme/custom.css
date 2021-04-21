@@ -75,6 +75,45 @@ span.coffee-item-name {
 	padding: 0 20px;
 }
 
+.cart-item-name {
+	display: block;
+	font-size: 18px;
+	font-weight: 600;
+}
+.cart-item-cooking-time-wrap {
+	display: flex;
+	align-items: center;
+}
+.cart-item-cooking-time-wrap ion-icon {
+	flex-basis: 24px;
+	height: 24px;
+}
+.cart-item-cooking-time-wrap small {
+	flex-basis: 85px;
+}
+.cart-item-cooking-time-wrap span {
+	font-size: 16px;
+}
+.cart-item-modifiers-wrap {
+	display: flex;
+	flex-direction: column;
+	font-size: 14px;
+}
+
+.cart-item-amount-wrap span {
+	display: inline-block;
+	margin: 0 6px;
+	font-size: 22px;
+}
+.cart-item-amount-wrap button {
+	position: relative;
+	width: 1.2em;
+	height: 1.2em;
+	font-size: 22px;
+	border-radius: 50%;
+	background-color: var(--ion-color-primary);
+}
+
 .inline-flex {display: inline-flex !important;}
 .flex-start {align-self: flex-start !important;}
 .flex-end {align-self: flex-end !important;}

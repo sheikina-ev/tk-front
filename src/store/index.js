@@ -57,8 +57,21 @@ const store = createStore({
 				],
 				amount: 1,
 				price: 400
+			},
+			{
+				line_id: 3,
+				product_name: "Эспрессо",
+				weight: 200,
+				weight_unit: 'мл',
+				cooking_time: "5",
+				modifiers: [
+					
+				],
+				amount: 1,
+				price: 350
 			}
-		]
+		],
+		isAuthorized: false
 	},
 	getters: {
 		activeSection(state) {
@@ -80,6 +93,9 @@ const store = createStore({
 		// WIP
 		cart(state) {
 			return state.cart;
+		},
+		isAuthorized(state) {
+			return state.isAuthorized;
 		}
 	},
 	mutations: {
@@ -100,9 +116,10 @@ const store = createStore({
 		},
 		// WIP
 		changeAmount(state, payload) {
+			console.log(payload);
 			const line_id = payload.line_id;
 			const action = payload.action;
-			const item = state.cart.find(item => item.line_id = line_id);
+			const item = state.cart.find(item => item.line_id === line_id);
 			
 			switch (action) {
 				case 'increase':
@@ -122,6 +139,12 @@ const store = createStore({
 		},
 		dropCart(state) {
 			state.cart = [];
+		},
+		authorize(state) {
+			state.isAuthorized = true;
+		},
+		unauthorize(state) {
+			state.isAuthorized = false;
 		}
 	}
 });

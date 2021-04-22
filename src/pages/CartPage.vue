@@ -1,7 +1,7 @@
 <template>
 	<base-layout page-title="Корзина [WIP]">
 		<ion-list v-if="cart">
-			<ion-item v-for="cartItem in cart" :key="cartItem.line_id">
+			<ion-item v-for="cartItem in cart" :key="cartItem.line_id" :amount="cartItem.amount">
 				<cart-item :cartItem="cartItem"></cart-item>
 			</ion-item>
 		</ion-list>

@@ -13,7 +13,7 @@
 					<small>Время приготовления</small>
 					<span>~{{ cartItem.cooking_time }} мин</span>
 				</div>
-				<div class="cart-item-modifiers-wrap">
+				<div class="cart-item-modifiers-wrap" v-if="cartItem.modifiers.length > 0">
 					<strong>Добавки:</strong>
 					<span v-for="modifier in cartItem.modifiers" :key="modifier.id">{{ modifier.name }}</span>
 				</div>

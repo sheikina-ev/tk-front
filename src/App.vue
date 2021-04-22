@@ -1,18 +1,30 @@
 <template>
-  <ion-app>
+  <ion-app id="main">
+    <side-menu></side-menu>
     <ion-router-outlet />
   </ion-app>
 </template>
 
-<script lang="ts">
-import { IonApp, IonRouterOutlet } from '@ionic/vue';
+<script>
+
+import { IonApp, IonRouterOutlet, useBackButton, useIonRouter } from '@ionic/vue';
+import { Plugins } from '@capacitor/core';
 import { defineComponent } from 'vue';
+const { App } = Plugins;
 
 export default defineComponent({
   name: 'App',
   components: {
     IonApp,
     IonRouterOutlet
-  }
+  },
+  setup() {
+		const ionRouter = useIonRouter();
+		useBackButton(-1, () => {
+			if(!ionRouter.canGoBack()) {
+				App.exitApp();
+			}
+		});
+	},
 });
 </script>

@@ -10,12 +10,12 @@
 					<ion-input color="dark" class="auth-input" name="login" placeholder="+ 7 ( ___ ) ___- __- __" autocomplete="tel" type="tel"></ion-input>
 					<ion-label class="auth-input-label" position="stacked">Как Вас зовут?</ion-label>
 					<ion-input color="dark" class="auth-input" name="name" autocomplete="name" type="text"></ion-input>
-					<ion-button expand="block" @click="throwMessage('Авторизация временно недоступна')">Let me in!</ion-button>
-					<ion-button expand="block" fill="clear" @click="authorize" router-link="/coffee">Пропустить и указать позже</ion-button>
+					<ion-button expand="block" @click="authorize" router-direction="root" router-link="/coffee">Войти</ion-button>
+					<ion-button expand="block" fill="clear" router-direction="root" router-link="/coffee">Пропустить и указать позже</ion-button>
 				</form>
 				<!-- For dev purposes -->
 			</div>
-			<div class="bottom-content flex-center">
+			<div class="bottom-link-wrap bottom-content flex-center">
 				<a @click="openModal" class="primary">Обработка персональных данных</a>
 			</div>
 		</ion-content>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { IonPage, IonContent, IonLabel, IonInput, IonButton, modalController, menuController, toastController } from '@ionic/vue';
+import { IonPage, IonContent, IonLabel, IonInput, IonButton, modalController, toastController } from '@ionic/vue';
 import Modal from '../components/misc/Modal.vue';
 
 export default {
@@ -34,9 +34,6 @@ export default {
 		IonInput,
 		IonButton
 	},
-	setup() {
-		menuController.enable(false, 'main');
-	},
 	methods: {
 		async openModal() {
 			const modal = await modalController.create({
@@ -44,22 +41,45 @@ export default {
 				cssClass: 'my-custom-modal',
 				componentProps: {
 					title: 'Обработка персональных данных',
-					content: `What the fuck did you just fucking say about me, you little bitch? I'll have you know I graduated top of my class in the Navy Seals, and I've been involved in numerous secret raids on Al-Quaeda, and I have over 300 confirmed kills. I am trained in gorilla warfare and I'm the top sniper in the entire US armed forces. You are nothing to me but just another target. I will wipe you the fuck out with precision the likes of which has never been seen before on this Earth, mark my fucking words. You think you can get away with saying that shit to me over the Internet? Think again, fucker. As we speak I am contacting my secret network of spies across the USA and your IP is being traced right now so you better prepare for the storm, maggot. The storm that wipes out the pathetic little thing you call your life. You're fucking dead, kid. I can be anywhere, anytime, and I can kill you in over seven hundred ways, and that's just with my bare hands. Not only am I extensively trained in unarmed combat, but I have access to the entire arsenal of the United States Marine Corps and I will use it to its full extent to wipe your miserable ass off the face of the continent, you little shit. If only you could have known what unholy retribution your little "clever" comment was about to bring down upon you, maybe you would have held your fucking tongue. But you couldn't, you didn't, and now you're paying the price, you goddamn idiot. I will shit fury all over you and you will drown in it. You're fucking dead, kiddo.`
+					content: `
+						1. Какую информацию мы собираем?
+						Мы можем собирать, хранить и использовать следующие виды персональных данных:
+						А. Информация о Вашем компьютере и посещениях сайта, его использовании (включая IP-адрес Вашего компьютера, географическое положение, тип и версия браузера, операционная система, источник информации, продолжительность посещения, просмотренные страницы и навигация сайта).
+						Б. Информация, относящаяся к любого рода операциям между нами и Вами на сайте или по отношению к настоящему сайту, включая информацию о покупке какой-либо продукции или пользовании услугами сайта.
+						В. Информация, указываемая при регистрации на сайте.
+						Г. Информация, указанная при оформлении подписки на услуги, предоставляемые сайтом, уведомления по электронной почте и новостные рассылки.
+						Д. Любая другая информация, которую Вы присылаете нам. Вы можете сохранить Правила пользования сайтом и ознакомиться с ними. Мы также храним все подробности Ваших заказов в нашем интернет-магазине. История заказов доступна в личной зоне, защищенной паролем.
+						2. Файлы cookie
+						Файл cookie состоит из информации, присылаемой веб-сервером браузеру, и которая хранится в браузере. Информация из браузера отсылается серверу каждый раз, когда браузер запрашивает страницу с сервера. Это позволяет веб-серверу идентифицировать и отслеживать данные браузера.
+						Мы используем Google Analytics и Яндекс.Метрику для анализа посещаемости настоящего сайта. Google Analytics и Яндекс.Метрика формирует статистическую и другую информацию о сайте, используя файлы-cookie, которые хранятся в компьютерах пользователей. Эта информация используется для составления отчетов об использовании сайта. Полученные данные хранятся в Google’e и Яндексе. Политику конфиденциальности Google’a можно посмотреть на http://www.google.com/intl/ru/analytics/tos.html. Политику конфиденциальности Яндекса можно посмотреть на http://legal.yandex.ru/confidential/.
+						3. Использование персональных данных пользователей
+						Персональная информация, полученная через сайт, может быть использована только в целях, обозначенных в настоящей политике конфиденциальности или в соответствующих разделах сайта.
+						Администрация сайта может использовать персональные данные, чтобы:
+						А. Администрировать работу сайта.
+						Б. Улучшить работу браузера пользователя посредством персонализации сайта.
+						В. Позволить пользователю пользоваться услугами сайта.
+						Г. Отправлять пользователю купленные на сайте товары и оказывать платные услуги сайта.
+						Д. Отправлять пользователю договоры, акты, счета-фактуры и другие операции, связанные с извещением пользователя, а также осуществлять прием платежей от пользователя.
+						Е. Отправлять пользователю уведомления по электронной почте по специальному запросу.
+						Ж. Отправлять пользователю рекламных, маркетинговых материалов, а также сервисных информационных сообщений путем e-mail-, sms-рассылки, с правом передачи данных Пользователя третьим лицам.
+						З. Сообщать третьим лицам статистическую информацию о пользователях сайта – однако, исключено разглашение информации, позволяющей идентифицировать конкретного пользователя.
+						И. Иметь дело с расследованиями и жалобами со стороны или в отношении пользователя, только если затрагиваются интересы сайта. В соответствии со ст. 9 Федерального закона "О персональных данных" № 152-ФЗ от 27.07.2006, Вы даете согласие компании ООО «Р2А» на обработку (включая сбор, систематизацию, накопление, хранение, уточнение (обновление, изменение), распространение (трансграничную передачу, передачу в целях исполнения договоров купли-продажи товаров), обезличивание, блокирование, уничтожение) своих персональных данных, сообщаемых в целях регистрации на сайте интернет-магазина, а также покупки и получения товаров, представленных в настоящем интернет-магазине.
+						Администрация сайта гарантирует пользователю неразглашение его персональных данных третьим лицам в целях прямого маркетинга без его письменного разрешения.
+					`
 				}
 			});
 			return modal.present();
 		},
 		// WIP
-		async throwMessage(message) {
+		async authorize() {
+			this.$store.commit('authorize');
+
 			const toast = await toastController.create({
-				message: message,
+				message: 'Вы успешно авторизовались... как бы',
 				position: 'bottom',
 				duration: 3000
 			});
 			await toast.present();
-		},
-		authorize() {
-			this.$store.commit('authorize');
 		}
 	}
 }

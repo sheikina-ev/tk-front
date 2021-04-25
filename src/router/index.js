@@ -4,6 +4,10 @@ import store from '../store/index.js';
 import AuthorizationPage from '../pages/AuthorizationPage';
 import CoffeePage from '../pages/CoffeePage.vue';
 import CartPage from '../pages/CartPage.vue';
+import SpecialsPage from '../pages/SpecialsPage.vue';
+import OrdersPage from '../pages/OrdersPage.vue';
+import ReviewPage from '../pages/ReviewPage.vue';
+import FeedbackPage from '../pages/FeedbackPage.vue';
 
 const routes = [
 	{
@@ -16,18 +20,33 @@ const routes = [
 	},
 	{
 		path: '/coffee',
-		component: CoffeePage,
-		meta: {requiresAuth: true}
+		component: CoffeePage
 	},
 	{
 		path: '/coffee/:id',
-		component: () => import('../pages/CoffeeDetail.vue'),
-		meta: {requiresAuth: true}
+		component: () => import('../pages/CoffeeDetail.vue')
 	},
 	{
 		path: '/cart',
 		component: CartPage,
 		meta: {requiresAuth: true}
+	},
+	{
+		path: '/specials',
+		component: SpecialsPage
+	},
+	{
+		path: '/orders',
+		component: OrdersPage,
+		meta: {requiresAuth: true}
+	},
+	{
+		path: '/review',
+		component: ReviewPage
+	},
+	{
+		path: '/feedback',
+		component: FeedbackPage
 	}
 ]
 

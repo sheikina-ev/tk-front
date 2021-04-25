@@ -1,7 +1,7 @@
 <template>
-  <ion-app id="main">
+  <ion-app>
     <side-menu></side-menu>
-    <ion-router-outlet />
+    <ion-router-outlet id="main" />
   </ion-app>
 </template>
 

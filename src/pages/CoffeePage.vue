@@ -1,5 +1,6 @@
 <template>
 	<base-layout page-title="Каталог">
+		<coffee-shop :shop="activeShop"></coffee-shop>
 		<coffee-sections-list :sections="sections" :sectionId="activeSection"></coffee-sections-list>
 		<coffee-list v-if="activeSection > 0" :sectionId="activeSection" :key="activeSection"></coffee-list>
 	</base-layout>
@@ -7,12 +8,14 @@
 
 <script>
 import { loadingController } from '@ionic/vue';
-import CoffeeSectionsList from '../components/coffee/CoffeeSectionsList.vue'
-import CoffeeList from '../components/coffee/CoffeeList.vue'
+import CoffeeShop from '../components/coffee/CoffeeShop.vue';
+import CoffeeSectionsList from '../components/coffee/CoffeeSectionsList.vue';
+import CoffeeList from '../components/coffee/CoffeeList.vue';
 import axios from 'axios';
 
 export default {
 	components: {
+		CoffeeShop,
 		CoffeeSectionsList,
 		CoffeeList
 	},
@@ -39,6 +42,9 @@ export default {
 		},
 		activeSection() {
 			return this.$store.getters.activeSection;
+		},
+		activeShop() {
+			return this.$store.getters.activeShop;
 		}
 	}
 }

@@ -34,14 +34,6 @@ export default {
 					duration: 3000
 				});
 				await toast.present();
-				// Placeholder
-				const anotherToast = await toastController.create({
-					message: '...на самом деле, пока ничего не отправляется.',
-					position: 'bottom',
-					duration: 3000
-				});
-				await toast.onDidDismiss();
-				await anotherToast.present();
 			}
 		}
 	}

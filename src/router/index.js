@@ -1,22 +1,28 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 
-import store from '../store/index.js';
+// import store from '../store/index.js';
 import AuthorizationPage from '../pages/AuthorizationPage';
 import CoffeePage from '../pages/CoffeePage.vue';
 import CartPage from '../pages/CartPage.vue';
+import OrderPage from '../pages/OrderPage.vue';
 import SpecialsPage from '../pages/SpecialsPage.vue';
 import OrdersPage from '../pages/OrdersPage.vue';
 import ReviewPage from '../pages/ReviewPage.vue';
 import FeedbackPage from '../pages/FeedbackPage.vue';
+import ShopPickPage from '../pages/ShopPickPage.vue';
 
 const routes = [
 	{
 		path: '/',
-		redirect: '/coffee'
+		redirect: '/auth'
 	},
 	{
 		path: '/auth',
 		component: AuthorizationPage
+	},
+	{
+		path: '/shop',
+		component: ShopPickPage
 	},
 	{
 		path: '/coffee',
@@ -28,8 +34,11 @@ const routes = [
 	},
 	{
 		path: '/cart',
-		component: CartPage,
-		meta: {requiresAuth: true}
+		component: CartPage
+	},
+	{
+		path: '/order',
+		component: OrderPage
 	},
 	{
 		path: '/specials',
@@ -37,8 +46,7 @@ const routes = [
 	},
 	{
 		path: '/orders',
-		component: OrdersPage,
-		meta: {requiresAuth: true}
+		component: OrdersPage
 	},
 	{
 		path: '/review',
@@ -55,7 +63,7 @@ const router = createRouter({
 	routes
 })
 
-router.beforeEach((to, from, next) => {
+/* router.beforeEach((to, from, next) => {
 	if(to.matched.some(record => record.meta.requiresAuth)) {
 		if(!store.getters.isAuthorized) {
 			next({
@@ -68,6 +76,6 @@ router.beforeEach((to, from, next) => {
 	} else {
 		next();
 	}
-});
+}); */
 
 export default router

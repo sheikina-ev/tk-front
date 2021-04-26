@@ -104,6 +104,23 @@ const store = createStore({
 				backgroundPicture: '',
 			}
 		],
+		shops: [
+			{
+				id: 1,
+				address: 'Ленина 1',
+				timeFrom: '7:15',
+				timeTo: '22:00',
+				phone: '+7 903 951 07 70'
+			},
+			{
+				id: 2,
+				address: 'Усова 96',
+				timeFrom: '7:15',
+				timeTo: '22:00',
+				phone: '+7 3822 90-43-43'
+			}
+		],
+		activeShop: false,
 		isAuthorized: false
 	},
 	getters: {
@@ -134,6 +151,16 @@ const store = createStore({
 		// Placeholders
 		isAuthorized(state) {
 			return state.isAuthorized;
+		},
+		shops(state) {
+			return state.shops;
+		},
+		activeShop(state) {
+			if(!state.activeShop) return false;
+			
+			return state.shops.find(shop => {
+				return shop.id === state.activeShop;
+			})
 		}
 	},
 	mutations: {
@@ -177,6 +204,12 @@ const store = createStore({
 			});
 
 			state.cartTotal = total;
+		},
+		selectShop(state, payload) {
+			const shopId = payload.shopId;
+
+			state.activeShop = shopId;
+			state.cart = [];
 		},
 		// Placeholders
 		changeAmount(state, payload) {

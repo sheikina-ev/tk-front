@@ -1,6 +1,6 @@
 <template>
 	<ion-content>
-		<div class="coffee-picture-container" :style="coffeeItem.image ? `background-image: url()` : `background-image: url('../assets/img/no-image-contrast.jpg')`">
+		<div class="coffee-picture-container" :style="coffeeItem.image ? `background-image:url('`+coffeeItem.image+`')` : `background-image:url('../assets/img/no-image-contrast.jpg')`">
 			<div class="coffee-picture-info-wrap">
 				<div class="coffee-picture-info-top">
 					<span @click="likeCoffee" class="inline-flex flex-end">0 человек оценили<ion-icon :icon="heartOutline"></ion-icon></span>

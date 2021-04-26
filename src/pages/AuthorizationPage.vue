@@ -1,5 +1,5 @@
 <template>
-	<ion-page>
+	<ion-page id="main">
 		<ion-content class="background-image" no-scroll>
 			<div class="auth-wrap center-content">
 				<form>
@@ -10,8 +10,8 @@
 					<ion-input color="dark" class="auth-input" name="login" placeholder="+ 7 ( ___ ) ___- __- __" autocomplete="tel" type="tel"></ion-input>
 					<ion-label class="auth-input-label" position="stacked">Как Вас зовут?</ion-label>
 					<ion-input color="dark" class="auth-input" name="name" autocomplete="name" type="text"></ion-input>
-					<ion-button expand="block" @click="authorize" router-direction="root" router-link="/coffee">Войти</ion-button>
-					<ion-button expand="block" fill="clear" router-direction="root" router-link="/coffee">Пропустить и указать позже</ion-button>
+					<ion-button expand="block" @click="authorize" router-direction="root" router-link="/shop">Войти</ion-button>
+					<ion-button expand="block" fill="clear" router-direction="root" router-link="/shop">Пропустить и указать позже</ion-button>
 				</form>
 				<!-- For dev purposes -->
 			</div>
@@ -75,7 +75,7 @@ export default {
 			this.$store.commit('authorize');
 
 			const toast = await toastController.create({
-				message: 'Вы успешно авторизовались... как бы',
+				message: 'Вы успешно авторизовались',
 				position: 'bottom',
 				duration: 3000
 			});

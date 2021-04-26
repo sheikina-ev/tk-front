@@ -10,7 +10,7 @@
 		<ion-content>
 			<ion-list>
 				<ion-menu-toggle auto-hide="false">
-					<ion-item router-direction="root" :color="isActive('/test1') ? 'primary' : '' " router-link="/coffee">Аккаунт</ion-item>
+					<ion-item router-direction="root" :color="isActive('/auth') ? 'primary' : '' " router-link="/auth">Аккаунт</ion-item>
 				</ion-menu-toggle>
 				<ion-menu-toggle auto-hide="false">
 					<ion-item router-direction="root" :color="isActive('/coffee') ? 'primary' : '' " router-link="/coffee">Разделы и скидки</ion-item>

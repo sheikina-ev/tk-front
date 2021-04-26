@@ -30,7 +30,7 @@ export default {
 			message: 'Пожалуйста подождите'
 		});
 
-		this.$store.commit('clearState', 'products');
+		// this.$store.commit('clearState', 'products');
 		await loading.present();
 
 		await axios.get('https://coffee.dev.webstripe.ru/public/api/catalog/getProducts', {params: {id: this.$props.sectionId}}).then((response) => {

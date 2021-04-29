@@ -40,30 +40,6 @@ ion-chip.selected {
 	text-align: center;
 }
 
-.shop-item {
-	display: flex;
-	justify-content: space-between;
-	margin-bottom: 30px;
-}
-.shop-item label.label {
-	display: flex;
-	justify-content: flex-start;
-	align-items: center;
-}
-.shop-item .details {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
-}
-.coffee-shop-wrap {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin: 10px;
-	padding: 10px;
-	background: var(--ion-color-light-shade);
-	border-radius: 10px;
-}
 .coffee-shop-wrap .name {
 	display: flex;
 	align-items: center;
@@ -78,6 +54,34 @@ ion-content.background-image {
 .auth-wrap h1 {
 	font-size: 35px;
 	font-weight: 700;
+	margin-top: 0px;
+	margin-bottom: 20px;
+}
+.auth-wrap p{
+	font-weight: 500;
+	font-size: 15px;
+	line-height: 20px;
+	margin-bottom: 20px;
+}
+.btn-classic{
+	font-size: 16px;
+	font-weight: 500;
+	line-height: 22px;
+	color: var(--ion-color-warning-contrast);
+	border-radius: 10px;
+}
+.auth-btn{
+	/* padding: 16px 11px; */
+}
+.auth-subbtn{
+	height: auto;
+	margin: 24px 0px 0px;
+	color: var(--ion-color-primary-contrast);
+	text-decoration: underline;
+
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 22px;
 }
 .auth-wrap .icon {
 	display: block;
@@ -85,7 +89,17 @@ ion-content.background-image {
 	height: 175px;
 	margin: 0 auto;
 }
+.primary{
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 22px;
+	color: var(--ion-color-primary-contrast);
+	text-decoration: underline;
+}
 .auth-input-label {
+	font-size: 16px;
+	line-height: 22px;
+
 	font-weight: 600;
 }
 .auth-input {
@@ -93,9 +107,13 @@ ion-content.background-image {
 	--padding-end: 13px;
 	--padding-bottom: 12px;
 	--padding-start: 13px;
+	font-family: 'Graphik', sans-serif;
 	font-size: 14px;
 	border-radius: 10px;
-	background-color: #fff;
+	background-color: var(--ion-color-primary-contrast);
+	height: 48px;
+
+	margin: 5px 0px 15px !important;
 }
 .auth-code-prompt .alert-input-group {
 	display: flex;
@@ -263,3 +281,126 @@ span.coffee-item-name {
 .inline-flex {display: inline-flex !important;}
 .flex-start {align-self: flex-start !important;}
 .flex-end {align-self: flex-end !important;}
+
+
+/*#region choose-place*/
+
+.choose-place h2{
+	font-size: 20px;
+	font-weight: 600;
+	line-height: 20px;
+	letter-spacing: -0.23333333432674408px;
+	color: black;
+	margin: 35px 0px 27px;
+}
+.choose-place ion-radio{
+	margin-right: 19px;
+}
+.choose-place ion-label{
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 22px;
+	letter-spacing: -0.6000000238418579px;
+	
+}
+.shop-item {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 12px;
+	align-items: flex-start;
+}
+.shop-item label.label {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 22px;
+	letter-spacing: -0.6000000238418579px;
+	
+}
+.shop-item .details {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+}
+
+.shop-item .details span{
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 22px;
+	letter-spacing: -0.6000000238418579px;
+	color: #CF862F;
+}
+
+.shop-item .details a{
+	color: #61473B;
+	text-decoration: underline;
+	font-size: 16px;
+	line-height: 22px;
+	letter-spacing: -0.6px;
+}
+
+.choose-place .shop-item:not(:last-child){
+	border-bottom: 1px solid #AEAEAE;
+	padding-bottom: 12px;
+}
+.choose-place .shop-item:last-child{
+	margin-bottom: 27px;
+}
+.choose-place ion-button{
+	--padding-start: 24px;
+	--padding-top: 24px;
+	--padding-bottom: 24px;
+	--padding-end: 24px;
+}
+/*#endregion choose-place*/
+
+
+/* #region coffee-catalog*/
+
+.coffee-section-wrap > ion-chip{
+	background-color: var(--ion-color-primary-contrast);
+	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 22px;	
+	margin-top: 10px;
+}
+.coffee-shop-wrap {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: 10px;
+	padding: 10px;
+	background: var(--ion-color-primary-contrast);
+	border-radius: 10px;
+	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
+}
+.name ion-icon{
+	font-size: 25px;
+	margin-right: 12px;
+	fill: #7C563A;
+}
+
+.coffee-section-wrap > ion-chip.selected{
+	background-color: var(--ion-color-primary);
+}
+
+.coffee-item-info .coffee-item-name{
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 22px;
+	color: #2d2d2d;
+}
+.coffee-item-info .coffee-item-price{
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 22px;
+	color: #7A7A7A;
+	letter-spacing: -0.6px;
+	margin-top: 2px;
+	margin-bottom: 25px;
+}
+
+/* #endregion coffee-catalog */

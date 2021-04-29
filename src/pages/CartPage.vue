@@ -6,7 +6,7 @@
 			</ion-item>
 		</ion-list>
 		<div v-if="cart.length > 0" class="bottom-content cart-button-wrap">
-			<ion-button expand="block" router-link="/order">
+			<ion-button expand="block" router-link="/checkout">
 				<div class="content">
 					<span><ion-icon :icon="cartOutline"></ion-icon>Заказать</span>
 					<span>{{ cartTotal }} руб.</span>

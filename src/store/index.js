@@ -7,73 +7,11 @@ const store = createStore({
 		product: {},
 		activeSection: 0,
 		// WIP
-		cart: [
-			/* {
-				line_id: 1,
-				product_name: "Капучино",
-				weight: 500,
-				weight_unit: 'мл',
-				cooking_time: "5",
-				modifiers: [
-					{
-						id: 1,
-						name: "Молоко"
-					},
-					{
-						id: 2,
-						name: "Сахар"
-					},
-					{
-						id: 3,
-						name: "Корица"
-					},
-					{
-						id: 4,
-						name: "Лимон"
-					}
-				],
-				amount: 1,
-				price: 300
-			},
-			{
-				line_id: 2,
-				product_name: "Латте",
-				weight: 500,
-				weight_unit: 'мл',
-				cooking_time: "5",
-				modifiers: [
-					{
-						id: 1,
-						name: "Молоко"
-					},
-					{
-						id: 2,
-						name: "Сахар"
-					},
-					{
-						id: 3,
-						name: "Амаретто"
-					}
-				],
-				amount: 1,
-				price: 400
-			},
-			{
-				line_id: 3,
-				product_name: "Эспрессо",
-				weight: 200,
-				weight_unit: 'мл',
-				cooking_time: "5",
-				modifiers: [
-					
-				],
-				amount: 1,
-				price: 350
-			} */
-		],
+		cart: [],
 		cartTotal: 0,
 		lineIdCount: 0,
 		// Placeholders
+		tmpPhone: '',
 		specials: [
 			{
 				id: 1,
@@ -121,6 +59,142 @@ const store = createStore({
 			}
 		],
 		activeShop: false,
+		orders: [
+			{
+				id: '4536437',
+				date: '09:12 17.12.2020',
+				items: [
+					{
+						lineId: 1,
+						id: 1,
+						name: 'Капучино',
+						weight: 500,
+						options: [
+							{
+								id: 1,
+								name: 'Без сливок',
+							},
+							{
+								id: 2,
+								name: 'Корица',
+							},
+							{
+								id: 3,
+								name: 'Кокосовое молоко',
+							},
+							{
+								id: 4,
+								name: 'Сахар',
+							},
+							{
+								id: 5,
+								name: 'Гренадин сироп'
+							}
+						],
+						price: 100
+					},
+					{
+						lineId: 2,
+						id: 2,
+						name: 'Латте',
+						weight: 380,
+						options: [
+							{
+								id: 1,
+								name: 'Без сливок',
+							},
+							{
+								id: 2,
+								name: 'Корица',
+							},
+							{
+								id: 3,
+								name: 'Кокосовое молоко',
+							},
+							{
+								id: 4,
+								name: 'Сахар',
+							},
+							{
+								id: 5,
+								name: 'Гренадин сироп'
+							}
+						],
+						price: 50
+					}
+				],
+				total: 880,
+				address: 'Усова 96',
+				status: 'ongoing'
+			},
+			{
+				id: '4536436',
+				date: '09:12 16.12.2020',
+				items: [
+					{
+						lineId: 1,
+						id: 1,
+						name: 'Капучино',
+						weight: 500,
+						options: [
+							{
+								id: 1,
+								name: 'Без сливок',
+							},
+							{
+								id: 2,
+								name: 'Корица',
+							},
+							{
+								id: 3,
+								name: 'Кокосовое молоко',
+							},
+							{
+								id: 4,
+								name: 'Сахар',
+							},
+							{
+								id: 5,
+								name: 'Гренадин сироп'
+							}
+						],
+						price: 100
+					},
+					{
+						lineId: 2,
+						id: 2,
+						name: 'Латте',
+						weight: 380,
+						options: [
+							{
+								id: 1,
+								name: 'Без сливок',
+							},
+							{
+								id: 2,
+								name: 'Корица',
+							},
+							{
+								id: 3,
+								name: 'Кокосовое молоко',
+							},
+							{
+								id: 4,
+								name: 'Сахар',
+							},
+							{
+								id: 5,
+								name: 'Гренадин сироп'
+							}
+						],
+						price: 50
+					}
+				],
+				total: 880,
+				address: 'Усова 96',
+				status: 'delivered'
+			}
+		],
 		isAuthorized: false
 	},
 	getters: {
@@ -161,6 +235,12 @@ const store = createStore({
 			return state.shops.find(shop => {
 				return shop.id === state.activeShop;
 			})
+		},
+		orders(state) {
+			return state.orders;
+		},
+		tmpPhone(state) {
+			return state.tmpPhone;
 		}
 	},
 	mutations: {
@@ -243,6 +323,9 @@ const store = createStore({
 		},
 		unauthorize(state) {
 			state.isAuthorized = false;
+		},
+		writeTmpPhone(state, payload) {
+			state.tmpPhone = payload.phone;
 		}
 	}
 });

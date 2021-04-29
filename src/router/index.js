@@ -4,12 +4,14 @@ import { createRouter, createWebHistory } from '@ionic/vue-router';
 import AuthorizationPage from '../pages/AuthorizationPage';
 import CoffeePage from '../pages/CoffeePage.vue';
 import CartPage from '../pages/CartPage.vue';
-import OrderPage from '../pages/OrderPage.vue';
+import CheckoutPage from '../pages/CheckoutPage.vue';
 import SpecialsPage from '../pages/SpecialsPage.vue';
 import OrdersPage from '../pages/OrdersPage.vue';
 import ReviewPage from '../pages/ReviewPage.vue';
 import FeedbackPage from '../pages/FeedbackPage.vue';
 import ShopPickPage from '../pages/ShopPickPage.vue';
+
+import TestPage from '../pages/TestPage.vue';
 
 const routes = [
 	{
@@ -37,8 +39,8 @@ const routes = [
 		component: CartPage
 	},
 	{
-		path: '/order',
-		component: OrderPage
+		path: '/checkout',
+		component: CheckoutPage
 	},
 	{
 		path: '/specials',
@@ -55,6 +57,10 @@ const routes = [
 	{
 		path: '/feedback',
 		component: FeedbackPage
+	},
+	{
+		path: '/test',
+		component: TestPage
 	}
 ]
 

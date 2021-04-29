@@ -15,6 +15,46 @@
 			<p v-if="coffeeItem.product_description" class="">{{ coffeeItem.product_description }}</p>
 			<p v-else class=""><i>Описание отсутствует</i></p>
 		</div>
+		<div v-if="coffeeItem.options && coffeeItem.options.length > 0" class="coffee-modifiers-container">
+			<ion-list v-for="groups in coffeeItem.options" :key="groups.id">
+				<ion-radio-group v-if="groups.max_amount === 1" :value="groups.min_amount === 1 || groups.required ? groups.values[0].id : ``">
+					<h3>{{ groups.name }}</h3>
+					<ion-item v-for="option in groups.values" :key="option.id">
+						<ion-radio :value="option.id" slot="start"></ion-radio>
+						<ion-label>{{ option.name }}</ion-label>
+					</ion-item>
+				</ion-radio-group>
+				<div v-else-if="groups.max_amount > 1" class="checkbox-wrap">
+					<h3>{{ groups.name }}</h3>
+					<ion-item v-for="option in groups.values" :key="option.id">
+						<ion-checkbox :value="option.id" slot="start"></ion-checkbox>
+						<ion-label>{{ option.name }}</ion-label>
+					</ion-item>
+				</div>
+			</ion-list>
+		</div>
+		<div class="coffee-calorific-info-container">
+			<h3>Калорийность</h3>
+			<div class="wrap">
+				<div class="item">
+					<div class="value">{{ coffeeItem.energyAmount && coffeeItem.energyAmount !== 'NaN' ? coffeeItem.energyAmount : 0 }}</div>
+					<div class="label">Ккал</div>
+				</div>
+				<div class="item">
+					<div class="value">{{ coffeeItem.proteinsAmount && coffeeItem.proteinsAmount !== 'NaN' ? coffeeItem.proteinsAmount : 0 }}</div>
+					<div class="label">Белки, г</div>
+				</div>
+				<div class="item">
+					<div class="value">{{ coffeeItem.fatAmount && coffeeItem.fatAmount !== 'NaN' ? coffeeItem.fatAmount : 0 }}</div>
+					<div class="label">Жиры, г</div>
+				</div>
+				<div class="item">
+					<div class="value">{{ coffeeItem.carbohydratesAmount && coffeeItem.carbohydratesAmount !== 'NaN' ? coffeeItem.carbohydratesAmount : 0 }}</div>
+					<div class="label">Углеводы, г</div>
+				</div>
+			</div>
+		</div>
+		<div class="overview-dummy-block"></div>
 		<div class="overview-button-wrap bottom-content h-center-content">
 			<ion-button expand="block" @click="addToCart(coffeeItem.id)">
 				<div class="content">
@@ -27,7 +67,7 @@
 </template>
 
 <script>
-import { IonContent, toastController, IonIcon, IonButton } from '@ionic/vue';
+import { IonContent, toastController, IonIcon, IonButton, IonRadioGroup, IonRadio, IonCheckbox, IonLabel, IonList, IonItem } from '@ionic/vue';
 import { heartOutline, thumbsDownOutline, alarmOutline, cartOutline } from 'ionicons/icons';
 
 export default {
@@ -35,7 +75,13 @@ export default {
 	components: {
 		IonContent,
 		IonIcon,
-		IonButton
+		IonButton,
+		IonRadioGroup,
+		IonRadio,
+		IonCheckbox,
+		IonLabel,
+		IonList,
+		IonItem
 	},
 	setup() {
 		return {

@@ -23,10 +23,18 @@ ion-chip.selected {
 	right: 0;
 	bottom: 0;
 }
+.flex-column {
+	display: flex;
+	flex-direction: column;
+}
 .flex-center {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+}
+.flex-between {
+	display: flex;
+	justify-content: space-between;
 }
 .text-center {
 	text-align: center;
@@ -89,6 +97,15 @@ ion-content.background-image {
 	border-radius: 10px;
 	background-color: #fff;
 }
+.auth-code-prompt .alert-input-group {
+	display: flex;
+}
+.auth-code-prompt .alert-input-group .alert-input-wrapper {
+	width: 100%;
+}
+.auth-code-prompt .alert-input-group .alert-input-wrapper .alert-input {
+	text-align: center;
+}
 .bottom-link-wrap {
 	margin-bottom: 20px;
 }
@@ -150,17 +167,30 @@ span.coffee-item-name {
 	display: flex;
 	flex-direction: column;
 }
-.coffee-info-container {
+.coffee-info-container,
+.coffee-modifiers-container h3,
+.coffee-calorific-info-container {
 	padding: 0 20px;
 }
+.coffee-calorific-info-container > .wrap {
+	display: flex;
+	justify-content: space-between;
+}
+.coffee-calorific-info-container > .wrap > .value {
+	font-size: 22px;
+}
 .overview-button-wrap {
-	position: absolute;
+	position: fixed;
 	margin-bottom: 20px;
 	left: 50%;
 	right: unset;
 	max-width: 300px;
 	width: 100%;
 	transform: translateX(-50%);
+	z-index: 5;
+}
+.overview-dummy-block {
+	height: 80px;
 }
 .overview-button-wrap .content {
 	display: flex;
@@ -224,6 +254,10 @@ span.coffee-item-name {
 }
 .order-payment-label {
 	padding-left: 16px;
+}
+
+.order-item-position-wrap {
+	margin-bottom: 1em;
 }
 
 .inline-flex {display: inline-flex !important;}

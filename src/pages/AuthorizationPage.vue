@@ -2,18 +2,17 @@
 	<ion-page id="main">
 		<ion-content class="background-image" no-scroll>
 			<div class="auth-wrap center-content">
-				<form>
-					<img class="icon" src="assets/img/auth-icon.svg" alt="">
+				<form @submit="authorize">
+					<!-- <img class="icon" src="assets/img/auth-icon.svg" alt=""> -->
 					<h1>Привет! &#9996;</h1>
 					<p>Войдите, чтобы заказывать кофе заранее и пользоваться нашими акциями!</p>
 					<ion-label class="auth-input-label" position="stacked">Введите свой номер телефона</ion-label>
-					<ion-input color="dark" class="auth-input" name="login" placeholder="+ 7 ( ___ ) ___- __- __" autocomplete="tel" type="tel"></ion-input>
+					<ion-input color="dark" class="auth-input" name="phone" placeholder="+ 7 ( ___ ) ___- __- __" autocomplete="tel" type="tel" mask="+7 (000) 000-00-00" required="true"></ion-input>
 					<ion-label class="auth-input-label" position="stacked">Как Вас зовут?</ion-label>
-					<ion-input color="dark" class="auth-input" name="name" autocomplete="name" type="text"></ion-input>
-					<ion-button expand="block" @click="authorize" router-direction="root" router-link="/shop">Войти</ion-button>
+					<ion-input color="dark" class="auth-input" name="name" autocomplete="name" type="text" required="true"></ion-input>
+					<ion-button expand="block" router-direction="root" router-link="/shop">Войти по номеру телефона</ion-button>
 					<ion-button expand="block" fill="clear" router-direction="root" router-link="/shop">Пропустить и указать позже</ion-button>
 				</form>
-				<!-- For dev purposes -->
 			</div>
 			<div class="bottom-link-wrap bottom-content flex-center">
 				<a @click="openModal" class="primary">Обработка персональных данных</a>
@@ -22,8 +21,8 @@
 	</ion-page>
 </template>
 
-<script>
-import { IonPage, IonContent, IonLabel, IonInput, IonButton, modalController, toastController } from '@ionic/vue';
+<script >
+import { IonPage, IonContent, IonLabel, IonInput, IonButton, modalController } from '@ionic/vue';
 import Modal from '../components/misc/Modal.vue';
 
 export default {
@@ -33,6 +32,11 @@ export default {
 		IonLabel,
 		IonInput,
 		IonButton
+	},
+	computed: {
+		tmpPhone() {
+			return this.$store.getters.tmpPhone;
+		}
 	},
 	methods: {
 		async openModal() {
@@ -69,17 +73,6 @@ export default {
 				}
 			});
 			return modal.present();
-		},
-		// WIP
-		async authorize() {
-			this.$store.commit('authorize');
-
-			const toast = await toastController.create({
-				message: 'Вы успешно авторизовались',
-				position: 'bottom',
-				duration: 3000
-			});
-			await toast.present();
 		}
 	}
 }

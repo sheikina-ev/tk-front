@@ -55,7 +55,13 @@ export default {
 	},
 	computed: {
 		coffeeItem() {
-			return this.$store.getters.product;
+			var product = this.$store.getters.product;
+			product.carbohydratesAmount = parseFloat(product.carbohydratesAmount).toFixed(1);
+			product.energyAmount = parseFloat(product.energyAmount).toFixed(1);
+			product.fatAmount = parseFloat(product.fatAmount).toFixed(1);
+			product.proteinsAmount = parseFloat(product.proteinsAmount).toFixed(1);
+
+			return product;
 		}
 	}
 }

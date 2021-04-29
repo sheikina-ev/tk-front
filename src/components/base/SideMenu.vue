@@ -16,16 +16,16 @@
 					<ion-item router-direction="root" :color="isActive('/coffee') ? 'primary' : '' " router-link="/coffee">Разделы и скидки</ion-item>
 				</ion-menu-toggle>
 				<ion-menu-toggle auto-hide="false">
-					<ion-item router-direction="root" :color="isActive('/specials') ? 'primary' : '' " router-link="/specials">Акции</ion-item>
+					<ion-item router-direction="/coffee" :color="isActive('/specials') ? 'primary' : '' " router-link="/specials">Акции</ion-item>
 				</ion-menu-toggle>
 				<ion-menu-toggle auto-hide="false">
-					<ion-item router-direction="root" :color="isActive('/orders') ? 'primary' : '' " router-link="/orders">Истории заказов</ion-item>
+					<ion-item router-direction="/coffee" :color="isActive('/orders') ? 'primary' : '' " router-link="/orders">Истории заказов</ion-item>
 				</ion-menu-toggle>
 				<ion-menu-toggle auto-hide="false">
-					<ion-item router-direction="root" :color="isActive('/review') ? 'primary' : '' " router-link="/review">Оставить отзыв</ion-item>
+					<ion-item router-direction="/coffee" :color="isActive('/review') ? 'primary' : '' " router-link="/review">Оставить отзыв</ion-item>
 				</ion-menu-toggle>
 				<ion-menu-toggle auto-hide="false">
-					<ion-item router-direction="root" :color="isActive('/feedback') ? 'primary' : '' " router-link="/feedback">Сообщить о технической проблеме</ion-item>
+					<ion-item router-direction="/coffee" :color="isActive('/feedback') ? 'primary' : '' " router-link="/feedback">Сообщить о технической проблеме</ion-item>
 				</ion-menu-toggle>
 			</ion-list>
 		</ion-content>

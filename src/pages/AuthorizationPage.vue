@@ -10,8 +10,8 @@
 					<ion-input color="dark" class="auth-input" name="phone" placeholder="+ 7 ( ___ ) ___- __- __" autocomplete="tel" type="tel" mask="+7 (000) 000-00-00" required="true"></ion-input>
 					<ion-label class="auth-input-label" position="stacked">Как Вас зовут?</ion-label>
 					<ion-input color="dark" class="auth-input" name="name" autocomplete="name" type="text" required="true"></ion-input>
-					<ion-button expand="block" type="submit">Войти по номеру телефона</ion-button>
-					<ion-button expand="block" fill="clear" router-direction="root" router-link="/shop">Пропустить и указать позже</ion-button>
+					<ion-button class="auth-btn btn-classic" expand="block" type="submit">Войти по номеру телефона</ion-button>
+					<ion-button class="auth-subbtn" expand="block" fill="clear" router-direction="root" router-link="/shop">Пропустить и указать позже</ion-button>
 				</form>
 			</div>
 			<div class="bottom-link-wrap bottom-content flex-center">

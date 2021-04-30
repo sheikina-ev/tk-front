@@ -1,21 +1,21 @@
 <template>
 	<base-layout page-title="Оформить заказ">
-		<ion-item>
+		<ion-item class="checkout-page-input">
 			<ion-label position="stacked">Имя*</ion-label>
 			<ion-input name="name" autocomplete="name" required="true"></ion-input>
 		</ion-item>
-		<ion-item>
+		<ion-item class="checkout-page-input">
 			<ion-label position="stacked">Телефон*</ion-label>
 			<ion-input name="tel" placeholder="+7 (___) ___ __ __" autocomplete="tel" type="tel" required="true"></ion-input>
 		</ion-item>
-		<ion-item>
+		<ion-item class="checkout-page-select">
 			<ion-label position="stacked">Выбранный адрес*</ion-label>
 			<ion-select name="shop" @click="test" :value="activeShop ? activeShop.id : ``" interface="popover" required="true">
 				<ion-select-option v-for="shop in shops" :key="shop.id" :value="shop.id">{{ shop.address }}</ion-select-option>
 				<!-- <ion-select-option v-if="activeShop" :value="activeShop ? activeShop.id : ``">{{ activeShop.address }}</ion-select-option> -->
 			</ion-select>
 		</ion-item>
-		<ion-item>
+		<ion-item class="checkout-page-select">
 			<ion-label position="stacked">Через какое время вы заберёте заказ</ion-label>
 			<ion-select name="time-suggested" interface="popover" required="true" value="soon5">
 				<ion-select-option value="soon5">Ближайшее время ~5 мин</ion-select-option>
@@ -27,8 +27,8 @@
 		<ion-item>
 			<ion-input name="time" placeholder="15:50"></ion-input>
 		</ion-item>
-		<ion-item>
-			<ion-label position="stacked"><b>Мои баллы: 1000</b></ion-label>
+		<ion-item class="checkout-page-input">
+			<ion-label class="checkout-page-total" position="stacked"><b>Мои баллы: 1000</b></ion-label>
 			<ion-label position="stacked">Списать баллов</ion-label>
 			<ion-input name="bonus"></ion-input>
 		</ion-item>
@@ -39,19 +39,19 @@
 		<ion-radio-group>
 			<span class="order-payment-label">Способ оплаты</span>
 			<ion-item>
-				<ion-label>Apple Pay</ion-label>
+				<ion-label class="img-apple"></ion-label>
 				<ion-radio name="payment" value="apple"></ion-radio>
 			</ion-item>
 			<ion-item>
-				<ion-label>Банковская карта</ion-label>
+				<ion-label class="img-visa"></ion-label>
 				<ion-radio name="payment" value="card"></ion-radio>
 			</ion-item>
 			<ion-item>
-				<ion-label>Google Pay</ion-label>
+				<ion-label class="img-google"></ion-label>
 				<ion-radio name="payment" value="google"></ion-radio>
 			</ion-item>
 		</ion-radio-group>
-		<ion-button expand="block">Оплатить</ion-button>
+		<ion-button expand="block btn-classic checkout-page-btn">Оплатить</ion-button>
 	</base-layout>
 </template>
 

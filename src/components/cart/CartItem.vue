@@ -3,7 +3,7 @@
 		<ion-row>
 			<ion-col size="4">
 				<ion-img src="../assets/img/no-image-contrast.jpg"></ion-img>
-				<span @click="removeCartItem(cartItem.line_id)">Удалить</span>
+				<span class="basket-remove" @click="removeCartItem(cartItem.line_id)">Удалить</span>
 			</ion-col>
 			<ion-col size="8">
 				<span class="cart-item-name">{{ cartItem.product_name }}</span>

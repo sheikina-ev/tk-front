@@ -23,7 +23,7 @@ export default {
 			const input = document.getElementById('string');
 			
 			await Storage.set({
-				key: 'string',
+				key: 'pupa',
 				value: input.value
 			});
 
@@ -33,7 +33,7 @@ export default {
 			const textNode = document.getElementById('text-node');
 
 			const { value } = await Storage.get({
-				key: 'string'
+				key: 'pupa'
 			});
 
 			textNode.innerText = value;

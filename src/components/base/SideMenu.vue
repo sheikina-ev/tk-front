@@ -27,6 +27,9 @@
 				<ion-menu-toggle auto-hide="false">
 					<ion-item router-direction="/coffee" :color="isActive('/feedback') ? 'primary' : '' " router-link="/feedback">Сообщить о технической проблеме</ion-item>
 				</ion-menu-toggle>
+				<ion-menu-toggle auto-hide="false">
+					<ion-item router-direction="/coffee" :color="isActive('/test') ? 'primary' : '' " router-link="/test">Тестовая страница</ion-item>
+				</ion-menu-toggle>
 			</ion-list>
 		</ion-content>
 	</ion-menu>

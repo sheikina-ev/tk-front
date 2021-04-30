@@ -10,7 +10,7 @@
 					<ion-input color="dark" class="auth-input" name="phone" placeholder="+ 7 ( ___ ) ___- __- __" autocomplete="tel" type="tel" mask="+7 (000) 000-00-00" required="true"></ion-input>
 					<ion-label class="auth-input-label" position="stacked">Как Вас зовут?</ion-label>
 					<ion-input color="dark" class="auth-input" name="name" autocomplete="name" type="text" required="true"></ion-input>
-					<ion-button expand="block" router-direction="root" router-link="/shop">Войти по номеру телефона</ion-button>
+					<ion-button expand="block" type="submit">Войти по номеру телефона</ion-button>
 					<ion-button expand="block" fill="clear" router-direction="root" router-link="/shop">Пропустить и указать позже</ion-button>
 				</form>
 			</div>
@@ -22,8 +22,10 @@
 </template>
 
 <script >
-import { IonPage, IonContent, IonLabel, IonInput, IonButton, modalController } from '@ionic/vue';
+import { IonPage, IonContent, IonLabel, IonInput, IonButton, modalController, toastController, loadingController, alertController } from '@ionic/vue';
 import Modal from '../components/misc/Modal.vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 export default {
 	components: {
@@ -33,12 +35,26 @@ export default {
 		IonInput,
 		IonButton
 	},
+	setup() {
+		const router = useRouter();
+		return {
+			router
+		};
+	},
 	computed: {
 		tmpPhone() {
 			return this.$store.getters.tmpPhone;
 		}
 	},
 	methods: {
+		async throwToast(message) {
+			const toast = await toastController.create({
+				message: message,
+				duration: 3000,
+			});
+
+			toast.present()
+		},
 		async openModal() {
 			const modal = await modalController.create({
 				component: Modal,
@@ -73,6 +89,91 @@ export default {
 				}
 			});
 			return modal.present();
+		},
+		async authorize(e) {
+			e.preventDefault();
+
+			const loading = await loadingController.create({message: 'Пожалуйста подождите'});
+			const formData = new FormData(e.target);
+			var params = {};
+
+			for(var key of formData.keys()) {
+				params[key] = formData.get(key);
+			}
+
+			loading.present();
+
+			await axios.get('https://coffee.dev.webstripe.ru/public/api/login', {
+				params: params
+			}).then(() => {
+				this.requestConfirmationCode(params.phone);
+				this.showConfirmationPrompt(params.phone);
+			}).catch((err) => {
+				this.throwToast(err);
+			}).then(() => {
+				loading.dismiss();
+			});
+		},
+		async showConfirmationPrompt(phone, hasError = false) {
+			const alert = await alertController.create({
+				cssClass: 'auth-code-prompt',
+				header: 'Подтверждение',
+				subHeader: hasError ? 'Код неверен' : '',
+				message: 'Введите код из SMS',
+				inputs: [
+					{
+						name: 'phone',
+						type: 'phone',
+						cssClass: 'hidden',
+						value: phone
+					},
+					{
+						name: 'code',
+						placeholder: '1234',
+						type: 'number',
+						attributes: {
+							maxlength: 4,
+							inputmode: 'numeric',
+							enterkeyhint: 'done'
+						}
+					}
+				],
+				buttons: [
+					{
+						text: 'Отмена',
+						role: 'cancel'
+					},
+					{
+						text: 'Отправить',
+						handler: (fields) => {
+							this.sendConfirmationCode(fields);
+						}
+					}
+				]
+			});
+
+			return alert.present();
+		},
+		async sendConfirmationCode(params) {
+			const loading = await loadingController.create({message: 'Пожалуйста подождите'});
+
+			loading.present();
+			await axios.get('https://coffee.dev.webstripe.ru/public/api/sms/check', {params: params}).then(() => {
+				this.throwToast('Авторизация/регистрация выполнена успешно');
+				this.router.replace('/shop');
+			}).catch(() => {
+				this.showConfirmationPrompt(params.phone, true);
+			});
+
+			loading.dismiss();
+		},
+		async requestConfirmationCode(phone) {
+			await axios.get('https://coffee.dev.webstripe.ru/public/api/sms', {params: {phone: phone}}).then((res) => {
+				// Proceed further
+				console.log('Awating code:', res.data.code);
+			}).catch(() => {
+				// Should not happen
+			});
 		}
 	}
 }

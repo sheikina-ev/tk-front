@@ -39,6 +39,9 @@ ion-chip.selected {
 .text-center {
 	text-align: center;
 }
+.hidden {
+	display: none;
+}
 
 .shop-item {
 	display: flex;
@@ -97,15 +100,7 @@ ion-content.background-image {
 	border-radius: 10px;
 	background-color: #fff;
 }
-.auth-code-prompt .alert-input-group {
-	display: flex;
-}
-.auth-code-prompt .alert-input-group .alert-input-wrapper {
-	width: 100%;
-}
-.auth-code-prompt .alert-input-group .alert-input-wrapper .alert-input {
-	text-align: center;
-}
+
 .bottom-link-wrap {
 	margin-bottom: 20px;
 }

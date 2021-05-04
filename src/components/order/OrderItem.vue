@@ -1,5 +1,5 @@
 <template>
-	<ion-card>
+	<ion-card class="order-tracking">
 		<ion-card-header>
 			<div class="flex-between">
 				<span>№{{ order.id }}</span>
@@ -16,8 +16,8 @@
 
 			<div class="order-address">{{ order.address }}</div>
 
-			<ion-button v-if="order.status === 'ongoing'" expand="block">Отследить</ion-button>
-			<ion-button v-else-if="order.status === 'delivered'" expand="block">Повторить заказ</ion-button>
+			<ion-button class="btn-classic" v-if="order.status === 'ongoing'" expand="block">Отследить</ion-button>
+			<ion-button class="btn-classic" v-else-if="order.status === 'delivered'" expand="block">Повторить заказ</ion-button>
 		</ion-card-content>
 	</ion-card>
 </template>

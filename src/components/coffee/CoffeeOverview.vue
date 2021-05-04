@@ -58,7 +58,7 @@
 		<div class="overview-button-wrap bottom-content h-center-content">
 			<ion-button expand="block" @click="addToCart(coffeeItem.id)">
 				<div class="content">
-					<span><ion-icon :icon="cartOutline"></ion-icon>Заказать</span>
+					<span>Заказать</span>
 					<span>{{ coffeeItem.price }} руб.</span>
 				</div>
 			</ion-button>

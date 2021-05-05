@@ -7,7 +7,7 @@
 				</ion-title>
 			</ion-toolbar>
 		</ion-header>
-		<ion-content class="hide-menu">
+		<ion-content class="hide-menu main-menu">
 			<ion-list>
 				<ion-menu-toggle auto-hide="false">
 					<ion-item router-direction="root" :color="isActive('/auth') ? 'primary' : '' " router-link="/auth">Аккаунт</ion-item>

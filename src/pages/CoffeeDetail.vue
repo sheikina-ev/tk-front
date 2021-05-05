@@ -1,7 +1,7 @@
 <template>
 	<ion-page>
 		<ion-header>
-			<ion-toolbar>
+			<ion-toolbar class="default-toolbar">
 				<ion-buttons slot="start">
 					<ion-back-button default-href="/coffee"></ion-back-button>
 				</ion-buttons>
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { IonPage, IonHeader, IonTitle, IonContent, IonToolbar, IonBackButton, IonButtons, loadingController } from '@ionic/vue';
+import { IonPage, IonHeader,IonBackButton, IonTitle, IonContent, IonToolbar, IonButtons, loadingController } from '@ionic/vue';
 import CoffeeOverview from '../components/coffee/CoffeeOverview.vue';
 import axios from 'axios';
 
@@ -27,8 +27,8 @@ export default {
 		IonTitle,
 		IonContent,
 		IonToolbar,
-		IonBackButton,
 		IonButtons,
+		IonBackButton,
 		CoffeeOverview
 	},
 	data() {

@@ -1,22 +1,22 @@
 <template>
 	<base-layout page-title="Оформить заказ">
 		<ion-item class="checkout-page-input">
-			<ion-label position="stacked">Имя*</ion-label>
+			<ion-label class="checkout-label" position="stacked">Имя*</ion-label>
 			<ion-input name="name" autocomplete="name" required="true"></ion-input>
 		</ion-item>
 		<ion-item class="checkout-page-input">
-			<ion-label position="stacked">Телефон*</ion-label>
+			<ion-label class="checkout-label" position="stacked">Телефон*</ion-label>
 			<ion-input name="tel" placeholder="+7 (___) ___ __ __" autocomplete="tel" type="tel" required="true"></ion-input>
 		</ion-item>
 		<ion-item class="checkout-page-select">
-			<ion-label position="stacked">Выбранный адрес*</ion-label>
+			<ion-label class="checkout-label" position="stacked">Выбранный адрес*</ion-label>
 			<ion-select name="shop" @click="test" :value="activeShop ? activeShop.id : ``" interface="popover" required="true">
 				<ion-select-option v-for="shop in shops" :key="shop.id" :value="shop.id">{{ shop.address }}</ion-select-option>
 				<!-- <ion-select-option v-if="activeShop" :value="activeShop ? activeShop.id : ``">{{ activeShop.address }}</ion-select-option> -->
 			</ion-select>
 		</ion-item>
 		<ion-item class="checkout-page-select">
-			<ion-label position="stacked">Через какое время вы заберёте заказ</ion-label>
+			<ion-label class="checkout-label" position="stacked">Через какое время вы заберёте заказ</ion-label>
 			<ion-select name="time-suggested" interface="popover" required="true" value="soon5">
 				<ion-select-option value="soon5">Ближайшее время ~5 мин</ion-select-option>
 				<ion-select-option value="soon10">Ближайшее время ~10 мин</ion-select-option>
@@ -28,8 +28,8 @@
 			<ion-input name="time" placeholder="15:50"></ion-input>
 		</ion-item>
 		<ion-item class="checkout-page-input">
-			<ion-label class="checkout-page-total" position="stacked"><b>Мои баллы: 1000</b></ion-label>
-			<ion-label position="stacked">Списать баллов</ion-label>
+			<ion-label class="checkout-page-total checkout-label" position="stacked"><b>Мои баллы: 1000</b></ion-label>
+			<ion-label class="checkout-label" position="stacked">Списать баллов</ion-label>
 			<ion-input name="bonus"></ion-input>
 		</ion-item>
 		<div class="order-total-wrap">

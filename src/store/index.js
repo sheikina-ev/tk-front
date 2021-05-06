@@ -1,4 +1,6 @@
 import { createStore } from 'vuex';
+import operations from '@/api/operations';
+import loadingCtrl from '@/api/loading';
 
 const store = createStore({
 	state: {
@@ -10,6 +12,7 @@ const store = createStore({
 		cart: [],
 		cartTotal: 0,
 		lineIdCount: 0,
+		shops: [],
 		// Placeholders
 		tmpPhone: '',
 		specials: [
@@ -40,22 +43,6 @@ const store = createStore({
 				subtitle: 'То, что нужно чтобы согрется :)',
 				description: 'В период с 05.12.2020 по 12.01.2021 действующие участники  домашней линии – физическое лицо, получившие предложение об участии в акции на свой электронный адрес, при условии соблюдения всех условий акции, а также новые участники.',
 				backgroundPicture: '',
-			}
-		],
-		shops: [
-			{
-				id: 1,
-				address: 'Ленина 1',
-				timeFrom: '7:15',
-				timeTo: '22:00',
-				phone: '+7 903 951 07 70'
-			},
-			{
-				id: 2,
-				address: 'Усова 96',
-				timeFrom: '7:15',
-				timeTo: '22:00',
-				phone: '+7 3822 90-43-43'
 			}
 		],
 		activeShop: false,
@@ -285,6 +272,9 @@ const store = createStore({
 
 			state.cartTotal = total;
 		},
+		updateShops(state, payload) {
+			state.shops = payload;
+		},
 		selectShop(state, payload) {
 			const shopId = payload.shopId;
 
@@ -326,6 +316,76 @@ const store = createStore({
 		},
 		writeTmpPhone(state, payload) {
 			state.tmpPhone = payload.phone;
+		}
+	},
+	actions: {
+		// eslint-disable-next-line no-unused-vars
+		async login({ commit }, params) {
+			const loading = await loadingCtrl.loading();
+			const { data } = await operations.login(params);
+			
+			loading.dismiss();
+
+			if(data.status !== 'error') {
+				return data;
+			}
+
+			return false;
+		},
+		// eslint-disable-next-line no-unused-vars
+		async requestConfirmationCode({ commit }, params) {
+			const loading = await loadingCtrl.loading();
+			const { data } = await operations.requestConfirmationCode(params);
+
+			loading.dismiss();
+
+			if(data.status !== 'error') {
+				return data;
+			}
+
+			return false;
+		},
+		// eslint-disable-next-line no-unused-vars
+		async sendConfirmationCode({ commit }, params) {
+			const loading = await loadingCtrl.loading();
+			const { data } = await operations.sendConfirmationCode(params);
+
+			loading.dismiss();
+
+			if(data.status !== 'error') {
+				return data;
+			}
+
+			return false;
+		},
+		async getCategories({ commit }) {
+			const loading = await loadingCtrl.loading();
+			const { data } = await operations.getCategories();
+
+			commit('updateSections', data.categories);
+			commit('setActiveSection', data.defaultCategory.id);
+			loading.dismiss();
+		},
+		async getProducts({ commit }, params) {
+			const loading = await loadingCtrl.loading();
+			const { data } = await operations.getProducts(params);
+
+			commit('updateProducts', data.products);
+			loading.dismiss();
+		},
+		async getProduct({ commit }, params) {
+			const loading = await loadingCtrl.loading();
+			const { data } = await operations.getProduct(params);
+
+			commit('setProduct', data.product);
+			loading.dismiss();
+		},
+		async getStores({ commit }) {
+			const loading = await loadingCtrl.loading();
+			const { data } = await operations.getStores();
+
+			commit('updateShops', data.stores);
+			loading.dismiss();
 		}
 	}
 });

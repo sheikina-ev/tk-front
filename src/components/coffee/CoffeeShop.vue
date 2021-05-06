@@ -2,7 +2,7 @@
 	<div class="coffee-shop-wrap">
 		<div class="name">
 			<ion-icon color="medium" :icon="location"></ion-icon>
-			<span v-if="shop">Меню {{ shop.address }}</span>
+			<span v-if="shop">Меню {{ shop.store_name }}</span>
 			<span v-else>Точка не выбрана</span>
 		</div>
 		<div class="link">

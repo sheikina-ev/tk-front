@@ -13,6 +13,18 @@ ion-chip {
 ion-chip.selected {
 	--background: var(--ion-color-primary);
 }
+/* Round bottom toolbar (WIP) */
+.footer-md::before {
+	background-image: none;
+}
+ion-toolbar.bottom-bar {
+	--opacity: 0;
+}
+ion-tab-bar.bottom-bar {
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+}
+/* END Round bottom toolbar */
 .center-content {
 	position: absolute;
 	left: 0;

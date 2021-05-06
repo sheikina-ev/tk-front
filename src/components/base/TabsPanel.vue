@@ -1,6 +1,6 @@
 <template>
 	<ion-tabs>
-		<ion-tab-bar>
+		<ion-tab-bar class="bottom-bar">
 			<ion-tab-button tab="coffee" router-direction="root" href="/coffee">
 				<ion-icon :icon="homeOutline"></ion-icon>
 			</ion-tab-button>

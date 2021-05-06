@@ -4,7 +4,7 @@
 		<ion-header>
 			<ion-toolbar>
 				<ion-buttons slot="start">
-					<ion-back-button :default-href="pageDefaultBackLink"></ion-back-button>
+					<ion-back-button :default-href="pageDefaultBackLink" text="" :icon="chevronBack"></ion-back-button>
 				</ion-buttons>
 				<ion-title>{{ pageTitle }}</ion-title>
 			</ion-toolbar>
@@ -13,7 +13,7 @@
 			<slot />
 		</ion-content>
 		<ion-footer>
-			<ion-toolbar>
+			<ion-toolbar class="bottom-bar">
 				<tabs-panel></tabs-panel>
 			</ion-toolbar>
 		</ion-footer>
@@ -22,6 +22,7 @@
 
 <script>
 import { IonPage, IonHeader, IonTitle, IonContent, IonToolbar, IonBackButton, IonButtons, IonFooter } from '@ionic/vue';
+import { chevronBack } from 'ionicons/icons';
 
 export default {
 	props: ['pageTitle', "pageDefaultBackLink"],
@@ -34,6 +35,11 @@ export default {
 		IonBackButton,
 		IonButtons,
 		IonFooter
+	},
+	setup() {
+		return {
+			chevronBack
+		}
 	}
 }
 </script>

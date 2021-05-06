@@ -2,7 +2,7 @@
 	<ion-page id="main">
 		<ion-content class="background-image" no-scroll>
 			<div class="auth-wrap center-content">
-				<form @submit="authorize">
+				<form @submit="requestConfirmationCode">
 					<!-- <img class="icon" src="assets/img/auth-icon.svg" alt=""> -->
 					<h1>Привет! &#9996;</h1>
 					<p>Войдите, чтобы заказывать кофе заранее и пользоваться нашими акциями!</p>
@@ -22,10 +22,14 @@
 </template>
 
 <script >
-import { IonPage, IonContent, IonLabel, IonInput, IonButton, modalController, toastController, loadingController, alertController } from '@ionic/vue';
+import { IonPage, IonContent, IonLabel, IonInput, IonButton, modalController, toastController, alertController } from '@ionic/vue';
 import Modal from '../components/misc/Modal.vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
+// import axios from 'axios';
+
+// For testing purposes
+import { Plugins } from '@capacitor/core';
+const { LocalNotifications } = Plugins;
 
 export default {
 	components: {
@@ -90,42 +94,36 @@ export default {
 			});
 			return modal.present();
 		},
-		async authorize(e) {
-			e.preventDefault();
+		async authorize(params) {
+			const response = await this.$store.dispatch('login', {params: params});
 
-			const loading = await loadingController.create({message: 'Пожалуйста подождите'});
-			const formData = new FormData(e.target);
-			var params = {};
+			if(response) {
+				this.throwToast(response.message === 'Sign-up' ? 'Регистрация выполнена успешно' : 'С возвращением!');
 
-			for(var key of formData.keys()) {
-				params[key] = formData.get(key);
+				this.router.replace('/shop');
+			} else {
+				this.throwToast('Ошибка авторизации');
 			}
-
-			loading.present();
-
-			await axios.get('https://coffee.dev.webstripe.ru/public/api/login', {
-				params: params
-			}).then(() => {
-				this.requestConfirmationCode(params.phone);
-				this.showConfirmationPrompt(params.phone);
-			}).catch((err) => {
-				this.throwToast(err);
-			}).then(() => {
-				loading.dismiss();
-			});
 		},
-		async showConfirmationPrompt(phone, hasError = false) {
+		async showConfirmationPrompt(params, hasError = false) {
 			const alert = await alertController.create({
 				cssClass: 'auth-code-prompt',
 				header: 'Подтверждение',
 				subHeader: hasError ? 'Код неверен' : '',
 				message: 'Введите код из SMS',
+				backdropDismiss: false,
 				inputs: [
+					{
+						name: 'name',
+						type: 'text',
+						cssClass: 'hidden',
+						value: params.name
+					},
 					{
 						name: 'phone',
 						type: 'phone',
 						cssClass: 'hidden',
-						value: phone
+						value: params.phone
 					},
 					{
 						name: 'code',
@@ -155,24 +153,48 @@ export default {
 			return alert.present();
 		},
 		async sendConfirmationCode(params) {
-			const loading = await loadingController.create({message: 'Пожалуйста подождите'});
-
-			loading.present();
-			await axios.get('https://coffee.dev.webstripe.ru/public/api/sms/check', {params: params}).then(() => {
-				this.throwToast('Авторизация/регистрация выполнена успешно');
-				this.router.replace('/shop');
-			}).catch(() => {
-				this.showConfirmationPrompt(params.phone, true);
-			});
-
-			loading.dismiss();
+			const response = await this.$store.dispatch('sendConfirmationCode', {params: {phone: params.phone, code: params.code}});
+			if(response) {
+				this.authorize(params);
+			} else {
+				this.showConfirmationPrompt(params, true);
+			}
 		},
-		async requestConfirmationCode(phone) {
-			await axios.get('https://coffee.dev.webstripe.ru/public/api/sms', {params: {phone: phone}}).then((res) => {
-				// Proceed further
-				console.log('Awating code:', res.data.code);
-			}).catch(() => {
-				// Should not happen
+		async requestConfirmationCode(e) {
+			e.preventDefault();
+
+			var params = {};
+			const formData = new FormData(e.target);
+
+			for(var key of formData.keys()) {
+				params[key] = formData.get(key);
+			}
+
+			const response = await this.$store.dispatch('requestConfirmationCode', {params: {phone: params.phone}});
+			if(response) {
+				this.showConfirmationPrompt(params);
+
+				// Temporary thing
+				this.scheduleNotification('Псс...', 'Ваш код подтверждения: '+response.code);
+				console.log('Awating code:', response.code)
+			} else {
+				this.throwToast('Не удалось отправить код подтверждения');
+			}
+		},
+		async scheduleNotification(title, body, secs = 5) {
+			// eslint-disable-next-line no-unused-vars
+			const notif = await LocalNotifications.schedule({
+				notifications: [
+					{
+						title: title,
+						body: body,
+						id: 1,
+						schedule: { at: new Date(Date.now() + 1000 * secs) },
+						attachments: null,
+						actionTypeId: '',
+						extra: null
+					}
+				],
 			});
 		}
 	}

@@ -6,7 +6,6 @@
 </template>
 
 <script>
-
 import { IonApp, IonRouterOutlet, useBackButton, useIonRouter } from '@ionic/vue';
 import { Plugins } from '@capacitor/core';
 import { defineComponent } from 'vue';

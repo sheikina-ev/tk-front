@@ -12,9 +12,8 @@
 </template>
 
 <script>
-import { IonGrid, IonRow, IonCol, loadingController } from '@ionic/vue';
+import { IonGrid, IonRow, IonCol } from '@ionic/vue';
 import CoffeeListItem from './CoffeeListItem.vue';
-import axios from 'axios';
 
 export default {
 	props: ['sectionId'],
@@ -25,21 +24,7 @@ export default {
 		CoffeeListItem
 	},
 	async mounted() {
-		const loading = await loadingController.create({
-			cssClass: 'loading-obj',
-			message: 'Пожалуйста подождите'
-		});
-
-		// this.$store.commit('clearState', 'products');
-		await loading.present();
-
-		await axios.get('https://coffee.dev.webstripe.ru/public/api/catalog/getProducts', {params: {id: this.$props.sectionId}}).then((response) => {
-			this.$store.commit('updateProducts', response.data.products);
-			loading.dismiss();
-		}).catch((err) => {
-			console.log(err);
-			loading.dismiss();
-		});
+		this.$store.dispatch('getProducts', {params: {id: this.$props.sectionId}});
 	},
 	computed: {
 		products() {

@@ -3,7 +3,7 @@
 		<ion-header>
 			<ion-toolbar>
 				<ion-buttons slot="start">
-					<ion-back-button default-href="/coffee"></ion-back-button>
+					<ion-back-button default-href="/coffee" text="" :icon="chevronBack"></ion-back-button>
 				</ion-buttons>
 				<ion-title>{{ coffeeItem ? coffeeItem.product_name : 'Загрузка...' }}</ion-title>
 			</ion-toolbar>
@@ -16,9 +16,9 @@
 </template>
 
 <script>
-import { IonPage, IonHeader, IonTitle, IonContent, IonToolbar, IonBackButton, IonButtons, loadingController } from '@ionic/vue';
+import { IonPage, IonHeader, IonTitle, IonContent, IonToolbar, IonBackButton, IonButtons } from '@ionic/vue';
+import { chevronBack } from 'ionicons/icons';
 import CoffeeOverview from '../components/coffee/CoffeeOverview.vue';
-import axios from 'axios';
 
 export default {
 	components: {
@@ -36,22 +36,15 @@ export default {
 			productId: this.$route.params.id
 		}
 	},
+	setup() {
+		return {
+			chevronBack
+		}
+	},
 	async mounted() {
-		const loading = await loadingController.create({
-			cssClass: 'loading-obj',
-			message: 'Пожалуйста подождите'
-		});
-
 		this.$store.commit('clearState', 'product');
-		await loading.present();
 
-		await axios.get('https://coffee.dev.webstripe.ru/public/api/catalog/getProduct', {params: {id: this.productId}}).then((response) => {
-			this.$store.commit('setProduct', response.data.product);
-			loading.dismiss();
-		}).catch((err) => {
-			console.log(err);
-			loading.dismiss();
-		});
+		this.$store.dispatch('getProduct', {params: {id: this.productId}});
 	},
 	computed: {
 		coffeeItem() {

@@ -18,11 +18,10 @@
 import { IonGrid, IonRow, IonCol, IonTextarea, IonButton, toastController } from '@ionic/vue';
 
 export default {
-	components: {IonGrid, IonRow, IonCol, IonTextarea, IonButton},
+	components: { IonGrid, IonRow, IonCol, IonTextarea, IonButton },
 	methods: {
 		async submitForm(e) {
 			e.preventDefault();
-			// const form = document.getElementById('feedback-form');
 			const textarea = document.getElementById('message');
 
 			if(textarea.value.trim().length > 0) {

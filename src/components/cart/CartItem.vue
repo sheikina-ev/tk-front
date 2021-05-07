@@ -2,17 +2,17 @@
 	<ion-grid>
 		<ion-row>
 			<ion-col size="4">
-				<ion-img src="../assets/img/no-image-contrast.jpg"></ion-img>
+				<ion-img :src="cartItem.image ? cartItem.image : `../assets/img/no-image-contrast.jpg`" class="cart-item-image"></ion-img>
 				<span class="basket-remove" @click="removeCartItem(cartItem.line_id)">Удалить</span>
 			</ion-col>
 			<ion-col size="8">
-				<span class="cart-item-name">{{ cartItem.product_name }}</span>
-				<small>{{ cartItem.weight }} {{ cartItem.weight_unit }}</small>
-				<div v-if="cartItem.cooking_time" class="cart-item-cooking-time-wrap">
+				<span class="cart-item-name">{{ cartItem.name }}</span>
+				<!-- <small>{{ cartItem.weight }} {{ cartItem.weight_unit }}</small> -->
+				<!-- <div v-if="cartItem.cooking_time" class="cart-item-cooking-time-wrap">
 					<ion-icon :icon="alarmOutline"></ion-icon>
 					<small>Время приготовления</small>
 					<span>~{{ cartItem.cooking_time }} мин</span>
-				</div>
+				</div> -->
 				<div class="cart-item-modifiers-wrap" v-if="cartItem.modifiers && cartItem.modifiers.length > 0">
 					<strong>Добавки:</strong>
 					<span v-for="modifier in cartItem.modifiers" :key="modifier.id">{{ modifier.name }}</span>
@@ -31,8 +31,8 @@
 </template>
 
 <script>
-import { IonGrid, IonRow, IonCol, IonImg, IonIcon, IonRippleEffect } from '@ionic/vue';
-import { alarmOutline } from 'ionicons/icons';
+import { IonGrid, IonRow, IonCol, IonImg, /* IonIcon, */ IonRippleEffect } from '@ionic/vue';
+// import { alarmOutline } from 'ionicons/icons';
 
 export default {
 	props: ['cartItem'],
@@ -41,14 +41,14 @@ export default {
 		IonRow,
 		IonCol,
 		IonImg,
-		IonIcon,
+		// IonIcon,
 		IonRippleEffect
 	},
-	setup() {
+	/* setup() {
 		return {
 			alarmOutline
 		}
-	},
+	}, */
 	methods: {
 		removeCartItem(lineId) {
 			this.$store.commit('removeCartItem', {line_id: lineId});

@@ -201,6 +201,13 @@ span.coffee-item-name {
 .coffee-calorific-info-container {
 	padding: 0 20px;
 }
+.coffee-modifiers-container ion-label.option-label {
+	display: flex;
+	justify-content: space-between;
+}
+.coffee-modifiers-container ion-label.option-label span.price {
+	text-align: right;
+}
 .coffee-calorific-info-container > .wrap {
 	display: flex;
 	justify-content: space-between;
@@ -213,6 +220,12 @@ span.coffee-item-name {
 	height: 80px;
 }
 
+ion-img.cart-item-image {
+	aspect-ratio: 1/1; /* Чем чёрт не шутит */
+	object-fit: cover;
+	border-radius: 10px;
+	overflow: hidden;
+}
 .cart-item-cooking-time-wrap {
 	display: flex;
 	align-items: center;

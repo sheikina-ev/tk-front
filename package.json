@@ -18,6 +18,7 @@
     "axios": "^0.21.1",
     "cordova-plugin-network-information": "^2.0.2",
     "core-js": "^3.6.5",
+    "vee-validate": "^4.3.5",
     "vue": "^3.0.0-0",
     "vue-router": "^4.0.0-0",
     "vue-star-rating": "^2.1.0",

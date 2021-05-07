@@ -14,9 +14,9 @@
 							<ion-button class="btn-classic" type="submit" expand="block">Выбрать</ion-button>
 						</form>
 					</ion-col>
-					<ion-col size="12" v-if="activeShop">
+					<!-- <ion-col size="12" v-if="activeShop">
 						<p>Важно: при выборе новой точки Ваша корзина будет очищена</p>
-					</ion-col>
+					</ion-col> -->
 				</ion-row>
 			</ion-grid>
 		</ion-content>
@@ -43,6 +43,9 @@ export default {
 		},
 		activeShop() {
 			return this.$store.getters.activeShop;
+		},
+		isAuthorized() {
+			return this.$store.getters.isAuthorized;
 		}
 	},
 	methods: {

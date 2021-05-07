@@ -1,6 +1,8 @@
 import { createStore } from 'vuex';
 import operations from '@/api/operations';
 import loadingCtrl from '@/api/loading';
+/* import { Plugins } from '@capacitor/core';
+const { Storage } = Plugins; */
 
 const store = createStore({
 	state: {
@@ -247,7 +249,9 @@ const store = createStore({
 			state.product = product;
 		},
 		addToCart(state, payload) {
-			const item_id = payload.item_id;
+			state.cart.push(payload);
+			state.lineIdCount = payload.line_id;
+			/* const item_id = payload.item_id;
 			const line_id = state.lineIdCount + 1;
 			const product = state.product;
 			const item = {
@@ -261,7 +265,7 @@ const store = createStore({
 			};
 
 			state.cart.push(item);
-			state.lineIdCount = line_id;
+			state.lineIdCount = line_id; */
 		},
 		calculateCartTotal(state) {
 			var total = 0;
@@ -279,7 +283,7 @@ const store = createStore({
 			const shopId = payload.shopId;
 
 			state.activeShop = shopId;
-			state.cart = [];
+			// state.cart = [];
 		},
 		// Placeholders
 		changeAmount(state, payload) {
@@ -386,6 +390,59 @@ const store = createStore({
 
 			commit('updateShops', data.stores);
 			loading.dismiss();
+		},
+		// eslint-disable-next-line no-unused-vars
+		addToCart({ commit }, params) {
+			const product = this.getters.product;
+			const cart = this.getters.cart;
+			const line_id = this.state.lineIdCount + 1;
+			let fields = {};
+
+			fields.line_id = line_id;
+			fields.id = product.guid;
+			fields.name = product.product_name;
+			fields.price = parseFloat(params.price);
+			fields.amount = 1;
+			fields.image = product.image;
+
+			if(params.options !== undefined && params.options.length > 0) {
+				fields.modifiers = [];
+				params.options.forEach(optionId => {
+					let group = product.options.find(options => {
+						return options.values.some(value => {
+							return value.id == optionId;
+						})
+					});
+					let option = group.values.find(value => {
+						return value.id == optionId;
+					});
+					let modifier = {
+						id: option.guid,
+						name: option.name,
+						amount: 1,
+						groupId: group.guid,
+						groupName: group.name
+					};
+					
+					fields.modifiers.push(modifier);
+
+					if(option.price > 0) fields.price += parseFloat(option.price);
+				});
+			}
+
+			const item = cart.find(line => {
+				return line.id === fields.id && JSON.stringify(line.modifiers) === JSON.stringify(fields.modifiers);
+			});
+			if(typeof item !== 'undefined') {
+				commit('changeAmount', {
+					line_id: item.line_id,
+					action: 'increase'
+				});
+			} else {
+				commit('addToCart', fields);
+			}
+
+			commit('calculateCartTotal');
 		}
 	}
 });

@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 
 // import store from '../store/index.js';
-import AuthorizationPage from '../pages/AuthorizationPage';
+import SplashPage from '../pages/SplashPage.vue';
+import AuthorizationPage from '../pages/AuthorizationPage.vue';
 import CoffeePage from '../pages/CoffeePage.vue';
 import CartPage from '../pages/CartPage.vue';
 import CheckoutPage from '../pages/CheckoutPage.vue';
@@ -16,7 +17,7 @@ import TestPage from '../pages/TestPage.vue';
 const routes = [
 	{
 		path: '/',
-		redirect: '/auth'
+		component: SplashPage
 	},
 	{
 		path: '/auth',
@@ -69,19 +70,21 @@ const router = createRouter({
 	routes
 })
 
-/* router.beforeEach((to, from, next) => {
-	if(to.matched.some(record => record.meta.requiresAuth)) {
-		if(!store.getters.isAuthorized) {
+router.beforeEach((to, from, next) => {
+	if(to.matched.some(record => record.meta.authGuard)) {
+		/* if(store.getters.isAuthorized) {
 			next({
-				path: '/auth',
-				query: {redirect: to.fullPath}
+				path: '/shop',
+				query: {isAuthorized: true}
 			})
 		} else {
-			next();
-		}
+			next({
+				path: '/auth'
+			});
+		} */
 	} else {
 		next();
 	}
-}); */
+});
 
 export default router

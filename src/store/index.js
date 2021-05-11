@@ -205,6 +205,14 @@ const store = createStore({
 		cart(state) {
 			return state.cart;
 		},
+		cartCount(state) {
+			let count = 0;
+			state.cart.forEach(item => {
+				count += item.amount;
+			});
+
+			return count > 0 ? count : false;
+		},
 		cartTotal(state) {
 			return state.cartTotal;
 		},

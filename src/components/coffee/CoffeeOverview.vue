@@ -31,7 +31,7 @@
 					<div v-else-if="groups.max_amount > 1" class="checkbox-wrap">
 						<h3>{{ groups.name }}</h3>
 						<ion-item lines="none" v-for="option in groups.values" :key="option.id">
-							<ion-checkbox name="options" :value="option.id" slot="start"></ion-checkbox>
+							<ion-checkbox name="options" :value="option.id" slot="start" :checked="(groups.min_amount === 1 || groups.required) && groups.values[0] === option ? `true` : `false`"></ion-checkbox>
 							<ion-label class="option-label"><span>{{ option.name }}</span><span v-if="option.price > 0" class="price">{{ option.price }} руб.</span></ion-label>
 						</ion-item>
 					</div>

@@ -32,7 +32,9 @@
 						<h3>{{ groups.name }}</h3>
 						<ion-item lines="none" v-for="option in groups.values" :key="option.id">
 							<ion-checkbox name="options" :value="option.id" slot="start" :checked="(groups.min_amount === 1 || groups.required) && groups.values[0] === option ? `true` : `false`"></ion-checkbox>
-							<ion-label class="option-label"><span>{{ option.name }}</span><span v-if="option.price > 0" class="price">{{ option.price }} руб.</span></ion-label>
+							<!-- <ion-label class="option-label"><span>{{ option.name }}</span><span v-if="option.price > 0" class="price">{{ option.price }} руб.</span></ion-label> -->
+							<ion-label>{{ option.name }}</ion-label>
+							<ion-note v-if="option.price > 0" slot="end">{{ option.price }} руб.</ion-note>
 						</ion-item>
 					</div>
 				</ion-list>
@@ -72,7 +74,7 @@
 </template>
 
 <script>
-import { IonContent, toastController, IonIcon, IonButton, IonRadioGroup, IonRadio, IonCheckbox, IonLabel, IonList, IonItem } from '@ionic/vue';
+import { IonContent, toastController, IonIcon, IonButton, IonRadioGroup, IonRadio, IonCheckbox, IonLabel, IonNote, IonList, IonItem } from '@ionic/vue';
 import { heartOutline, thumbsDownOutline, alarmOutline, cartOutline } from 'ionicons/icons';
 
 export default {
@@ -85,6 +87,7 @@ export default {
 		IonRadio,
 		IonCheckbox,
 		IonLabel,
+		IonNote,
 		IonList,
 		IonItem
 	},

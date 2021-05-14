@@ -49,7 +49,7 @@ const store = createStore({
 		],
 		activeShop: false,
 		orders: [
-			{
+			/* {
 				id: '4536437',
 				date: '09:12 17.12.2020',
 				items: [
@@ -182,9 +182,10 @@ const store = createStore({
 				total: 880,
 				address: 'Усова 96',
 				status: 'delivered'
-			}
+			} */
 		],
-		isAuthorized: false
+		isAuthorized: false,
+		user: {}
 	},
 	getters: {
 		activeSection(state) {
@@ -233,11 +234,19 @@ const store = createStore({
 				return shop.id === state.activeShop;
 			})
 		},
+		shop: state => shopId => {
+			return state.shops.find(shop => {
+				return shop.guid === shopId;
+			})
+		},
 		orders(state) {
 			return state.orders;
 		},
 		tmpPhone(state) {
 			return state.tmpPhone;
+		},
+		user(state) {
+			return state.user;
 		}
 	},
 	mutations: {
@@ -328,6 +337,12 @@ const store = createStore({
 		},
 		writeTmpPhone(state, payload) {
 			state.tmpPhone = payload.phone;
+		},
+		saveUser(state, payload) {
+			state.user = payload;
+		},
+		dropUser(state) {
+			state.user = {};
 		}
 	},
 	actions: {
@@ -339,6 +354,12 @@ const store = createStore({
 			loading.dismiss();
 
 			if(data.status !== 'error') {
+				commit('saveUser', {
+					name: params.params.name,
+					phone: params.params.phone
+				});
+				commit('authorize');
+
 				return data;
 			}
 
@@ -407,7 +428,8 @@ const store = createStore({
 			let fields = {};
 
 			fields.line_id = line_id;
-			fields.id = product.guid;
+			fields.type = 'Product'; // Tmp
+			fields.productId = product.guid;
 			fields.name = product.product_name;
 			fields.price = parseFloat(params.price);
 			fields.amount = 1;
@@ -416,20 +438,20 @@ const store = createStore({
 			if(params.options !== undefined && params.options.length > 0) {
 				fields.modifiers = [];
 				params.options.forEach(optionId => {
-					let group = product.options.find(options => {
+					const group = product.options.find(options => {
 						return options.values.some(value => {
 							return value.id == optionId;
 						})
 					});
-					let option = group.values.find(value => {
+					const option = group.values.find(value => {
 						return value.id == optionId;
 					});
-					let modifier = {
-						id: option.guid,
+					const modifier = {
+						productId: option.guid,
 						name: option.name,
 						amount: 1,
-						groupId: group.guid,
-						groupName: group.name
+						productGroupId: group.guid,
+						// groupName: group.name
 					};
 					
 					fields.modifiers.push(modifier);
@@ -451,6 +473,37 @@ const store = createStore({
 			}
 
 			commit('calculateCartTotal');
+		},
+		async logout({ commit }) {
+			commit('unauthorize');
+			commit('dropUser');
+		},
+		async sendOrder({ commit }, params) {
+			const loading = await loadingCtrl.loading();
+			const { data } = await operations.sendOrder(params);
+
+			loading.dismiss();
+
+			if(data.status !== 'error') {
+				commit('dropCart');
+				return data;
+			}
+
+			return false;
+		},
+		// eslint-disable-next-line no-unused-vars
+		async checkOrder({ commit }, params) {
+			const loading = await loadingCtrl.loading();
+			const { data } = await operations.checkOrder(params);
+
+			loading.dismiss();
+
+			if(data.status !== 'error') {
+
+				return data;
+			}
+
+			return false;
 		}
 	}
 });

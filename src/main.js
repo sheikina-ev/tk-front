@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 
 import App from './App.vue'
 import BaseLayout from './components/base/BaseLayout.vue';
+import ToplessLayout from './components/base/ToplessLayout.vue';
 import TabsPanel from './components/base/TabsPanel.vue';
 import SideMenu from './components/base/SideMenu.vue';
 import router from './router';
@@ -38,6 +39,7 @@ const app = createApp(App)
   .use(store);
 
 app.component('base-layout', BaseLayout);
+app.component('topless-layout', ToplessLayout);
 app.component('tabs-panel', TabsPanel);
 app.component('side-menu', SideMenu);
   

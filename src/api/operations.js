@@ -21,5 +21,11 @@ export default {
 	},
 	getStores() {
 		return api.get('catalog/getStores');
+	},
+	sendOrder(params) {
+		return api.post('order', params);
+	},
+	checkOrder(params) {
+		return api.get('order/status', params) // guid=qweqwe
 	}
 }

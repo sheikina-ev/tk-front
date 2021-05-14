@@ -54,8 +54,15 @@ ion-tab-bar.bottom-bar {
 .text-center {
 	text-align: center;
 }
+.full-width {
+	width: 100%;
+}
 .hidden {
 	display: none;
+}
+.pseudo-link {
+	color: var(--ion-color-primary);
+	text-decoration: underline;
 }
 
 .coffee-shop-wrap .name {

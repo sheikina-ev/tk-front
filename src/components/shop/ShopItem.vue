@@ -6,7 +6,7 @@
 		</label>
 		<div class="details">
 			<span>{{ shop.time_from }} - {{ shop.time_to }}</span>
-			<a v-if="shop.phone" :href="`tel:`+shop.phone">{{ shop.phone }}</a>
+			<a v-if="shop.store_phone" :href="`tel:`+shop.store_phone">{{ shop.store_phone }}</a>
 		</div>
 	</div>
 </template>

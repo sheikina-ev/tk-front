@@ -6,6 +6,7 @@ import AuthorizationPage from '../pages/AuthorizationPage.vue';
 import CoffeePage from '../pages/CoffeePage.vue';
 import CartPage from '../pages/CartPage.vue';
 import CheckoutPage from '../pages/CheckoutPage.vue';
+import CheckoutResultPage from '../pages/CheckoutResultPage.vue';
 import SpecialsPage from '../pages/SpecialsPage.vue';
 import OrdersPage from '../pages/OrdersPage.vue';
 import ReviewPage from '../pages/ReviewPage.vue';
@@ -42,6 +43,10 @@ const routes = [
 	{
 		path: '/checkout',
 		component: CheckoutPage
+	},
+	{
+		path: '/result',
+		component: CheckoutResultPage
 	},
 	{
 		path: '/specials',

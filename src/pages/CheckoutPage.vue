@@ -8,16 +8,19 @@
 			<ion-item lines="none" class="checkout-page-input">
 				<ion-label position="stacked">Телефон*</ion-label>
 				<ion-input :disabled="isAuthorized && user && Object.keys(user).length !== 0 ? `true` : `false`" @ionInput="format" name="phone" placeholder="79998887766" autocomplete="tel" type="tel" required="true" :value="isAuthorized && user && Object.keys(user).length !== 0 ? user.phone : ``"></ion-input>
+				<input v-if="isAuthorized && user && Object.keys(user).length !== 0" type="hidden" name="phone" :value="user.phone" />
 				<ion-button fill="clear" v-if="isAuthorized" @click="changePhoneNumber">Изменить номер</ion-button>
 				<div class="flex-center full-width">
 					<ion-button v-if="!isAuthorized" color="secondary" @click="requestConfirmationCode">Подтвердить номер</ion-button>
 				</div>
 			</ion-item>
 			<ion-item lines="none" class="checkout-page-select">
-				<ion-label position="stacked">Выбранный адрес*</ion-label>
-				<ion-select name="terminalGroupId" :value="activeShop ? activeShop.guid : ``" interface="popover" required="true">
+				<ion-label position="stacked">Выбранный адрес</ion-label>
+				<ion-input disabled="true" :value="activeShop.store_name"></ion-input>
+				<input type="hidden" name="terminalGroupId" :value="activeShop.guid" />
+				<!-- <ion-select name="terminalGroupId" :value="activeShop ? activeShop.guid : ``" interface="popover" required="true">
 					<ion-select-option v-for="shop in shops" :key="shop.guid" :value="shop.guid">{{ shop.store_name }}</ion-select-option>
-				</ion-select>
+				</ion-select> -->
 			</ion-item>
 			<!-- <ion-item lines="none" class="checkout-page-input">
 				<ion-label class="checkout-page-total" position="stacked"><b>Мои баллы: 1000</b></ion-label>
@@ -29,18 +32,18 @@
 				<b>{{ cartTotal ? cartTotal+' руб.' : '0 руб.' }}</b>
 			</div>
 			<ion-radio-group>
-				<span class="order-payment-label">Способ оплаты</span>
+				<span class="order-payment-label">Оплата онлайн "Сбербанк"</span>
 				<ion-item lines="none">
 					<ion-label class="img-apple"></ion-label>
-					<ion-radio name="payment" value="apple"></ion-radio>
+					<!-- <ion-radio name="payment" value="apple"></ion-radio> -->
 				</ion-item>
 				<ion-item lines="none">
 					<ion-label class="img-visa"></ion-label>
-					<ion-radio name="payment" value="card"></ion-radio>
+					<!-- <ion-radio name="payment" value="card"></ion-radio> -->
 				</ion-item>
 				<ion-item lines="none">
 					<ion-label class="img-google"></ion-label>
-					<ion-radio name="payment" value="google"></ion-radio>
+					<!-- <ion-radio name="payment" value="google"></ion-radio> -->
 				</ion-item>
 			</ion-radio-group>
 			<ion-button expand="block btn-classic checkout-page-btn" type="submit" :disabled="isAuthorized ? `false` : `true`">Оплатить</ion-button>
@@ -49,8 +52,9 @@
 </template>
 
 <script>
-import { IonItem, IonLabel, IonInput, IonSelect, IonSelectOption, IonRadio, IonRadioGroup, IonButton, alertController, toastController } from '@ionic/vue';
+import { IonItem, IonLabel, IonInput, IonRadioGroup, IonButton, alertController, toastController } from '@ionic/vue';
 import { useRouter } from 'vue-router';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 // For testing purposes
 import { Plugins } from '@capacitor/core';
@@ -61,9 +65,6 @@ export default {
 		IonItem,
 		IonLabel,
 		IonInput,
-		IonSelect,
-		IonSelectOption,
-		IonRadio,
 		IonRadioGroup,
 		IonButton
 	},
@@ -74,12 +75,10 @@ export default {
 		};
 	},
 	computed: {
-		shops() {
-			const shops = this.$store.getters.shops;
-			if(shops.length <= 0) this.$store.dispatch('getStores');
-			return shops;
-		},
 		activeShop() {
+			const activeShop = this.$store.getters.activeShop;
+			const shops = this.$store.getters.shops;
+			if(!activeShop || shops.length <= 0) this.$store.dispatch('getStores', {setActiveShop: true});
 			return this.$store.getters.activeShop;
 		},
 		cart() {
@@ -116,29 +115,13 @@ export default {
 
 			return alert.present();
 		},
-		/* async requestConfirmationCode() {
-			const checkoutForm = document.getElementById('checkout-form');
-			const formData = new FormData(checkoutForm);
-			let formFields = {};
-
-			for(var key of formData.keys()) {
-				formFields[key] = formData.get(key).trim();
-			}
-
-			if(formFields['name'].length > 0 && formFields['phone'].length > 0) {
-				console.log('good');
-			} else {
-				if(formFields['name'].length <= 0 && formFields['phone'].length <= 0) this.throwToast('Заполните поля "Имя" и "Телефон"');
-				else if(formFields['name'].length <= 0) this.throwToast('Заполните поле "Имя"');
-				else if(formFields['phone'].length <= 0) this.throwToast('Заполните поле "Телефон"');
-			}
-		}, */
 		async submitOrder(e) {
 			e.preventDefault();
 			let items = JSON.parse(JSON.stringify(this.cart));
 			let orderFields = {};
 			let formFields = {};
 			const formData = new FormData(e.target);
+			const iab = InAppBrowser;
 
 			for(var key of formData.keys()) {
 				formFields[key] = formData.get(key);
@@ -175,24 +158,19 @@ export default {
 				]
 			};
 
-			/* const response = await this.$store.dispatch('sendOrder', {order: orderFields});
+			const response = await this.$store.dispatch('sendOrder', {order: orderFields});
 
 			if(!response) {
 				this.throwToast('Возникла непредвиденная ошибка');
 			} else {
-				const checkResponse = await this.$store.dispatch('checkOrder', {params: {guid: response.order_guid}});
-				if(!checkResponse) {
-					this.throwToast('Возникла непредвиденная ошибка');
-				} else {
-					this.router.replace({path: '/result', query: {orderId: response.order_id ,shopId: formFields.terminalGroupId}});
-				}
-				// this.router.replace({path: '/result', query: {shopId: formFields.terminalGroupId}});
+				// eslint-disable-next-line no-unused-vars
+				const browser = await iab.create(response.data);
+				this.router.replace({path: '/result', query: {shopId: formFields.terminalGroupId}});
+			}
 
-			} */
-
-			this.throwToast('[DEV] Заказ успешно оформлен');
+			/* this.throwToast('[DEV] Заказ успешно оформлен');
 			console.log(JSON.stringify(orderFields));
-			console.log(formFields);
+			console.log(formFields); */
 		},
 		// Phone confirmation
 		async authorize(params) {

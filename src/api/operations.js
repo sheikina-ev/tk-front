@@ -22,8 +22,11 @@ export default {
 	getStores() {
 		return api.get('catalog/getStores');
 	},
+	getOrderHistory(phone) {
+		return api.get('order/history/' + phone);
+	},
 	sendOrder(params) {
-		return api.post('order', params);
+		return api.post('order/get', params);
 	},
 	checkOrder(params) {
 		return api.get('order/status', params) // guid=qweqwe

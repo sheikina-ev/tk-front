@@ -302,6 +302,10 @@ const store = createStore({
 			state.activeShop = shopId;
 			// state.cart = [];
 		},
+		setOrderHistory(state, payload) {
+			console.log(payload);
+			state.orders = payload;
+		},
 		// Placeholders
 		changeAmount(state, payload) {
 			const line_id = payload.line_id;
@@ -407,17 +411,26 @@ const store = createStore({
 			loading.dismiss();
 		},
 		async getProduct({ commit }, params) {
-			const loading = await loadingCtrl.loading();
+			// const loading = await loadingCtrl.loading();
 			const { data } = await operations.getProduct(params);
 
 			commit('setProduct', data.product);
-			loading.dismiss();
+			// loading.dismiss();
 		},
-		async getStores({ commit }) {
+		async getStores({ commit }, params = {}) {
 			const loading = await loadingCtrl.loading();
 			const { data } = await operations.getStores();
 
 			commit('updateShops', data.stores);
+			loading.dismiss();
+
+			if(params.setActiveShop) commit('selectShop', {shopId: data.stores[0].id});
+		},
+		async getOrderHistory({ commit }, phone) {
+			const loading = await loadingCtrl.loading();
+			const { data } = await operations.getOrderHistory(phone);
+
+			commit('setOrderHistory', data.orders_list);
 			loading.dismiss();
 		},
 		// eslint-disable-next-line no-unused-vars

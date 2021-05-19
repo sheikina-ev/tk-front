@@ -22,11 +22,12 @@
 					<ion-select-option v-for="shop in shops" :key="shop.guid" :value="shop.guid">{{ shop.store_name }}</ion-select-option>
 				</ion-select> -->
 			</ion-item>
-			<!-- <ion-item lines="none" class="checkout-page-input">
-				<ion-label class="checkout-page-total" position="stacked"><b>Мои баллы: 1000</b></ion-label>
+			<ion-item lines="none" class="checkout-page-input">
+				<ion-label v-if="bonus" class="checkout-page-total" position="stacked"><b>Мои баллы: {{ bonus }}</b></ion-label>
+				<ion-label v-else class="checkout-page-total" position="stacked"><b>Мои баллы: Необходимо подтвердить номер</b></ion-label>
 				<ion-label position="stacked">Списать баллов</ion-label>
-				<ion-input name="bonus"></ion-input>
-			</ion-item> -->
+				<ion-input name="bonus" type="number" @ionChange="validateBonusField" :disabled="bonus ? false : true"></ion-input>
+			</ion-item>
 			<div class="order-total-wrap">
 				<b>Итого:</b>
 				<b>{{ cartTotal ? cartTotal+' руб.' : '0 руб.' }}</b>
@@ -92,7 +93,18 @@ export default {
 		},
 		isAuthorized() {
 			return this.$store.getters.isAuthorized;
+		},
+		bonus() {
+			let bonus = this.$store.getters.bonus;
+			if(this.isAuthorized && bonus) return bonus;
+			else if(this.isAuthorized && !bonus) {
+				this.$store.dispatch('getBonuses', this.user.phone);
+				return bonus;
+			} else return false;
 		}
+	},
+	unmounted() {
+		this.$store.commit('clearState', 'bonus');
 	},
 	methods: {
 		async changePhoneNumber() {
@@ -153,7 +165,7 @@ export default {
 				},
 				payments: [
 					{
-						sum: this.cartTotal
+						sum: this.cartTotal - formFields.bonus
 					}
 				]
 			};
@@ -163,13 +175,27 @@ export default {
 			if(!response) {
 				this.throwToast('Возникла непредвиденная ошибка');
 			} else {
+				const browser = await iab.create(response.data, '_blank', {location: 'no', zoom: 'no'});
 				// eslint-disable-next-line no-unused-vars
-				const browser = await iab.create(response.data);
+				browser.on('loadstop').subscribe(event => {
+					var loop = window.setInterval(function(){
+						browser.executeScript({
+								code: "window.shouldClose"
+							},
+							function(values){
+								if(values[0]){
+									browser.close();
+									window.clearInterval(loop);
+								}
+							}
+						);
+					},100);
+				})
 				this.router.replace({path: '/result', query: {shopId: formFields.terminalGroupId}});
 			}
 
 			/* this.throwToast('[DEV] Заказ успешно оформлен');
-			console.log(JSON.stringify(orderFields));
+			console.log(orderFields);
 			console.log(formFields); */
 		},
 		// Phone confirmation
@@ -287,6 +313,20 @@ export default {
 			});
 
 			toast.present();
+		},
+		// Bonus validation
+		validateBonusField(e) {
+			const bonus = this.bonus;
+			const sum = (this.cartTotal - 1); // Preventing customer from paying full sum with bonus points
+			if(e.target.value > bonus || e.target.value > sum) {
+				console.log(e.target.value);
+				if(e.target.value > sum) {
+					e.target.value = sum;
+				} else if(e.target.value > bonus) {
+					e.target.value = bonus;
+				}
+				// e.target.value = (e.target.value > sum ? sum : (e.target.value > bonus ? bonus : e.target.value));
+			}
 		},
 		// Phone mask
 		format(e) {

@@ -184,6 +184,7 @@ const store = createStore({
 				status: 'delivered'
 			} */
 		],
+		bonus: '',
 		isAuthorized: false,
 		user: {}
 	},
@@ -220,6 +221,9 @@ const store = createStore({
 		specials(state) {
 			return state.specials;
 		},
+		bonus(state) {
+			return state.bonus;
+		},
 		// Placeholders
 		isAuthorized(state) {
 			return state.isAuthorized;
@@ -251,7 +255,15 @@ const store = createStore({
 	},
 	mutations: {
 		clearState(state, propertyName) {
-			state[propertyName] = [];
+			switch(typeof state[propertyName]) {
+				case 'string':
+				case 'number':
+					state[propertyName] = '';
+					break;
+				case 'object':
+					state[propertyName] = [];
+					break;
+			}
 		},
 		setActiveSection(state, id) {
 			state.activeSection = id;
@@ -303,7 +315,6 @@ const store = createStore({
 			// state.cart = [];
 		},
 		setOrderHistory(state, payload) {
-			console.log(payload);
 			state.orders = payload;
 		},
 		// Placeholders
@@ -347,6 +358,9 @@ const store = createStore({
 		},
 		dropUser(state) {
 			state.user = {};
+		},
+		setBonuses(state, payload) {
+			state.bonus = payload;
 		}
 	},
 	actions: {
@@ -433,6 +447,13 @@ const store = createStore({
 			commit('setOrderHistory', data.orders_list);
 			loading.dismiss();
 		},
+		async getBonuses({ commit }, phone) {
+			const loading = await loadingCtrl.loading();
+			const { data } = await operations.getBonuses({params: {phone: phone}});
+
+			commit('setBonuses', data.balance);
+			loading.dismiss();
+		},
 		// eslint-disable-next-line no-unused-vars
 		addToCart({ commit }, params) {
 			const product = this.getters.product;
@@ -490,6 +511,7 @@ const store = createStore({
 		async logout({ commit }) {
 			commit('unauthorize');
 			commit('dropUser');
+			commit('clearState', 'bonus');
 		},
 		async sendOrder({ commit }, params) {
 			const loading = await loadingCtrl.loading();

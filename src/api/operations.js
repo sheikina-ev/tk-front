@@ -28,6 +28,9 @@ export default {
 	sendOrder(params) {
 		return api.post('order/get', params);
 	},
+	getBonuses(params) {
+		return api.get('customer/getBonuses', params);
+	},
 	checkOrder(params) {
 		return api.get('order/status', params) // guid=qweqwe
 	}

@@ -57,6 +57,9 @@ ion-tab-bar.bottom-bar {
 .full-width {
 	width: 100%;
 }
+.no-padding {
+	padding: 0 !important;
+}
 .hidden {
 	display: none;
 }
@@ -146,6 +149,7 @@ ion-content.background-image {
 	margin-bottom: 20px;
 }
 .coffee-card {
+	position: relative;
 	margin: 0;
 	margin-bottom: 5px;
 	padding-bottom: 129%;
@@ -154,6 +158,9 @@ ion-content.background-image {
 	background-position-y: 50%;
 	width: 100%;
 	border-radius: 10px;
+}
+.coffee-card ion-img {
+	object-fit: cover;
 }
 .coffee-section-wrap {
 	position: relative;
@@ -655,3 +662,18 @@ ion-header ion-toolbar{
 /*#endregion checkout-page*/
 
 
+/* Skeleton styling */
+ion-col.skeleton span.coffee-item-name {width: 90%;}
+ion-col.skeleton p.coffee-item-price {width: 50%;}
+.coffee-card > .skeleton-wrap {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: flex;
+	width: 100%;
+	height: 100%;
+}
+.coffee-card > .skeleton-wrap > ion-skeleton-text {
+	margin: 0;
+}
+/* END Skeleton styling */

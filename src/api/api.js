@@ -15,7 +15,7 @@ instance.interceptors.request.use(request => {
 	return request;
 }, async error => {
 	let toast = await toastController.create({
-		message: error,
+		message: '[REQ] '+error,
 		duration: 3000
 	})
 	toast.present();
@@ -26,7 +26,7 @@ instance.interceptors.response.use(
 	response => { return response; },
 	async error => {
 		let toast = await toastController.create({
-			message: error,
+			message: '[RES] '+error,
 			duration: 3000
 		})
 		toast.present();

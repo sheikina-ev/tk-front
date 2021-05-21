@@ -3,8 +3,9 @@
 		<form @submit="addToCart">
 			<input type="hidden" name="id" :value="coffeeItem.id">
 			<input type="hidden" name="price" :value="coffeeItem.price">
+
 			<div class="coffee-picture-container" :style="coffeeItem.image ? `background-image:url('`+coffeeItem.image+`')` : `background-image:url('../assets/img/no-image-contrast.jpg')`">
-				<div class="coffee-picture-info-wrap">
+				<div v-if="coffeeItem.constructor === Object" class="coffee-picture-info-wrap">
 					<div class="coffee-picture-info-top">
 						<span @click="likeCoffee" class="inline-flex flex-end">0 человек оценили<ion-icon :icon="heartOutline"></ion-icon></span>
 						<span class="inline-flex flex-end">0 человек недовольны<ion-icon :icon="thumbsDownOutline"></ion-icon></span>
@@ -13,11 +14,19 @@
 						<span class="inline-flex flex-start"><ion-icon :icon="alarmOutline"></ion-icon>Время приготовления: ~5 мин</span>
 					</div>
 				</div>
+				<div v-else class="coffee-picture-info-wrap no-padding">
+					<ion-skeleton-text animated></ion-skeleton-text>
+				</div>
 			</div>
-			<div class="coffee-info-container">
+
+			<div v-if="coffeeItem.constructor === Object" class="coffee-info-container">
 				<p v-if="coffeeItem.product_description" class="">{{ coffeeItem.product_description }}</p>
 				<p v-else class=""><i>Описание отсутствует</i></p>
 			</div>
+			<div v-else class="coffee-info-container">
+				<ion-skeleton-text animated></ion-skeleton-text>
+			</div>
+			
 			<div v-if="coffeeItem.options && coffeeItem.options.length > 0" class="coffee-modifiers-container">
 				<ion-list v-for="groups in coffeeItem.options" :key="groups.id">
 					<ion-radio-group @ionChange="setRadioOption" name="options" :allow-empty-selection="groups.min_amount === 1 || groups.required ? `false` : `true`" v-if="groups.max_amount === 1" :value="groups.min_amount === 1 || groups.required ? groups.values[0].id : ``">
@@ -39,6 +48,30 @@
 					</div>
 				</ion-list>
 			</div>
+			<div v-else-if="coffeeItem.constructor !== Object" class="coffee-modifiers-container">
+				<ion-list>
+					<div class="checkbox-wrap">
+						<h3><ion-skeleton-text animated></ion-skeleton-text></h3>
+						<ion-item lines="none">
+							<ion-checkbox slot="start" disabled="true"></ion-checkbox>
+							<ion-label><ion-skeleton-text animated></ion-skeleton-text></ion-label>
+						</ion-item>
+						<ion-item lines="none">
+							<ion-checkbox slot="start" disabled="true"></ion-checkbox>
+							<ion-label><ion-skeleton-text animated></ion-skeleton-text></ion-label>
+						</ion-item>
+						<ion-item lines="none">
+							<ion-checkbox slot="start" disabled="true"></ion-checkbox>
+							<ion-label><ion-skeleton-text animated></ion-skeleton-text></ion-label>
+						</ion-item>
+						<ion-item lines="none">
+							<ion-checkbox slot="start" disabled="true"></ion-checkbox>
+							<ion-label><ion-skeleton-text animated></ion-skeleton-text></ion-label>
+						</ion-item>
+					</div>
+				</ion-list>
+			</div>
+
 			<div v-if="coffeeItem.energyAmount !== 'NaN' && coffeeItem.proteinsAmount !== 'NaN' && coffeeItem.fatAmount !== 'NaN' && coffeeItem.carbohydratesAmount !== 'NaN'" class="coffee-calorific-info-container">
 				<h3>Калорийность "{{ coffeeItem.product_name }}"</h3>
 				<div class="wrap">
@@ -61,7 +94,7 @@
 				</div>
 			</div>
 			<div class="overview-dummy-block"></div>
-			<div class="overview-button-wrap bottom-content h-center-content">
+			<div v-if="coffeeItem && coffeeItem.price > 0" class="overview-button-wrap bottom-content h-center-content">
 				<ion-button expand="block" type="submit">
 					<div class="content">
 						<span><ion-icon :icon="cartOutline"></ion-icon>Заказать</span>
@@ -74,7 +107,7 @@
 </template>
 
 <script>
-import { IonContent, toastController, IonIcon, IonButton, IonRadioGroup, IonRadio, IonCheckbox, IonLabel, IonNote, IonList, IonItem } from '@ionic/vue';
+import { IonContent, toastController, IonIcon, IonButton, IonRadioGroup, IonRadio, IonCheckbox, IonLabel, IonNote, IonList, IonItem, IonSkeletonText } from '@ionic/vue';
 import { heartOutline, thumbsDownOutline, alarmOutline, cartOutline } from 'ionicons/icons';
 
 export default {
@@ -89,7 +122,8 @@ export default {
 		IonLabel,
 		IonNote,
 		IonList,
-		IonItem
+		IonItem,
+		IonSkeletonText
 	},
 	setup() {
 		return {

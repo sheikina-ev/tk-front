@@ -12,6 +12,7 @@ export default {
 	},
 	methods: {
 		selectSection(e) {
+			if(!this.products) return false; // Prevent user from clicking on another section item while the current one is loading
 			const siblings = e.target.parentNode.children;
 			const sectionId = e.target.id;
 
@@ -23,6 +24,11 @@ export default {
 
 				this.$store.commit('setActiveSection', Number(sectionId));
 			}
+		}
+	},
+	computed: {
+		products() {
+			return this.$store.getters.products;
 		}
 	}
 };

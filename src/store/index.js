@@ -48,142 +48,7 @@ const store = createStore({
 			}
 		],
 		activeShop: false,
-		orders: [
-			/* {
-				id: '4536437',
-				date: '09:12 17.12.2020',
-				items: [
-					{
-						lineId: 1,
-						id: 1,
-						name: 'Капучино',
-						weight: 500,
-						options: [
-							{
-								id: 1,
-								name: 'Без сливок',
-							},
-							{
-								id: 2,
-								name: 'Корица',
-							},
-							{
-								id: 3,
-								name: 'Кокосовое молоко',
-							},
-							{
-								id: 4,
-								name: 'Сахар',
-							},
-							{
-								id: 5,
-								name: 'Гренадин сироп'
-							}
-						],
-						price: 100
-					},
-					{
-						lineId: 2,
-						id: 2,
-						name: 'Латте',
-						weight: 380,
-						options: [
-							{
-								id: 1,
-								name: 'Без сливок',
-							},
-							{
-								id: 2,
-								name: 'Корица',
-							},
-							{
-								id: 3,
-								name: 'Кокосовое молоко',
-							},
-							{
-								id: 4,
-								name: 'Сахар',
-							},
-							{
-								id: 5,
-								name: 'Гренадин сироп'
-							}
-						],
-						price: 50
-					}
-				],
-				total: 880,
-				address: 'Усова 96',
-				status: 'ongoing'
-			},
-			{
-				id: '4536436',
-				date: '09:12 16.12.2020',
-				items: [
-					{
-						lineId: 1,
-						id: 1,
-						name: 'Капучино',
-						weight: 500,
-						options: [
-							{
-								id: 1,
-								name: 'Без сливок',
-							},
-							{
-								id: 2,
-								name: 'Корица',
-							},
-							{
-								id: 3,
-								name: 'Кокосовое молоко',
-							},
-							{
-								id: 4,
-								name: 'Сахар',
-							},
-							{
-								id: 5,
-								name: 'Гренадин сироп'
-							}
-						],
-						price: 100
-					},
-					{
-						lineId: 2,
-						id: 2,
-						name: 'Латте',
-						weight: 380,
-						options: [
-							{
-								id: 1,
-								name: 'Без сливок',
-							},
-							{
-								id: 2,
-								name: 'Корица',
-							},
-							{
-								id: 3,
-								name: 'Кокосовое молоко',
-							},
-							{
-								id: 4,
-								name: 'Сахар',
-							},
-							{
-								id: 5,
-								name: 'Гренадин сироп'
-							}
-						],
-						price: 50
-					}
-				],
-				total: 880,
-				address: 'Усова 96',
-				status: 'delivered'
-			} */
-		],
+		orders: [],
 		bonus: '',
 		isAuthorized: false,
 		user: {}
@@ -361,6 +226,10 @@ const store = createStore({
 		},
 		setBonuses(state, payload) {
 			state.bonus = payload;
+		},
+		// Attempting to separate an empty value from loading
+		SET_LOADING_STATE(state, propertyName) {
+			state[propertyName] = false;
 		}
 	},
 	actions: {
@@ -418,14 +287,16 @@ const store = createStore({
 			loading.dismiss();
 		},
 		async getProducts({ commit }, params) {
-			const loading = await loadingCtrl.loading();
+			// const loading = await loadingCtrl.loading();
+			commit('SET_LOADING_STATE', 'products');
 			const { data } = await operations.getProducts(params);
 
 			commit('updateProducts', data.products);
-			loading.dismiss();
+			// loading.dismiss();
 		},
 		async getProduct({ commit }, params) {
 			// const loading = await loadingCtrl.loading();
+			commit('SET_LOADING_STATE', 'product');
 			const { data } = await operations.getProduct(params);
 
 			commit('setProduct', data.product);

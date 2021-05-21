@@ -55,7 +55,7 @@
 <script>
 import { IonItem, IonLabel, IonInput, IonRadioGroup, IonButton, alertController, toastController } from '@ionic/vue';
 import { useRouter } from 'vue-router';
-// import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 // For testing purposes
 import { Plugins } from '@capacitor/core';
@@ -133,15 +133,15 @@ export default {
 			let orderFields = {};
 			let formFields = {};
 			const formData = new FormData(e.target);
-			// const iab = InAppBrowser;
+			const iab = InAppBrowser;
 
 			for(var key of formData.keys()) {
 				formFields[key] = formData.get(key);
 			}
 
 			// Filter item fields
-			let itemsFilter = ['type', 'productId', 'amount', 'modifiers'];
-			let modifiersFilter = ['productId', 'amount', 'productGroupId'];
+			let itemsFilter = ['type', 'productId', 'amount', 'modifiers', 'name', 'price'];
+			let modifiersFilter = ['productId', 'amount', 'productGroupId', 'name'];
 			items.forEach(function(item, index) {
 				this[index] = Object.keys(item).filter(key => itemsFilter.includes(key)).reduce((obj, key) => {
 					obj[key] = item[key];
@@ -170,9 +170,9 @@ export default {
 				]
 			};
 
-			// const response = await this.$store.dispatch('sendOrder', {order: orderFields});
+			const response = await this.$store.dispatch('sendOrder', {order: orderFields});
 
-			/* if(!response) {
+			if(!response) {
 				this.throwToast('Возникла непредвиденная ошибка');
 			} else {
 				const browser = await iab.create(response.data, '_blank', {location: 'no', zoom: 'no'});
@@ -192,11 +192,11 @@ export default {
 					},100);
 				})
 				this.router.replace({path: '/result', query: {shopId: formFields.terminalGroupId}});
-			} */
+			}
 
-			this.throwToast('[DEV] Заказ успешно оформлен');
+			/* this.throwToast('[DEV] Заказ успешно оформлен');
 			console.log(JSON.stringify(orderFields));
-			console.log(formFields);
+			console.log(formFields); */
 		},
 		// Phone confirmation
 		async authorize(params) {

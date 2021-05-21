@@ -2,7 +2,7 @@
 	<ion-page id="main">
 		<!-- <side-menu></side-menu> -->
 		<ion-header>
-			<ion-toolbar>
+			<ion-toolbar class="catalog-header">
 				<ion-buttons slot="start">
 					<ion-back-button :default-href="pageDefaultBackLink" text="" :icon="chevronBack"></ion-back-button>
 				</ion-buttons>

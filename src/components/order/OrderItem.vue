@@ -15,7 +15,6 @@
 			</div>
 
 			<div v-if="order.store && order.store.store_name" class="order-address">{{ order.store.store_name }}</div>
-			<div v-else class="order-address">Адрес магазина</div>
 
 			<!-- <ion-button class="btn-classic" v-if="order.status === 'ongoing'" expand="block">Отследить</ion-button> -->
 			<!-- <ion-button class="btn-classic" v-else-if="order.status === 'delivered'" expand="block">Повторить заказ</ion-button> -->

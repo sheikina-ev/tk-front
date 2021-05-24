@@ -1,15 +1,13 @@
 <template>
 	<div class="order-item-position-wrap">
 		<div class="flex-between">
-			<b v-if="product.product_name">{{ product.product_name }}</b>
-			<b v-else>Товар</b>
-			<span v-if="product.price">{{ product.price }} руб.</span>
-			<span v-else> 999 руб.</span>
+			<b v-if="product.name_product">{{ product.name_product }}</b>
+			<span v-if="product.price_product">{{ product.price_product }} руб.</span>
 		</div>
 
 		<div v-if="product.modifiers" class="flex-column">
 			<b>Добавки:</b>
-			<span v-for="modifier in product.modifiers" :key="modifier.id">{{ modifier.name }}</span>
+			<span v-for="modifier in product.modifiers" :key="modifier.id">{{ modifier.name_options }}</span>
 		</div>
 	</div>
 </template>

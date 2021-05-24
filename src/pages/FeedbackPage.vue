@@ -1,32 +1,24 @@
 <template>
-	<ion-header class="modal-feedback">
-		<ion-title>Сообщить о технисеской проблеме</ion-title>
-		<span @click="dismissModal" class="modal-close"><ion-icon :icon="chevronBackOutline "></ion-icon></span>
-	</ion-header>
-	<ion-grid>
-		<ion-row>
-			<ion-col>
-				<form @submit="submitForm" id="feedback-form">
-					<p>Если вы нашли техническую проблему, сообщите нам подробности и мы примем меры. Спасибо!</p>
-					<ion-textarea id="message" required="true" placeholder="Описание проблемы*"></ion-textarea>
-					<ion-button type="submit" expand="block">Отправить</ion-button>
-				</form>
-			</ion-col>
-		</ion-row>
-	</ion-grid>
+	<base-layout page-title="Сообщить о технической проблеме">
+		<ion-grid>
+			<ion-row>
+				<ion-col>
+					<form @submit="submitForm" id="feedback-form">
+						<p>Если вы нашли техническую проблему, сообщите нам подробности и мы примем меры. Спасибо!</p>
+						<ion-textarea id="message" required="true" placeholder="Описание проблемы*"></ion-textarea>
+						<ion-button type="submit" expand="block">Отправить</ion-button>
+					</form>
+				</ion-col>
+			</ion-row>
+		</ion-grid>
+	</base-layout>
 </template>
 
 <script>
-import { IonGrid, IonRow, IonCol, IonTextarea, IonIcon, IonButton, toastController } from '@ionic/vue';
-import { chevronBackOutline } from 'ionicons/icons';
+import { IonGrid, IonRow, IonCol, IonTextarea, IonButton, toastController } from '@ionic/vue';
 
 export default {
-	components: {IonGrid, IonRow, IonIcon, IonCol, IonTextarea, IonButton},
-	setup() {
-		return {
-			chevronBackOutline 
-		}
-	},
+	components: {IonGrid, IonRow, IonCol, IonTextarea, IonButton},
 	methods: {
 		async submitForm(e) {
 			e.preventDefault();

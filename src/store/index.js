@@ -1,8 +1,8 @@
 import { createStore } from 'vuex';
 import operations from '@/api/operations';
 import loadingCtrl from '@/api/loading';
-/* import { Plugins } from '@capacitor/core';
-const { Storage } = Plugins; */
+import { Plugins } from '@capacitor/core';
+const { Storage } = Plugins;
 
 const store = createStore({
 	state: {
@@ -233,21 +233,53 @@ const store = createStore({
 		}
 	},
 	actions: {
-		// eslint-disable-next-line no-unused-vars
+		async auth({ commit }) {
+			const userData = await Storage.get({key: 'userData'});
+			if(userData.value === null || userData.value === "undefined") return false;
+			
+			let params = JSON.parse(userData.value);
+
+			try {
+				const { data } = await operations.auth({params: params});
+
+				if(data.status === 'OK') {
+					commit('saveUser', params);
+					commit('authorize');
+
+					return data;
+				}
+			} catch(err) {
+				console.log(err);
+			}
+
+			return false;
+		},
 		async login({ commit }, params) {
 			const loading = await loadingCtrl.loading();
-			const { data } = await operations.login(params);
-			
-			loading.dismiss();
+			try {
+				const { data } = await operations.login(params);
+				
+				loading.dismiss();
+	
+				if(data.status !== 'error') {
+					const userData = {
+						name: params.params.name,
+						phone: params.params.phone,
+						api_token: data.token
+					};
 
-			if(data.status !== 'error') {
-				commit('saveUser', {
-					name: params.params.name,
-					phone: params.params.phone
-				});
-				commit('authorize');
-
-				return data;
+					commit('saveUser', userData);
+					await Storage.set({
+						'key': 'userData',
+						'value': JSON.stringify(userData)
+					});
+					commit('authorize');
+	
+					return data;
+				}
+			} catch(err) {
+				console.log(err);
+				loading.dismiss();
 			}
 
 			return false;
@@ -255,12 +287,13 @@ const store = createStore({
 		// eslint-disable-next-line no-unused-vars
 		async requestConfirmationCode({ commit }, params) {
 			const loading = await loadingCtrl.loading();
-			const { data } = await operations.requestConfirmationCode(params);
-
-			loading.dismiss();
-
-			if(data.status !== 'error') {
+			try {
+				const { data } = await operations.requestConfirmationCode(params);
+				loading.dismiss();
 				return data;
+			} catch(err) {
+				console.log(err);
+				loading.dismiss();
 			}
 
 			return false;
@@ -268,48 +301,82 @@ const store = createStore({
 		// eslint-disable-next-line no-unused-vars
 		async sendConfirmationCode({ commit }, params) {
 			const loading = await loadingCtrl.loading();
-			const { data } = await operations.sendConfirmationCode(params);
-
-			loading.dismiss();
-
-			if(data.status !== 'error') {
+			try {
+				const { data } = await operations.sendConfirmationCode(params);
+				loading.dismiss();
 				return data;
+			} catch(err) {
+				console.log(err);
+				loading.dismiss();
 			}
 
 			return false;
 		},
 		async getCategories({ commit }) {
 			const loading = await loadingCtrl.loading();
-			const { data } = await operations.getCategories();
+			try {
+				const { data } = await operations.getCategories();
+	
+				commit('updateSections', data.categories);
+				commit('setActiveSection', data.defaultCategory.id);
+				loading.dismiss();
+				return true;
+			} catch(err) {
+				console.log(err);
+				loading.dismiss();
+			}
 
-			commit('updateSections', data.categories);
-			commit('setActiveSection', data.defaultCategory.id);
-			loading.dismiss();
+			return false;
 		},
 		async getProducts({ commit }, params) {
 			// const loading = await loadingCtrl.loading();
-			commit('SET_LOADING_STATE', 'products');
-			const { data } = await operations.getProducts(params);
-
-			commit('updateProducts', data.products);
-			// loading.dismiss();
+			try {
+				commit('SET_LOADING_STATE', 'products');
+				const { data } = await operations.getProducts(params);
+				// loading.dismiss();
+	
+				commit('updateProducts', data.products);
+				return true;
+			} catch(err) {
+				console.log(err);
+				// loading.dismiss();
+			}
+			return false;
 		},
 		async getProduct({ commit }, params) {
 			// const loading = await loadingCtrl.loading();
 			commit('SET_LOADING_STATE', 'product');
-			const { data } = await operations.getProduct(params);
 
-			commit('setProduct', data.product);
-			// loading.dismiss();
+			try {
+				const { data } = await operations.getProduct(params);
+				// loading.dismiss();
+
+				commit('setProduct', data.product);
+
+				return true
+			} catch(err) {
+				console.log(err);
+				// loading.dismiss();
+			}
+
+			return false;
 		},
 		async getStores({ commit }, params = {}) {
 			const loading = await loadingCtrl.loading();
-			const { data } = await operations.getStores();
+			try {
+				const { data } = await operations.getStores();
+	
+				commit('updateShops', data.stores);
+				loading.dismiss();
+	
+				if(params.setActiveShop) commit('selectShop', {shopId: data.stores[0].id});
+				return true;
+			} catch(err) {
+				console.log(err);
+				loading.dismiss();
+			}
 
-			commit('updateShops', data.stores);
-			loading.dismiss();
-
-			if(params.setActiveShop) commit('selectShop', {shopId: data.stores[0].id});
+			return false;
 		},
 		async getOrderHistory({ commit }, phone) {
 			const loading = await loadingCtrl.loading();

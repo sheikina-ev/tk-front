@@ -7,7 +7,7 @@
 			</ion-item>
 			<ion-item lines="none" class="checkout-page-input">
 				<ion-label position="stacked">Телефон*</ion-label>
-				<ion-input :disabled="isAuthorized && user && Object.keys(user).length !== 0 ? `true` : `false`" @ionInput="format" name="phone" placeholder="79998887766" autocomplete="tel" type="tel" required="true" :value="isAuthorized && user && Object.keys(user).length !== 0 ? user.phone : ``"></ion-input>
+				<ion-input :disabled="isAuthorized && user && Object.keys(user).length !== 0 ? `true` : `false`" @ionChange="format" name="phone" placeholder="79998887766" autocomplete="tel" type="tel" required="true" :value="isAuthorized && user && Object.keys(user).length !== 0 ? user.phone : ``"></ion-input>
 				<input v-if="isAuthorized && user && Object.keys(user).length !== 0" type="hidden" name="phone" :value="user.phone" />
 				<ion-button fill="clear" v-if="isAuthorized" @click="changePhoneNumber">Изменить номер</ion-button>
 				<div class="flex-center full-width">
@@ -96,11 +96,14 @@ export default {
 		},
 		bonus() {
 			let bonus = this.$store.getters.bonus;
+			
 			if(this.isAuthorized && bonus) return bonus;
 			else if(this.isAuthorized && !bonus) {
 				this.$store.dispatch('getBonuses', this.user.phone);
 				return bonus;
-			} else return false;
+			}
+
+			return false;
 		}
 	},
 	unmounted() {

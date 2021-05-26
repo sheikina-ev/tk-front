@@ -159,6 +159,13 @@ ion-content.background-image {
 	margin: 5px 0px 15px !important;
 }
 
+#splash-message {
+	opacity: 0;
+	transition: opacity .5s;
+}
+#splash-message.show {
+	opacity: 1;
+}
 .bottom-link-wrap {
 	margin-bottom: 20px;
 }

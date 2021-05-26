@@ -72,7 +72,13 @@ export default {
 		CoffeeListItem
 	},
 	async mounted() {
-		this.$store.dispatch('getProducts', {params: {id: this.$props.sectionId}});
+		const response = this.$store.dispatch('getProducts', {params: {id: this.$props.sectionId}});
+
+		if(response) {
+			// All good
+		} else {
+			// Not good
+		}
 	},
 	computed: {
 		products() {

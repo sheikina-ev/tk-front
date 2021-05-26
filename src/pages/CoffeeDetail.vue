@@ -43,7 +43,13 @@ export default {
 	async mounted() {
 		this.$store.commit('clearState', 'product');
 
-		this.$store.dispatch('getProduct', {params: {id: this.productId}});
+		const response = this.$store.dispatch('getProduct', {params: {id: this.productId}});
+
+		if(response) {
+			// All good
+		} else {
+			// Not good
+		}
 	},
 	computed: {
 		coffeeItem() {

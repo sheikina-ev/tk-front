@@ -35,7 +35,13 @@ export default {
 		return { router };
 	},
 	async mounted() {
-		this.$store.dispatch('getStores');
+		const response = this.$store.dispatch('getStores');
+		
+		if(response) {
+			// All good
+		} else {
+			this.throwToast('Не удалось получить список доступных точек');
+		}
 	},
 	computed: {
 		shops() {

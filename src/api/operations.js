@@ -1,6 +1,9 @@
 import api from './api.js';
 
 export default {
+	auth(params) {
+		return api.get('auth', params);
+	},
 	login(params) {
 		return api.get('login', params);
 	},

@@ -13,7 +13,7 @@
 					<ion-item router-direction="root" :color="isActive('/auth') ? 'primary' : '' " router-link="/auth">Аккаунт</ion-item>
 				</ion-menu-toggle>
 				<ion-menu-toggle auto-hide="false">
-					<ion-item router-direction="root" :color="isActive('/coffee') ? 'primary' : '' " router-link="/coffee">Разделы и скидки</ion-item>
+					<ion-item router-direction="root" :color="isActive('/coffee') ? 'primary' : '' " router-link="/coffee">Каталог</ion-item>
 				</ion-menu-toggle>
 				<ion-menu-toggle auto-hide="false">
 					<ion-item router-direction="/coffee" :color="isActive('/specials') ? 'primary' : '' " router-link="/specials">Акции</ion-item>

@@ -15,7 +15,7 @@ instance.interceptors.request.use(request => {
 	return request;
 }, async error => {
 	let toast = await toastController.create({
-		message: '[REQ] '+error,
+		message: 'Непредвиденная ошибка',
 		duration: 3000
 	})
 	toast.present();
@@ -26,7 +26,7 @@ instance.interceptors.response.use(
 	response => { return response; },
 	async error => {
 		let toast = await toastController.create({
-			message: '[RES] '+error,
+			message: 'Непредвиденная ошибка',
 			duration: 3000
 		})
 		toast.present();

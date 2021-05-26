@@ -18,7 +18,13 @@ export default {
 		CoffeeList
 	},
 	async mounted() {
-		this.$store.dispatch('getCategories');
+		const response = this.$store.dispatch('getCategories');
+
+		if(response) {
+			// All good
+		} else {
+			// Not good
+		}
 	},
 	computed: {
 		sections() {

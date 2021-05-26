@@ -7,7 +7,7 @@
 					<h1>Привет! &#9996;</h1>
 					<p>Войдите, чтобы заказывать кофе заранее и пользоваться нашими акциями!</p>
 					<ion-label class="auth-input-label" position="stacked">Введите свой номер телефона</ion-label>
-					<ion-input color="dark" class="auth-input" name="phone" placeholder="+ 7 ( ___ ) ___- __- __" autocomplete="tel" type="tel" mask="+7 (000) 000-00-00" required="true"></ion-input>
+					<ion-input color="dark" class="auth-input" name="phone" @ionChange="format" placeholder="+ 7 ( ___ ) ___- __- __" autocomplete="tel" type="tel" required="true"></ion-input>
 					<ion-label class="auth-input-label" position="stacked">Как Вас зовут?</ion-label>
 					<ion-input color="dark" class="auth-input" name="name" autocomplete="name" type="text" required="true"></ion-input>
 					<ion-button class="auth-btn btn-classic" expand="block" type="submit">Войти по номеру телефона</ion-button>
@@ -105,11 +105,11 @@ export default {
 				this.throwToast('Ошибка авторизации');
 			}
 		},
-		async showConfirmationPrompt(params, hasError = false) {
+		async showConfirmationPrompt(params, message = '') {
 			const alert = await alertController.create({
 				cssClass: 'auth-code-prompt',
 				header: 'Подтверждение',
-				subHeader: hasError ? 'Код неверен' : '',
+				subHeader: message,
 				message: 'Введите код из SMS',
 				backdropDismiss: false,
 				inputs: [
@@ -155,9 +155,14 @@ export default {
 		async sendConfirmationCode(params) {
 			const response = await this.$store.dispatch('sendConfirmationCode', {params: {phone: params.phone, code: params.code}});
 			if(response) {
-				this.authorize(params);
+				if(response.status === 'OK') {
+					this.authorize(params);
+				} else {
+					this.showConfirmationPrompt(params, 'Код неверен');
+				}
 			} else {
-				this.showConfirmationPrompt(params, true);
+				this.throwToast('Проверьте подключение к интернету или повторите попытку позже');
+				this.showConfirmationPrompt(params);
 			}
 		},
 		async requestConfirmationCode(e) {
@@ -172,13 +177,17 @@ export default {
 
 			const response = await this.$store.dispatch('requestConfirmationCode', {params: {phone: params.phone}});
 			if(response) {
-				this.showConfirmationPrompt(params);
-
-				// Temporary thing
-				this.scheduleNotification('Псс...', 'Ваш код подтверждения: '+response.code);
-				console.log('Awating code:', response.code)
+				if(response.status === 'OK') {
+					this.showConfirmationPrompt(params);
+	
+					// Temporary thing
+					this.scheduleNotification('Псс...', 'Ваш код подтверждения: '+response.code);
+					console.log('Awating code:', response.code)
+				} else {
+					this.throwToast('Проверьте введённые данные');
+				}
 			} else {
-				this.throwToast('Не удалось отправить код подтверждения');
+				this.throwToast('Проверьте подключение к интернету или повторите попытку позже');
 			}
 		},
 		async scheduleNotification(title, body, secs = 5) {
@@ -196,6 +205,36 @@ export default {
 					}
 				],
 			});
+		},
+		// Phone mask
+		format(e) {
+			const elem = e.target;
+			const val = this.doFormat(elem.value, "***********");
+			elem.value = val;
+		},
+		doFormat(x, pattern) {
+			var strippedValue = x.replace(/[^0-9]/g, "");
+			var chars = strippedValue.split('');
+			var count = 0;
+
+			var formatted = '';
+			for (var i=0; i<pattern.length; i++) {
+				const c = pattern[i];
+				if (chars[count]) {
+					if (/\*/.test(c)) {
+						formatted += chars[count];
+						count++;
+					} else {
+						formatted += c;
+					}
+				}
+			}
+
+			if(formatted.length > 0) {
+				formatted = '7' + formatted.substring(1);
+			}
+			
+			return formatted;
 		}
 	}
 }

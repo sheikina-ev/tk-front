@@ -227,7 +227,7 @@ const store = createStore({
 		setBonuses(state, payload) {
 			state.bonus = payload;
 		},
-		// Attempting to separate an empty value from loading
+		// Attempting to separate an empty value and loading state
 		SET_LOADING_STATE(state, propertyName) {
 			state[propertyName] = false;
 		}
@@ -449,6 +449,7 @@ const store = createStore({
 		async logout({ commit }) {
 			commit('unauthorize');
 			commit('dropUser');
+			await Storage.remove({key: 'userData'});
 			commit('clearState', 'bonus');
 		},
 		async sendOrder({ commit }, params) {

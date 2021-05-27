@@ -1,6 +1,6 @@
 <template>
 	<base-layout page-title="Оформить заказ">
-		<form id="checkout-form" @submit="submitOrder">
+		<form v-if="cart.length > 0" id="checkout-form" @submit="submitOrder">
 			<ion-item lines="none" class="checkout-page-input">
 				<ion-label position="stacked">Имя*</ion-label>
 				<ion-input name="name" autocomplete="name" required="true" :value="user && Object.keys(user).length !== 0 ? user.name : ``"></ion-input>
@@ -26,11 +26,15 @@
 				<ion-label v-if="bonus" class="checkout-page-total" position="stacked"><b>Мои баллы: {{ bonus }}</b></ion-label>
 				<ion-label v-else class="checkout-page-total" position="stacked"><b>Мои баллы: Необходимо подтвердить номер</b></ion-label>
 				<ion-label position="stacked">Списать баллов</ion-label>
-				<ion-input name="bonus" type="number" @ionChange="validateBonusField" :disabled="bonus ? false : true"></ion-input>
+				<ion-input name="bonus" type="number" @ionChange="validateBonusField" :disabled="bonus ? false : true" v-model="bonusPoints"></ion-input>
 			</ion-item>
 			<div class="order-total-wrap">
 				<b>Итого:</b>
 				<b>{{ cartTotal ? cartTotal+' руб.' : '0 руб.' }}</b>
+			</div>
+			<div v-if="bonusPoints > 0" class="order-total-wrap">
+				<b>К оплате:</b>
+				<b>{{ cartTotal - bonusPoints }} руб.</b>
 			</div>
 			<ion-radio-group>
 				<span class="order-payment-label">Оплата онлайн "Сбербанк"</span>
@@ -49,6 +53,9 @@
 			</ion-radio-group>
 			<ion-button expand="block btn-classic checkout-page-btn" type="submit" :disabled="isAuthorized ? `false` : `true`">Оплатить</ion-button>
 		</form>
+		<div class="center-content" v-else>
+			<h2 class="text-center">Корзина пуста</h2>
+		</div>
 	</base-layout>
 </template>
 
@@ -68,6 +75,11 @@ export default {
 		IonInput,
 		IonRadioGroup,
 		IonButton
+	},
+	data() {
+		return {
+			bonusPoints: ''
+		}
 	},
 	setup() {
 		const router = useRouter();
@@ -123,6 +135,7 @@ export default {
 						text: 'OK',
 						handler: () => {
 							this.$store.dispatch('logout');
+							this.bonusPoints = 0;
 						}
 					}
 				]
@@ -130,7 +143,7 @@ export default {
 
 			return alert.present();
 		},
-		async submitOrder(e) {
+		async submitOrder(e, isTest = false) {
 			e.preventDefault();
 			let items = JSON.parse(JSON.stringify(this.cart));
 			let orderFields = {};
@@ -166,12 +179,16 @@ export default {
 				customer: {
 					name: formFields.name
 				},
-				payments: [
-					{
-						sum: this.cartTotal - formFields.bonus
-					}
-				]
+				cash: this.cartTotal - formFields.bonus,
+				bonus: formFields.bonus || 0
 			};
+
+			if(isTest) {
+				this.throwToast('[DEV] Заказ успешно оформлен');
+				console.log(JSON.stringify(orderFields));
+				console.log(formFields);
+				return
+			}
 
 			const response = await this.$store.dispatch('sendOrder', {order: orderFields});
 
@@ -196,10 +213,6 @@ export default {
 				})
 				this.router.replace({path: '/result', query: {shopId: formFields.terminalGroupId}});
 			}
-
-			/* this.throwToast('[DEV] Заказ успешно оформлен');
-			console.log(JSON.stringify(orderFields));
-			console.log(formFields); */
 		},
 		// Phone confirmation
 		async authorize(params) {
@@ -322,7 +335,6 @@ export default {
 			const bonus = this.bonus;
 			const sum = (this.cartTotal - 1); // Preventing customer from paying full sum with bonus points
 			if(e.target.value > bonus || e.target.value > sum) {
-				console.log(e.target.value);
 				if(e.target.value > sum) {
 					e.target.value = sum;
 				} else if(e.target.value > bonus) {

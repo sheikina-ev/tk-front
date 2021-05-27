@@ -109,6 +109,7 @@
 <script>
 import { IonContent, toastController, IonIcon, IonButton, IonRadioGroup, IonRadio, IonCheckbox, IonLabel, IonNote, IonList, IonItem, IonSkeletonText } from '@ionic/vue';
 import { heartOutline, thumbsDownOutline, alarmOutline, cartOutline } from 'ionicons/icons';
+import { useRouter } from 'vue-router';
 
 export default {
 	props: ['coffeeItem'],
@@ -126,7 +127,9 @@ export default {
 		IonSkeletonText
 	},
 	setup() {
+		const router = useRouter();
 		return {
+			router,
 			heartOutline,
 			thumbsDownOutline,
 			alarmOutline,
@@ -175,6 +178,7 @@ export default {
 
 			this.$store.dispatch('addToCart', params);
 			await toast.present();
+			this.router.go(-1); // Might need to check if previous page is equal to '/coffee' (TODO)
 		}
 	}
 }

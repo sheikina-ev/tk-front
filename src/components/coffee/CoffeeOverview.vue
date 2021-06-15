@@ -6,13 +6,13 @@
 
 			<div class="coffee-picture-container" :style="coffeeItem.image ? `background-image:url('`+coffeeItem.image+`')` : `background-image:url('../assets/img/no-image-contrast.jpg')`">
 				<div v-if="coffeeItem.constructor === Object" class="coffee-picture-info-wrap">
-					<div class="coffee-picture-info-top">
+					<!-- <div class="coffee-picture-info-top">
 						<span @click="likeCoffee" class="inline-flex flex-end">0 человек оценили<ion-icon :icon="heartOutline"></ion-icon></span>
 						<span class="inline-flex flex-end">0 человек недовольны<ion-icon :icon="thumbsDownOutline"></ion-icon></span>
 					</div>
 					<div class="coffee-picture-info-bottom">
 						<span class="inline-flex flex-start"><ion-icon :icon="alarmOutline"></ion-icon>Время приготовления: ~5 мин</span>
-					</div>
+					</div> -->
 				</div>
 				<div v-else class="coffee-picture-info-wrap no-padding">
 					<ion-skeleton-text animated></ion-skeleton-text>

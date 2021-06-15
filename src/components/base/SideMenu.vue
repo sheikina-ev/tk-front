@@ -10,7 +10,8 @@
 		<ion-content class="hide-menu main-menu">
 			<ion-list>
 				<ion-menu-toggle auto-hide="false">
-					<ion-item router-direction="root" :color="isActive('/auth') ? 'primary' : '' " router-link="/auth">Аккаунт</ion-item>
+					<ion-item v-if="isAuthorized" router-direction="/coffee" :color="isActive('/auth') ? 'primary' : '' " router-link="/auth">Аккаунт +{{ user.phone }}</ion-item>
+					<ion-item v-else router-direction="/coffee" :color="isActive('/auth') ? 'primary' : '' " router-link="/auth">Аккаунт</ion-item>
 				</ion-menu-toggle>
 				<ion-menu-toggle auto-hide="false">
 					<ion-item router-direction="root" :color="isActive('/coffee') ? 'primary' : '' " router-link="/coffee">Каталог</ion-item>
@@ -43,6 +44,14 @@ export default {
 	methods: {
 		isActive(path) {
 			return this.$route.path == path;
+		}
+	},
+	computed: {
+		user() {
+			return this.$store.getters.user;
+		},
+		isAuthorized() {
+			return this.$store.getters.isAuthorized;
 		}
 	}
 };

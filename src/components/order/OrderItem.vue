@@ -1,9 +1,9 @@
 <template>
-	<ion-card class="order-tracking">
+	<ion-card v-if="order !== false" class="order-tracking">
 		<ion-card-header>
 			<div class="flex-between">
 				<span>№{{ order.id }}</span>
-				<span>{{ order.created_at }}</span>
+				<span>{{ order.time }} {{ order.date }}</span>
 			</div>
 		</ion-card-header>
 		<ion-card-content>
@@ -20,10 +20,29 @@
 			<!-- <ion-button class="btn-classic" v-else-if="order.status === 'delivered'" expand="block">Повторить заказ</ion-button> -->
 		</ion-card-content>
 	</ion-card>
+	<ion-card v-else class="order-tracking">
+		<ion-card-header>
+			<div class="flex-between">
+				<ion-skeleton-text animated style="width:3em"></ion-skeleton-text>
+				<ion-skeleton-text animated style="width:9em"></ion-skeleton-text>
+			</div>
+		</ion-card-header>
+		<ion-card-content>
+			<order-item-position :product="false"></order-item-position>
+
+			<div class="flex-between order-total">
+				<ion-skeleton-text animated style="width:9em"></ion-skeleton-text>
+			</div>
+
+			<div class="order-address">
+				<ion-skeleton-text animated style="width:12em"></ion-skeleton-text>
+			</div>
+		</ion-card-content>
+	</ion-card>
 </template>
 
 <script>
-import { IonCard, IonCardHeader, IonCardContent } from '@ionic/vue';
+import { IonCard, IonCardHeader, IonCardContent, IonSkeletonText } from '@ionic/vue';
 import OrderItemPosition from './OrderItemPosition.vue';
 
 export default {
@@ -32,6 +51,7 @@ export default {
 		IonCard,
 		IonCardHeader,
 		IonCardContent,
+		IonSkeletonText,
 		OrderItemPosition
 	}
 }

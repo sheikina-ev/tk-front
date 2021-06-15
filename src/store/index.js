@@ -318,7 +318,10 @@ const store = createStore({
 				const { data } = await operations.getCategories();
 	
 				commit('updateSections', data.categories);
-				commit('setActiveSection', data.defaultCategory.id);
+				if(this.getters.activeSection <= 0) {
+					commit('setActiveSection', data.defaultCategory.id);
+				}
+				
 				loading.dismiss();
 				return true;
 			} catch(err) {
@@ -362,28 +365,42 @@ const store = createStore({
 			return false;
 		},
 		async getStores({ commit }, params = {}) {
-			const loading = await loadingCtrl.loading();
+			// const loading = await loadingCtrl.loading();
+			
 			try {
+				commit('SET_LOADING_STATE', 'shops');
 				const { data } = await operations.getStores();
 	
 				commit('updateShops', data.stores);
-				loading.dismiss();
+				// loading.dismiss();
 	
 				if(params.setActiveShop) commit('selectShop', {shopId: data.stores[0].id});
 				return true;
 			} catch(err) {
 				console.log(err);
-				loading.dismiss();
+				// loading.dismiss();
 			}
 
 			return false;
 		},
 		async getOrderHistory({ commit }, phone) {
-			const loading = await loadingCtrl.loading();
-			const { data } = await operations.getOrderHistory(phone);
+			// const loading = await loadingCtrl.loading();
+			
+			try {
+				commit('SET_LOADING_STATE', 'orders');
+				const { data } = await operations.getOrderHistory(phone);
 
-			commit('setOrderHistory', data.orders_list);
-			loading.dismiss();
+				commit('setOrderHistory', data.orders_list);
+				// loading.dismiss();
+
+				return true;
+			} catch(err) {
+				console.log(err);
+				// loading.dismiss();
+			}
+
+			return false;
+
 		},
 		async getBonuses({ commit }, phone) {
 			const loading = await loadingCtrl.loading();

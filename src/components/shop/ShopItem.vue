@@ -1,5 +1,5 @@
 <template>
-	<ion-item class="shop-item">
+	<ion-item v-if="shop !== false" class="shop-item">
 		<label class="label">
 			<ion-radio :id="`check-address-${shop.id}`" class="shop-radio" :value="shop.id"></ion-radio>
 			<label :for="`check-address-${shop.id}`" class="check-address" ></label>
@@ -10,13 +10,24 @@
 			<a v-if="shop.store_phone" :href="`tel:`+shop.store_phone">{{ shop.store_phone }}</a>
 		</div>
 	</ion-item>
+	<ion-item v-else class="shop-item">
+		<label class="label">
+			<ion-radio class="shop-radio" disabled="true"></ion-radio>
+			<label class="check-address"></label>
+			<ion-label style="width:5em"><ion-skeleton-text animated style="width:100%"></ion-skeleton-text></ion-label>
+		</label>
+		<div class="details">
+			<ion-skeleton-text animated style="width:6em"></ion-skeleton-text>
+			<ion-skeleton-text animated style="width:6em"></ion-skeleton-text>
+		</div>
+	</ion-item>
 </template>
 
 <script>
-import { IonRadio, IonLabel, IonItem } from '@ionic/vue';
+import { IonRadio, IonLabel, IonItem, IonSkeletonText } from '@ionic/vue';
 
 export default {
 	props: ['shop'],
-	components: { IonRadio, IonLabel, IonItem }
+	components: { IonRadio, IonLabel, IonItem, IonSkeletonText }
 }
 </script>

@@ -60,9 +60,6 @@ const routes = [
 	{
 		path: '/result',
 		component: CheckoutResultPage,
-		meta: {
-			isMenuDisabled: true
-		}
 	},
 	{
 		path: '/specials',

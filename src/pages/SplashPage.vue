@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { IonPage, IonContent, IonText } from '@ionic/vue';
+import { IonPage, IonContent, IonText, menuController } from '@ionic/vue';
 import { useRouter } from 'vue-router';
 const timeout = 2000;
 
@@ -30,6 +30,8 @@ export default {
 		};
 	},
 	async mounted() {
+		await menuController.enable(false, 'main');
+
 		// Temporary thing
 		setTimeout(async () => {
 			const data = await this.$store.dispatch('auth');

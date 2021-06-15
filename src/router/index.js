@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
+import { menuController } from '@ionic/vue';
 
 // import store from '../store/index.js';
 import SplashPage from '../pages/SplashPage.vue';
@@ -18,15 +19,24 @@ import TestPage from '../pages/TestPage.vue';
 const routes = [
 	{
 		path: '/',
-		component: SplashPage
+		component: SplashPage,
+		meta: {
+			isMenuDisabled: true
+		}
 	},
 	{
 		path: '/auth',
-		component: AuthorizationPage
+		component: AuthorizationPage,
+		meta: {
+			isMenuDisabled: true
+		}
 	},
 	{
 		path: '/shop',
-		component: ShopPickPage
+		component: ShopPickPage,
+		meta: {
+			isMenuDisabled: true
+		}
 	},
 	{
 		path: '/coffee',
@@ -34,7 +44,10 @@ const routes = [
 	},
 	{
 		path: '/coffee/:id',
-		component: () => import('../pages/CoffeeDetail.vue')
+		component: () => import('../pages/CoffeeDetail.vue'),
+		meta: {
+			isMenuDisabled: true
+		}
 	},
 	{
 		path: '/cart',
@@ -46,7 +59,10 @@ const routes = [
 	},
 	{
 		path: '/result',
-		component: CheckoutResultPage
+		component: CheckoutResultPage,
+		meta: {
+			isMenuDisabled: true
+		}
 	},
 	{
 		path: '/specials',
@@ -73,10 +89,16 @@ const routes = [
 const router = createRouter({
 	history: createWebHistory(process.env.BASE_URL),
 	routes
-})
+});
+const mainMenuId = 'main';
 
-router.beforeEach((to, from, next) => {
-	if(to.matched.some(record => record.meta.authGuard)) {
+router.beforeEach(async (to, from, next) => {
+	if(to.matched.some(record => record.meta.isMenuDisabled)) {
+		if(menuController.isEnabled(mainMenuId)) {
+			await menuController.close(mainMenuId);
+			await menuController.enable(false, mainMenuId);
+		}
+		next();
 		/* if(store.getters.isAuthorized) {
 			next({
 				path: '/shop',
@@ -88,6 +110,7 @@ router.beforeEach((to, from, next) => {
 			});
 		} */
 	} else {
+		await menuController.enable(true, 'main');
 		next();
 	}
 });

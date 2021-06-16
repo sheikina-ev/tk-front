@@ -958,19 +958,22 @@ ion-col.skeleton p.coffee-item-price {width: 50%;}
 /* #endregion tracking */
 
 /* #region special-content */
-	.special-content ion-card-content{
-		background: url(../assets/img/special-items.png) top center no-repeat;
-		min-height: 147px;
-	}
 	.special-content{
-		box-shadow: none !important;
+		border-radius: 10px;
+		padding: 1em;
+		min-height: 147px;
+		background-size: cover;
+		background-position: center;
 	}
 	.special-content ion-card-title{
 		color: white;
-		font-size: 30px;
+		font-size: 2.2em;
 		font-weight: 500;
 		line-height: 35px;
 		letter-spacing: -0.6000000238418579px;		
+	}
+	.special-content ion-card-title ion-skeleton-text {
+		height: 1em;
 	}
 	.special-content ion-card-subtitle{
 		font-size: 19px;

@@ -18,7 +18,7 @@ const store = createStore({
 		// Placeholders
 		tmpPhone: '',
 		specials: [
-			{
+			/* {
 				id: 1,
 				title: 'Каша в подарок',
 				subtitle: 'К любому напитку до 10:00',
@@ -45,7 +45,7 @@ const store = createStore({
 				subtitle: 'То, что нужно чтобы согрется :)',
 				description: 'В период с 05.12.2020 по 12.01.2021 действующие участники  домашней линии – физическое лицо, получившие предложение об участии в акции на свой электронный адрес, при условии соблюдения всех условий акции, а также новые участники.',
 				backgroundPicture: '',
-			}
+			} */
 		],
 		activeShop: false,
 		orders: [],
@@ -217,6 +217,9 @@ const store = createStore({
 		},
 		writeTmpPhone(state, payload) {
 			state.tmpPhone = payload.phone;
+		},
+		updateSpecials(state, payload) {
+			state.specials = payload;
 		},
 		saveUser(state, payload) {
 			state.user = payload;
@@ -413,6 +416,24 @@ const store = createStore({
 			}
 
 			loading.dismiss();
+		},
+		async getSpecials({ commit }) {
+			// const loading = await loadingCtrl.loading();
+			
+			try {
+				commit('SET_LOADING_STATE', 'specials');
+				const { data } = await operations.getSpecials();
+	
+				commit('updateSpecials', data.special_list);
+				// loading.dismiss();
+
+				return true;
+			} catch(err) {
+				console.log(err);
+				// loading.dismiss();
+			}
+
+			return false;
 		},
 		// eslint-disable-next-line no-unused-vars
 		addToCart({ commit }, params) {

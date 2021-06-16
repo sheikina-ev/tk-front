@@ -34,7 +34,7 @@ export default {
 	getBonuses(params) {
 		return api.get('customer/getBonuses', params);
 	},
-	checkOrder(params) {
-		return api.get('order/status', params) // guid=qweqwe
+	getSpecials() {
+		return api.get('special/get');
 	}
 }

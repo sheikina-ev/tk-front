@@ -406,7 +406,12 @@ const store = createStore({
 			const loading = await loadingCtrl.loading();
 			const { data } = await operations.getBonuses({params: {phone: phone}});
 
-			commit('setBonuses', data.balance);
+			if(data.walletBalances !== undefined) {
+				commit('setBonuses', data.walletBalances[0].balance);
+			} else {
+				commit('setBonuses', 0);
+			}
+
 			loading.dismiss();
 		},
 		// eslint-disable-next-line no-unused-vars

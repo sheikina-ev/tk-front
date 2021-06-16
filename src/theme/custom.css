@@ -938,6 +938,13 @@ ion-col.skeleton p.coffee-item-price {width: 50%;}
 		letter-spacing: -0.6000000238418579px;
 		margin-bottom: 12px;
 	}
+	.order-tracking .order-bonus{
+		color: #61473B;
+		font-size: 16px;
+		font-weight: 600;
+		letter-spacing: -0.6000000238418579px;
+		margin-bottom: 8px;
+	}
 	.order-tracking .order-address{
 		margin-bottom: 11px;
 		font-size: 16px;

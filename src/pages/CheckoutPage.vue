@@ -23,7 +23,7 @@
 				</ion-select> -->
 			</ion-item>
 			<ion-item lines="none" class="checkout-page-input">
-				<ion-label v-if="bonus" class="checkout-page-total" position="stacked"><b>Мои баллы: {{ bonus }}</b></ion-label>
+				<ion-label v-if="bonus !== '' && bonus !== false" class="checkout-page-total" position="stacked"><b>Мои баллы: {{ bonus }}</b></ion-label>
 				<ion-label v-else class="checkout-page-total" position="stacked"><b>Мои баллы: Необходимо подтвердить номер</b></ion-label>
 				<ion-label position="stacked">Списать баллов</ion-label>
 				<ion-input name="bonus" type="number" @ionChange="validateBonusField" :disabled="bonus ? false : true" v-model="bonusPoints"></ion-input>
@@ -109,8 +109,8 @@ export default {
 		bonus() {
 			let bonus = this.$store.getters.bonus;
 			
-			if(this.isAuthorized && bonus) return bonus;
-			else if(this.isAuthorized && !bonus) {
+			if(this.isAuthorized && bonus !== '') return bonus;
+			else if(this.isAuthorized && !bonus !== '') {
 				this.$store.dispatch('getBonuses', this.user.phone);
 				return bonus;
 			}
@@ -119,7 +119,7 @@ export default {
 		}
 	},
 	unmounted() {
-		this.$store.commit('clearState', 'bonus');
+		// this.$store.commit('clearState', 'bonus');
 	},
 	methods: {
 		async changePhoneNumber() {
@@ -179,39 +179,48 @@ export default {
 				customer: {
 					name: formFields.name
 				},
-				cash: this.cartTotal - formFields.bonus,
-				bonus: formFields.bonus || 0
+				cash: this.cartTotal - (formFields.bonus !== undefined ? parseFloat(formFields.bonus) : 0),
+				bonus: parseFloat(formFields.bonus) || 0
 			};
 
 			if(isTest) {
+				console.log(this.cartTotal);
+				console.log(formFields.bonus);
 				this.throwToast('[DEV] Заказ успешно оформлен');
 				console.log(JSON.stringify(orderFields));
 				console.log(formFields);
 				return
 			}
 
+			console.log(orderFields);
 			const response = await this.$store.dispatch('sendOrder', {order: orderFields});
+			var orderId = 0;
 
 			if(!response) {
 				this.throwToast('Возникла непредвиденная ошибка');
 			} else {
-				const browser = await iab.create(response.data, '_blank', {location: 'no', zoom: 'no'});
-				// eslint-disable-next-line no-unused-vars
-				browser.on('loadstop').subscribe(event => {
-					var loop = window.setInterval(function(){
-						browser.executeScript({
-								code: "window.shouldClose"
-							},
-							function(values){
-								if(values[0]){
-									browser.close();
-									window.clearInterval(loop);
+				orderId = response.data.orderId;
+				try {
+					const browser = await iab.create(response.data.link, '_blank', {location: 'no', zoom: 'no'});
+					// eslint-disable-next-line no-unused-vars
+					browser.on('loadstop').subscribe(event => {
+						var loop = window.setInterval(function(){
+							browser.executeScript({
+									code: "window.shouldClose"
+								},
+								function(values){
+									if(values[0]){
+										browser.close();
+										window.clearInterval(loop);
+									}
 								}
-							}
-						);
-					},100);
-				})
-				this.router.replace({path: '/result', query: {shopId: formFields.terminalGroupId}});
+							);
+						},100);
+					})
+				} catch(e) {
+					console.error('Yup, that\'s a browser all right');
+				}
+				this.router.replace({path: '/result', query: {shopId: formFields.terminalGroupId, orderId: orderId}});
 			}
 		},
 		// Phone confirmation

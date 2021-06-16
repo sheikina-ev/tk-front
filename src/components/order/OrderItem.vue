@@ -14,6 +14,11 @@
 				<span>{{ order.total_sum }} руб.</span>
 			</div>
 
+			<div v-if="order.bonuses > 0" class="flex-between order-bonus">
+				<span>Оплачено бонусами</span>
+				<span>{{ order.bonuses }} руб.</span>
+			</div>
+
 			<div v-if="order.store && order.store.store_name" class="order-address">{{ order.store.store_name }}</div>
 
 			<!-- <ion-button class="btn-classic" v-if="order.status === 'ongoing'" expand="block">Отследить</ion-button> -->

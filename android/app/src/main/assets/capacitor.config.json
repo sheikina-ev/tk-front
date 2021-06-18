@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "coffee",
+  "appId": "ru.sibkod.coffee",
+  "appName": "Территория кофе",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "dist",

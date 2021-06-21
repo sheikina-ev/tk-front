@@ -27,10 +27,6 @@ import Modal from '../components/misc/Modal.vue';
 import { useRouter } from 'vue-router';
 // import axios from 'axios';
 
-// For testing purposes
-import { Plugins } from '@capacitor/core';
-const { LocalNotifications } = Plugins;
-
 export default {
 	components: {
 		IonPage,
@@ -179,32 +175,12 @@ export default {
 			if(response) {
 				if(response.status === 'OK') {
 					this.showConfirmationPrompt(params);
-	
-					// Temporary thing
-					this.scheduleNotification('Псс...', 'Ваш код подтверждения: '+response.code);
-					console.log('Awating code:', response.code)
 				} else {
 					this.throwToast('Проверьте введённые данные');
 				}
 			} else {
 				this.throwToast('Проверьте подключение к интернету или повторите попытку позже');
 			}
-		},
-		async scheduleNotification(title, body, secs = 5) {
-			// eslint-disable-next-line no-unused-vars
-			const notif = await LocalNotifications.schedule({
-				notifications: [
-					{
-						title: title,
-						body: body,
-						id: 1,
-						schedule: { at: new Date(Date.now() + 1000 * secs) },
-						attachments: null,
-						actionTypeId: '',
-						extra: null
-					}
-				],
-			});
 		},
 		// Phone mask
 		format(e) {

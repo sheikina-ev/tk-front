@@ -1,7 +1,7 @@
 <template>
 	<ion-page>
 		<ion-header>
-			<ion-toolbar class="default-toolbar">
+			<ion-toolbar>
 				<ion-buttons slot="start">
 					<ion-back-button default-href="/coffee" text="" :icon="chevronBack"></ion-back-button>
 				</ion-buttons>

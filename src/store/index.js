@@ -97,7 +97,7 @@ const store = createStore({
 			return state.shops;
 		},
 		activeShop(state) {
-			if(!state.activeShop) return false;
+			if(!state.activeShop || state.shops === false) return false;
 			
 			return state.shops.find(shop => {
 				return shop.id === state.activeShop;

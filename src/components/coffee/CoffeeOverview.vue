@@ -44,6 +44,7 @@
 							<!-- <ion-label class="option-label"><span>{{ option.name }}</span><span v-if="option.price > 0" class="price">{{ option.price }} руб.</span></ion-label> -->
 							<ion-label>{{ option.name }}</ion-label>
 							<ion-note v-if="option.price > 0" slot="end">{{ option.price }} руб.</ion-note>
+							<ion-note v-else slot="end">&nbsp;</ion-note>
 						</ion-item>
 					</div>
 				</ion-list>

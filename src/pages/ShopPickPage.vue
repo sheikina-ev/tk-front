@@ -4,11 +4,11 @@
 			<ion-grid>
 				<ion-row class="choose-place">
 					<ion-col size="12">
-						<h2 class="text-center">Выберите месте, где вы<br> хотите создать заказ</h2>
+						<h2 class="text-center">Выберите место, где вы<br> хотите создать заказ</h2>
 					</ion-col>
 					<ion-col v-if="shops.length > 0" size="12">
 						<form @submit="selectShop">
-							<ion-radio-group v-if="shops.length > 0" :value="activeShop ? activeShop : shops[0].id">
+							<ion-radio-group v-if="shops.length > 0" :value="activeShop ? activeShop.id : shops[0].id">
 								<shop-item v-for="shop in shops" :key="shop.id" :shop="shop"></shop-item>
 							</ion-radio-group>
 							<ion-button class="btn-classic" type="submit" expand="block">Выбрать</ion-button>

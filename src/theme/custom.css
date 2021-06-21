@@ -659,7 +659,8 @@ ion-header ion-toolbar{
 	font-size: 18px;
 	font-weight: 600;
 	margin-right: 10px;
-
+	margin-bottom: 0.8em;
+	
 	font-size: 18px;
 	font-weight: 600;
 	line-height: 22px;
@@ -719,6 +720,13 @@ ion-header ion-toolbar{
 }
 .cart-button-wrap .content span>*:first-child{
 	margin-right: 10px;
+}
+
+.basket-remove {
+	display: inline-block;
+	width: 100%;
+	margin-top: 0.5em;
+	text-align: center;
 }
 /* #endregion basket */
 

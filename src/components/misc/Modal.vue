@@ -1,7 +1,8 @@
 <template>
-	<ion-header class="modal-header">
+	<ion-header>
+		<ion-toolbar>
 			<ion-title>{{ title }}</ion-title>
-			<span @click="dismissModal" class="modal-close"><ion-icon :icon="closeOutline"></ion-icon></span>
+		</ion-toolbar>
 	</ion-header>
 	<ion-content class="ion-padding modal-content">
 		{{ content }}
@@ -10,22 +11,16 @@
 </template>
 
 <script>
-import { IonContent, IonHeader, IonTitle, IonIcon, IonButton, modalController } from '@ionic/vue';
-import { closeOutline } from 'ionicons/icons';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonButton, modalController } from '@ionic/vue';
 
 export default {
 	props: ['title', 'content'],
 	components: {
 		IonContent,
 		IonHeader,
-		IonIcon,
+		IonToolbar,
 		IonTitle,
 		IonButton
-	},
-	setup() {
-		return {
-			closeOutline
-		}
 	},
 	methods: {
 		async dismissModal() {

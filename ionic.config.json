@@ -1,5 +1,6 @@
 {
-  "name": "coffee",
+  "name": "[DEV] Территория кофе",
+  "id": "coffeeterra",
   "integrations": {
     "capacitor": {}
   },

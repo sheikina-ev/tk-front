@@ -497,14 +497,21 @@ const store = createStore({
 		},
 		async sendOrder({ commit }, params) {
 			const loading = await loadingCtrl.loading();
-			const { data } = await operations.sendOrder(params);
+			try {
+				const { data } = await operations.sendOrder(params);
 
-			loading.dismiss();
+				loading.dismiss();
 
-			if(data.status !== 'error') {
-				commit('dropCart');
-				return data;
+				if(data.status !== 'error') {
+					commit('dropCart');
+					return data;
+				}
+			} catch(err) {
+				console.log(err);
+				
+				loading.dismiss();
 			}
+
 
 			return false;
 		},

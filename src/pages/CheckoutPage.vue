@@ -64,10 +64,6 @@ import { IonItem, IonLabel, IonInput, IonRadioGroup, IonButton, alertController,
 import { useRouter } from 'vue-router';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 
-// For testing purposes
-import { Plugins } from '@capacitor/core';
-const { LocalNotifications } = Plugins;
-
 export default {
 	components: {
 		IonItem,
@@ -301,10 +297,6 @@ export default {
 				const response = await this.$store.dispatch('requestConfirmationCode', {params: {phone: formFields.phone}});
 				if(response) {
 					this.showConfirmationPrompt(formFields);
-
-					// Temporary thing
-					this.scheduleNotification('Псс...', 'Ваш код подтверждения: '+response.code);
-					console.log('Awating code:', response.code)
 				} else {
 					this.throwToast('Не удалось отправить код подтверждения');
 				}
@@ -313,22 +305,6 @@ export default {
 				else if(formFields['name'].length <= 0) this.throwToast('Заполните поле "Имя"');
 				else if(formFields['phone'].length <= 0) this.throwToast('Заполните поле "Телефон"');
 			}
-		},
-		async scheduleNotification(title, body, secs = 5) {
-			// eslint-disable-next-line no-unused-vars
-			const notif = await LocalNotifications.schedule({
-				notifications: [
-					{
-						title: title,
-						body: body,
-						id: 1,
-						schedule: { at: new Date(Date.now() + 1000 * secs) },
-						attachments: null,
-						actionTypeId: '',
-						extra: null
-					}
-				],
-			});
 		},
 		async throwToast(message) {
 			const toast = await toastController.create({

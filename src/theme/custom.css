@@ -612,6 +612,9 @@ ion-header ion-toolbar{
 	line-height: 17px;
 	letter-spacing: -0.6000000238418579px;
 }
+form.coffee-form {
+	position: relative;
+}
 .overview-button-wrap {
 	position: fixed;
 	margin-bottom: 20px;

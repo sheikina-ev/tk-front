@@ -2,7 +2,7 @@ import { toastController } from '@ionic/vue';
 import axios from 'axios';
 
 let instance = axios.create({
-	baseURL: 'https://coffee.dev.webstripe.ru/public/api/',
+	baseURL: 'https://вход.территориякофе.рф/api/',
 	timeout: 10000,
 	validateStatus: function(status) {
 		return status < 500;

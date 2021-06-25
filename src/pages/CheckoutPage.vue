@@ -194,6 +194,8 @@ export default {
 
 			if(!response) {
 				this.throwToast('Возникла непредвиденная ошибка');
+			} else if(response.status == "Error") {
+				this.throwToast('Ошибка: ' + response.message);
 			} else {
 				orderId = response.data.orderId;
 				try {

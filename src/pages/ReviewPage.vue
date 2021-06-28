@@ -52,6 +52,8 @@ export default {
 				const toast = await toastController.create({
 					message: 'Ваш отзыв отправлен. Спасибо!',
 					position: 'bottom',
+					cssClass: 'toast-mb',
+					mode: 'md',
 					duration: 3000
 				});
 				await toast.present();

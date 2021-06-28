@@ -199,7 +199,7 @@ export default {
 			} else {
 				orderId = response.data.orderId;
 				try {
-					const browser = await iab.create(response.data.link, '_blank', {location: 'no', zoom: 'no'});
+					const browser = await iab.create(response.data.link, '_blank', {location: 'no', zoom: 'no', hidenavigationbuttons: 'yes'});
 					// eslint-disable-next-line no-unused-vars
 					browser.on('loadstop').subscribe(event => {
 						var loop = window.setInterval(function(){
@@ -312,6 +312,8 @@ export default {
 			const toast = await toastController.create({
 				message: message,
 				position: 'bottom',
+				cssClass: 'toast-mb',
+				mode: 'md',
 				duration: 3000
 			});
 

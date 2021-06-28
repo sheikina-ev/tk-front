@@ -16,6 +16,8 @@ instance.interceptors.request.use(request => {
 }, async error => {
 	let toast = await toastController.create({
 		message: 'Непредвиденная ошибка',
+		cssClass: 'toast-mb',
+		mode: 'md',
 		duration: 3000
 	})
 	toast.present();
@@ -27,6 +29,8 @@ instance.interceptors.response.use(
 	async error => {
 		let toast = await toastController.create({
 			message: 'Непредвиденная ошибка',
+			cssClass: 'toast-mb',
+			mode: 'md',
 			duration: 3000
 		})
 		toast.present();

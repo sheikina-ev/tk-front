@@ -1,5 +1,5 @@
 <template>
-	<ion-menu side="end" type="overlay" menu-id="main" content-id="main">
+	<ion-menu swipeGesture="false" side="end" type="overlay" menu-id="main" content-id="main">
 		<ion-header class="d-none">
 			<ion-toolbar>
 				<ion-title>

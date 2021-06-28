@@ -9,15 +9,28 @@
 			</ion-toolbar>
 		</ion-header>
 		<ion-content>
-			<coffee-overview :coffeeItem="coffeeItem"></coffee-overview>
+			<form id="coffee-detail">
+				<coffee-overview :coffeeItem="coffeeItem"></coffee-overview>
+			</form>
 		</ion-content>
+		<ion-footer>
+			<ion-toolbar class="overview-footer" color="light">
+				<ion-button :disabled="coffeeItem && coffeeItem.price > 0 ? `false` : `true`" @click="addToCart" expand="block" type="submit" color="primary">
+					<div class="content">
+						<span><ion-icon :icon="cartOutline"></ion-icon>Заказать</span>
+						<span>{{ coffeeItem.price }} руб.</span>
+					</div>
+				</ion-button>
+			</ion-toolbar>
+		</ion-footer>
 	</ion-page>
 </template>
 
 <script>
-import { IonPage, IonHeader, IonTitle, IonContent, IonToolbar, IonBackButton, IonButtons } from '@ionic/vue';
-import { chevronBack } from 'ionicons/icons';
+import { IonPage, IonHeader, IonTitle, IonContent, IonToolbar, IonBackButton, IonButtons, IonFooter, IonIcon, IonButton, toastController } from '@ionic/vue';
+import { chevronBack, cartOutline } from 'ionicons/icons';
 import CoffeeOverview from '../components/coffee/CoffeeOverview.vue';
+import { useRouter } from 'vue-router';
 
 export default {
 	components: {
@@ -28,7 +41,10 @@ export default {
 		IonToolbar,
 		IonButtons,
 		IonBackButton,
-		CoffeeOverview
+		CoffeeOverview,
+		IonFooter,
+		IonIcon,
+		IonButton
 	},
 	data() {
 		return {
@@ -36,8 +52,11 @@ export default {
 		}
 	},
 	setup() {
+		const router = useRouter();
 		return {
-			chevronBack
+			router,
+			chevronBack,
+			cartOutline
 		}
 	},
 	async mounted() {
@@ -62,6 +81,40 @@ export default {
 			}
 
 			return product;
+		}
+	},
+	methods: {
+		async addToCart() {
+			// e.preventDefault();
+
+			var params = {};
+			const form = document.getElementById('coffee-detail');
+			const formData = new FormData(form);
+			const toast = await toastController.create({
+				message: 'Товар добавлен в корзину',
+				position: 'bottom',
+				cssClass: 'toast-mb',
+				mode: 'md',
+				duration: 3000
+			});
+
+			for(var pair of formData.entries()) {
+				if(pair[1] == '') continue;
+				
+				if(params[pair[0]] !== undefined) {
+					if(typeof params[pair[0]] === 'string') {
+						params[pair[0]] = [params[pair[0]], pair[1]];
+					} else {
+						params[pair[0]].push(pair[1]);
+					}
+				} else {
+					params[pair[0]] = [pair[1]];
+				}
+			}
+
+			this.$store.dispatch('addToCart', params);
+			await toast.present();
+			this.router.go(-1); // Might need to check if previous page is equal to '/coffee' (TODO)
 		}
 	}
 }

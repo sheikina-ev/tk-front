@@ -1,8 +1,5 @@
 <template>
 	<base-layout page-title="Мои заказы">
-		<ion-refresher slot="fixed" @ionRefresh="doRefresh">
-			<ion-refresher-content></ion-refresher-content>
-		</ion-refresher>
 		<div v-if="!isAuthorized && Object.keys(user).length <= 0" class="center-content">
 			<p class="text-center">
 				Для просмотра истории заказов необходимо авторизоваться
@@ -22,20 +19,13 @@
 </template>
 
 <script>
-import { IonRefresher, IonRefresherContent } from '@ionic/vue';
-import { chevronDownCircleOutline } from 'ionicons/icons';
 import OrderItem from '../components/order/OrderItem.vue';
 
 export default {
 	components: {
-		IonRefresher,
-		IonRefresherContent,
 		OrderItem
 	},
-	setup() {
-		return { chevronDownCircleOutline };
-	},
-	async mounted() {
+	async created() {
 		if(this.isAuthorized) this.$store.dispatch('getOrderHistory', this.user.phone);
 	},
 	computed: {
@@ -47,13 +37,6 @@ export default {
 		},
 		orders() {
 			return this.$store.getters.orders;
-		}
-	},
-	methods: {
-		async doRefresh(e) {
-			if(this.isAuthorized) await this.$store.dispatch('getOrderHistory', this.user.phone);
-
-			e.target.complete();
 		}
 	}
 }

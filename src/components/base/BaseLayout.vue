@@ -13,7 +13,7 @@
 			<slot />
 		</ion-content>
 		<ion-footer>
-			<ion-toolbar class="bottom-bar">
+			<ion-toolbar>
 				<tabs-panel></tabs-panel>
 			</ion-toolbar>
 		</ion-footer>

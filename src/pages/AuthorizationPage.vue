@@ -50,6 +50,8 @@ export default {
 		async throwToast(message) {
 			const toast = await toastController.create({
 				message: message,
+				cssClass: 'toast-mb',
+				mode: 'md',
 				duration: 3000,
 			});
 

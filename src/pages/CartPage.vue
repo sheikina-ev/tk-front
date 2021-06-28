@@ -5,7 +5,7 @@
 				<cart-item :cartItem="cartItem"></cart-item>
 			</ion-item>
 		</ion-list>
-		<div v-if="cart.length > 0" class="bottom-content cart-button-wrap">
+		<div v-if="cart.length > 0" class="bottom-content cart-button-wrap" slot="fixed">
 			<ion-button expand="block" router-link="/checkout">
 				<div class="content">
 					<span><ion-icon class="d-none" :icon="cartOutline"></ion-icon>Заказать</span>
@@ -13,13 +13,11 @@
 				</div>
 			</ion-button>
 		</div>
-		<!-- <ion-fab v-if="cart.length > 0" vertical="bottom" horizontal="center" slot=fixed>
-			<ion-fab-button>{{ cartTotal }} руб.</ion-fab-button>
-		</ion-fab> -->
 
 		<div class="center-content" v-else>
 			<h2 class="text-center">Корзина пуста</h2>
 		</div>
+		<div class="dummy-block"></div>
 	</base-layout>
 </template>
 

@@ -476,7 +476,7 @@ const store = createStore({
 			}
 
 			const item = cart.find(line => {
-				return line.id === fields.id && JSON.stringify(line.modifiers) === JSON.stringify(fields.modifiers);
+				return line.productId === fields.productId && JSON.stringify(line.modifiers) === JSON.stringify(fields.modifiers);
 			});
 			if(typeof item !== 'undefined') {
 				commit('changeAmount', {

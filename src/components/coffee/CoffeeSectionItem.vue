@@ -1,5 +1,5 @@
 <template>
-	<ion-chip :id="coffeeSectionItem.id" v-on:click="selectSection">{{ coffeeSectionItem.name }}</ion-chip>
+	<ion-chip :class="activeSection == coffeeSectionItem.id ? `selected` : ``" :id="coffeeSectionItem.id" v-on:click="selectSection">{{ coffeeSectionItem.name }}</ion-chip>
 </template>
 
 <script>
@@ -13,14 +13,14 @@ export default {
 	methods: {
 		selectSection(e) {
 			if(!this.products) return false; // Prevent user from clicking on another section item while the current one is loading
-			const siblings = e.target.parentNode.children;
+			// const siblings = e.target.parentNode.children;
 			const sectionId = e.target.id;
 
 			if(!e.target.classList.contains('selected')) {
-				siblings.forEach(item => {
+				/* siblings.forEach(item => {
 					item.classList.remove('selected');
 				});
-				e.target.classList.add('selected');
+				e.target.classList.add('selected'); */
 
 				this.$store.commit('setActiveSection', Number(sectionId));
 			}
@@ -29,6 +29,9 @@ export default {
 	computed: {
 		products() {
 			return this.$store.getters.products;
+		},
+		activeSection() {
+			return this.$store.getters.activeSection;
 		}
 	}
 };

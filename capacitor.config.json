@@ -1,6 +1,6 @@
 {
   "appId": "ru.sibkod.coffee",
-  "appName": "Территория кофе",
+  "appName": "Территория Кофе",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "dist",

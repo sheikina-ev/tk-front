@@ -7,9 +7,9 @@
 					<h1>Привет! &#9996;</h1>
 					<p>Войдите, чтобы заказывать кофе заранее и пользоваться нашими акциями!</p>
 					<ion-label class="auth-input-label" position="stacked">Введите свой номер телефона</ion-label>
-					<ion-input color="dark" class="auth-input" name="phone" @ionChange="format" placeholder="+ 7 ( ___ ) ___- __- __" autocomplete="tel" type="tel" required="true"></ion-input>
+					<ion-input color="dark" class="auth-input" name="phone" @ionChange="format" placeholder="+ 7 ( ___ ) ___- __- __" autocomplete="tel" type="tel" required="true" :value="user.phone"></ion-input>
 					<ion-label class="auth-input-label" position="stacked">Как Вас зовут?</ion-label>
-					<ion-input color="dark" class="auth-input" name="name" autocomplete="name" type="text" required="true"></ion-input>
+					<ion-input color="dark" class="auth-input" name="name" autocomplete="name" type="text" required="true" :value="user.name"></ion-input>
 					<ion-button class="auth-btn btn-classic" expand="block" type="submit">Войти по номеру телефона</ion-button>
 					<ion-button class="auth-subbtn" expand="block" fill="clear" router-direction="root" router-link="/shop">Пропустить и указать позже</ion-button>
 				</form>
@@ -42,8 +42,8 @@ export default {
 		};
 	},
 	computed: {
-		tmpPhone() {
-			return this.$store.getters.tmpPhone;
+		user() {
+			return this.$store.getters.user;
 		}
 	},
 	methods: {

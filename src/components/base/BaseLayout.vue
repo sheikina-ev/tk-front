@@ -4,7 +4,6 @@
 		<ion-header>
 			<ion-toolbar class="catalog-header">
 				<ion-buttons slot="start">
-					<ion-back-button :default-href="pageDefaultBackLink" text="" :icon="chevronBack"></ion-back-button>
 				</ion-buttons>
 				<ion-title>{{ pageTitle }}</ion-title>
 			</ion-toolbar>
@@ -21,18 +20,17 @@
 </template>
 
 <script>
-import { IonPage, IonHeader, IonTitle, IonContent, IonToolbar, IonBackButton, IonButtons, IonFooter } from '@ionic/vue';
+import { IonPage, IonHeader, IonTitle, IonContent, IonToolbar, IonButtons, IonFooter } from '@ionic/vue';
 import { chevronBack } from 'ionicons/icons';
 
 export default {
-	props: ['pageTitle', "pageDefaultBackLink"],
+	props: ['pageTitle'],
 	components: {
 		IonPage,
 		IonHeader,
 		IonTitle,
 		IonContent,
 		IonToolbar,
-		IonBackButton,
 		IonButtons,
 		IonFooter
 	},

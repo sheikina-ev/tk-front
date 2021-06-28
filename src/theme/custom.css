@@ -690,8 +690,6 @@ html:not(.ios) .overview-footer ion-button {
 	margin-top: 20px;
 }
 .cart-button-wrap {
-	position: fixed;
-	bottom: 3em;
 	margin: 0 40px 20px;
 }
 .cart-button-wrap .content {

@@ -25,7 +25,7 @@ export default {
 	components: {
 		OrderItem
 	},
-	async created() {
+	ionViewWillEnter() {
 		if(this.isAuthorized) this.$store.dispatch('getOrderHistory', this.user.phone);
 	},
 	computed: {

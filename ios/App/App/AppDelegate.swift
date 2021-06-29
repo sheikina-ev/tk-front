@@ -52,23 +52,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     let statusBarRect = UIApplication.shared.statusBarFrame
     guard let touchPoint = event?.allTouches?.first?.location(in: self.window) else { return }
-
-    if statusBarRect.contains(touchPoint) {
-      NotificationCenter.default.post(CAPBridge.statusBarTappedNotification)
-    }
   }
-
-  #if USE_PUSH
-
-  func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-    NotificationCenter.default.post(name: Notification.Name(CAPNotifications.DidRegisterForRemoteNotificationsWithDeviceToken.name()), object: deviceToken)
-  }
-
-  func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-    NotificationCenter.default.post(name: Notification.Name(CAPNotifications.DidFailToRegisterForRemoteNotificationsWithError.name()), object: error)
-  }
-
-#endif
-
 }
 

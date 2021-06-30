@@ -1,0 +1,20 @@
+{
+  "appId": "ru.sibkod.coffeetomsk",
+  "appName": "Территория Кофе",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "androidScaleType": "CENTER_CROP",
+      "launchShowDuration": 3000
+    }
+  },
+  "cordova": {},
+  "linuxAndroidStudioPath": "/home/victor/android-studio/bin/studio.sh",
+  "server": {
+    "allowNavigation": [
+      "coffee.dev.webstripe.ru"
+    ]
+  }
+}

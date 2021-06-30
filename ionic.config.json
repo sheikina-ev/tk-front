@@ -1,5 +1,8 @@
 {
-  "name": "coffee",
-  "integrations": {},
+  "name": "Территория Кофе",
+  "id": "ru.sibkod.coffee",
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "vue"
 }

@@ -52,6 +52,9 @@
 				</ion-item>
 			</ion-radio-group>
 			<ion-button expand="block btn-classic checkout-page-btn" type="submit" :disabled="isAuthorized ? `false` : `true`">Оплатить</ion-button>
+			<div class="bottom-link-wrap flex-center">
+				<a @click="openModal('policy')" class="primary dark">Обработка персональных данных</a>
+			</div>
 		</form>
 		<div class="center-content" v-else>
 			<h2 class="text-center">Корзина пуста</h2>
@@ -60,7 +63,8 @@
 </template>
 
 <script>
-import { IonItem, IonLabel, IonInput, IonRadioGroup, IonButton, alertController, toastController } from '@ionic/vue';
+import { IonItem, IonLabel, IonInput, IonRadioGroup, IonButton, alertController, toastController, modalController } from '@ionic/vue';
+import Modal from '../components/misc/Modal.vue';
 import { useRouter } from 'vue-router';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 
@@ -331,6 +335,17 @@ export default {
 				}
 				// e.target.value = (e.target.value > sum ? sum : (e.target.value > bonus ? bonus : e.target.value));
 			}
+		},
+		async openModal(code) {
+			const modal = await modalController.create({
+				component: Modal,
+				cssClass: 'my-custom-modal',
+				componentProps: {
+					code: code
+				}
+			});
+			
+			return modal.present();
 		},
 		// Phone mask
 		format(e) {

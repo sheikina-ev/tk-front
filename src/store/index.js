@@ -15,38 +15,8 @@ const store = createStore({
 		cartTotal: 0,
 		lineIdCount: 0,
 		shops: [],
-		// Placeholders
 		tmpPhone: '',
-		specials: [
-			/* {
-				id: 1,
-				title: 'Каша в подарок',
-				subtitle: 'К любому напитку до 10:00',
-				description: 'В период с 05.12.2020 по 12.01.2021 действующие участники  домашней линии – физическое лицо, получившие предложение об участии в акции на свой электронный адрес, при условии соблюдения всех условий акции, а также новые участники.',
-				backgroundPicture: '',
-			},
-			{
-				id: 2,
-				title: '50% на холодную витрину',
-				subtitle: 'С 20:00 до закрытия',
-				description: 'В период с 05.12.2020 по 12.01.2021 действующие участники  домашней линии – физическое лицо, получившие предложение об участии в акции на свой электронный адрес, при условии соблюдения всех условий акции, а также новые участники.',
-				backgroundPicture: '',
-			}
-			,{
-				id: 3,
-				title: 'Вкусный подарок детям',
-				subtitle: 'С 7:30 до 23:00',
-				description: 'В период с 05.12.2020 по 12.01.2021 действующие участники  домашней линии – физическое лицо, получившие предложение об участии в акции на свой электронный адрес, при условии соблюдения всех условий акции, а также новые участники.',
-				backgroundPicture: '',
-			}
-			,{
-				id: 4,
-				title: 'Осеннее предложение',
-				subtitle: 'То, что нужно чтобы согрется :)',
-				description: 'В период с 05.12.2020 по 12.01.2021 действующие участники  домашней линии – физическое лицо, получившие предложение об участии в акции на свой электронный адрес, при условии соблюдения всех условий акции, а также новые участники.',
-				backgroundPicture: '',
-			} */
-		],
+		specials: [],
 		activeShop: false,
 		orders: [],
 		bonus: '',
@@ -527,6 +497,25 @@ const store = createStore({
 				return data;
 			}
 
+			return false;
+		},
+		// eslint-disable-next-line no-unused-vars
+		async getInfoPage({ commit }, params) {
+			const loading = await loadingCtrl.loading();
+			try {
+				const { data } = await operations.getInfoPage(params);
+
+				loading.dismiss();
+
+				if(data.status !== 'error') {
+					return data;
+				}
+			} catch(err) {
+				console.log(err);
+
+				loading.dismiss();
+			}
+		
 			return false;
 		}
 	}

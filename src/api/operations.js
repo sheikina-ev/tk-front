@@ -36,5 +36,8 @@ export default {
 	},
 	getSpecials() {
 		return api.get('special/get');
+	},
+	getInfoPage(code) {
+		return api.get('info/page/' + code);
 	}
 }

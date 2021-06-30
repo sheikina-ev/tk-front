@@ -2,7 +2,7 @@
 	<ion-header>
 		<ion-toolbar>
 			<ion-buttons slot="start">
-				<ion-back-button defaultHref="/" @click="dismissModal" :icon="chevronBack"></ion-back-button>
+				<ion-back-button defaultHref="/" text="" @click="dismissModal" :icon="chevronBack"></ion-back-button>
 			</ion-buttons>
 			<ion-title id="modal-title"></ion-title>
 		</ion-toolbar>

@@ -14,7 +14,7 @@
 					<ion-button class="auth-subbtn" expand="block" fill="clear" router-direction="root" router-link="/shop">Пропустить и указать позже</ion-button>
 				</form>
 				<div class="bottom-link-wrap flex-center">
-					<a @click="openModal('policy')" class="primary">Обработка персональных данных</a>
+					<a @click="openModal('policy')" class="primary">Условия использования и персональные данные</a>
 				</div>
 			</div>
 		</ion-content>

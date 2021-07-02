@@ -53,7 +53,7 @@
 			</ion-radio-group>
 			<ion-button expand="block btn-classic checkout-page-btn" type="submit" :disabled="isAuthorized ? `false` : `true`">Оплатить</ion-button>
 			<div class="bottom-link-wrap flex-center">
-				<a @click="openModal('policy')" class="primary dark">Обработка персональных данных</a>
+				<a @click="openModal('policy')" class="primary dark">Условия использования и персональные данные</a>
 			</div>
 		</form>
 		<div class="center-content" v-else>

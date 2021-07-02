@@ -179,7 +179,7 @@ export default {
 				customer: {
 					name: formFields.name
 				},
-				cash: this.cartTotal - (formFields.bonus !== undefined ? parseFloat(formFields.bonus) : 0),
+				cash: this.cartTotal - (parseFloat(formFields.bonus) || 0),
 				bonus: parseFloat(formFields.bonus) || 0
 			};
 
@@ -325,7 +325,7 @@ export default {
 		},
 		// Bonus validation
 		validateBonusField(e) {
-			const bonus = this.bonus;
+			const bonus = parseInt(this.bonus);
 			const sum = (this.cartTotal - 1); // Preventing customer from paying full sum with bonus points
 			if(e.target.value > bonus || e.target.value > sum) {
 				if(e.target.value > sum) {

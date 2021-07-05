@@ -204,20 +204,13 @@ export default {
 				orderId = response.data.orderId;
 				try {
 					const browser = await iab.create(response.data.link, '_blank', {location: 'no', zoom: 'no', hidenavigationbuttons: 'yes'});
-					// eslint-disable-next-line no-unused-vars
 					browser.on('loadstop').subscribe(event => {
-						var loop = window.setInterval(function(){
-							browser.executeScript({
-									code: "window.shouldClose"
-								},
-								function(values){
-									if(values[0]){
-										browser.close();
-										window.clearInterval(loop);
-									}
-								}
-							);
-						},100);
+						var interval = setInterval(function() {
+							if(event.url.indexOf('xn--b1ae3a1a.xn--e1aaiakwclacqe5a5m.xn--p1ai') >= 0) {
+								browser.close();
+								clearInterval(interval);
+							}
+						}, 100);
 					})
 				} catch(e) {
 					console.error('Yup, that\'s a browser all right');

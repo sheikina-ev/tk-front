@@ -25,16 +25,29 @@ export default {
 			const textarea = document.getElementById('message');
 
 			if(textarea.value.trim().length > 0) {
-				textarea.value = '';
+				const response = await this.$store.dispatch('sendFeedback', {'message': textarea.value});
 
-				const toast = await toastController.create({
-					message: 'Ваше сообщение отправлено. Спасибо!',
-					position: 'bottom',
-					cssClass: 'toast-mb',
-					mode: 'md',
-					duration: 3000
-				});
-				await toast.present();
+				if(response) {
+					textarea.value = '';
+
+					const toast = await toastController.create({
+						message: 'Ваше сообщение отправлено. Спасибо!',
+						position: 'bottom',
+						cssClass: 'toast-mb',
+						mode: 'md',
+						duration: 3000
+					});
+					await toast.present();
+				} else {
+					const toast = await toastController.create({
+						message: 'Непредвиденная ошибка, повторите попытку позже',
+						position: 'bottom',
+						cssClass: 'toast-mb',
+						mode: 'md',
+						duration: 3000
+					});
+					await toast.present();
+				}
 			}
 		}
 	}

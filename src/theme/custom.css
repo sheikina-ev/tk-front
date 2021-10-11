@@ -179,6 +179,7 @@ ion-content.background-image {
 	border-radius: 10px;
 }
 .coffee-card ion-img {
+	width: 100%;
 	object-fit: cover;
 }
 .coffee-section-wrap {

@@ -22,7 +22,7 @@
 					<ion-select-option v-for="shop in shops" :key="shop.guid" :value="shop.guid">{{ shop.store_name }}</ion-select-option>
 				</ion-select> -->
 			</ion-item>
-			<ion-item lines="none" class="checkout-page-input">
+			<ion-item lines="none" class="checkout-page-input d-none">
 				<ion-label v-if="bonus !== '' && bonus !== false" class="checkout-page-total" position="stacked"><b>Мои баллы: {{ bonus }}</b></ion-label>
 				<ion-label v-else class="checkout-page-total" position="stacked"><b>Мои баллы: Необходимо подтвердить номер</b></ion-label>
 				<ion-label position="stacked">Списать баллов</ion-label>
@@ -203,7 +203,7 @@ export default {
 			} else {
 				orderId = response.data.orderId;
 				try {
-					const browser = await iab.create(response.data.link, '_blank', {location: 'no', zoom: 'no', hidenavigationbuttons: 'yes'});
+					const browser = await iab.create(response.data.link, '_blank', {location: 'no', zoom: 'no', hidenavigationbuttons: 'yes', fullscreen: 'no'});
 					browser.on('loadstop').subscribe(event => {
 						var interval = setInterval(function() {
 							if(event.url.indexOf('xn--b1ae3a1a.xn--e1aaiakwclacqe5a5m.xn--p1ai') >= 0) {

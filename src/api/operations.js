@@ -39,5 +39,11 @@ export default {
 	},
 	getInfoPage(code) {
 		return api.get('info/page/' + code);
+	},
+	sendReview(params) {
+		return api.post('review/send', params);
+	},
+	sendFeedback(params) {
+		return api.post('feedback/send', params);
 	}
 }

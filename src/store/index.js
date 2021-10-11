@@ -517,6 +517,44 @@ const store = createStore({
 			}
 		
 			return false;
+		},
+		// eslint-disable-next-line no-unused-vars
+		async sendReview({ commit }, params) {
+			const loading = await loadingCtrl.loading();
+			try {
+				const { data } = await operations.sendReview(params);
+
+				loading.dismiss();
+
+				if(data.status !== 'error') {
+					return data;
+				}
+			} catch(err) {
+				console.log(err);
+
+				loading.dismiss();
+			}
+
+			return false;
+		},
+		// eslint-disable-next-line no-unused-vars
+		async sendFeedback({ commit }, params) {
+			const loading = await loadingCtrl.loading();
+			try {
+				const { data } = await operations.sendFeedback(params);
+
+				loading.dismiss();
+
+				if(data.status !== 'error') {
+					return data;
+				}
+			} catch(err) {
+				console.log(err);
+
+				loading.dismiss();
+			}
+
+			return false;
 		}
 	}
 });

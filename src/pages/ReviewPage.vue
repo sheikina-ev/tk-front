@@ -43,20 +43,31 @@ export default {
 					data[key] = formData.get(key);
 				}
 
-				// Send data
+				const response = await this.$store.dispatch('sendReview', data);
 
-				for(let key of formData.keys()) {
-					formData.set(key, '');
+				if(response) {
+					for(let key of formData.keys()) {
+						formData.set(key, '');
+					}
+	
+					const toast = await toastController.create({
+						message: 'Ваш отзыв отправлен. Спасибо!',
+						position: 'bottom',
+						cssClass: 'toast-mb',
+						mode: 'md',
+						duration: 3000
+					});
+					await toast.present();
+				} else {
+					const toast = await toastController.create({
+						message: 'Непредвиденная ошибка, повторите попытку позже',
+						position: 'bottom',
+						cssClass: 'toast-mb',
+						mode: 'md',
+						duration: 3000
+					});
+					await toast.present();
 				}
-
-				const toast = await toastController.create({
-					message: 'Ваш отзыв отправлен. Спасибо!',
-					position: 'bottom',
-					cssClass: 'toast-mb',
-					mode: 'md',
-					duration: 3000
-				});
-				await toast.present();
 			}
 		},
 		setRating(rating) {

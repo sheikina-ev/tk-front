@@ -1034,3 +1034,8 @@ ion-col.skeleton p.coffee-item-price {width: 50%;}
 	font-size: 20px;
 }
 /* #endregion modal-data */
+
+#checkout-iframe{
+	width: 100%;
+	height: 100%;
+}

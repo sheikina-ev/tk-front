@@ -28,6 +28,23 @@
 				<ion-label position="stacked">Списать баллов</ion-label>
 				<ion-input name="bonus" type="number" @ionChange="validateBonusField" :disabled="bonus ? false : true" v-model="bonusPoints"></ion-input>
 			</ion-item>
+			<ion-item lines="none" class="checkout-page-input">
+        <ion-label position="stacked">Выберете время доставки</ion-label>
+        <ion-radio-group mode="md" v-model='checkedTime' name="timeuse" value="fast">
+          <ion-item lines="none">
+            <ion-label><span>Как можно скорее</span></ion-label>
+            <ion-radio slot="start" name="fast" value="fast"></ion-radio>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-label><span>К определенному времени</span></ion-label>
+            <ion-radio slot="start" name="time" value="time"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </ion-item>
+      <ion-item v-if="checkedTime === 'time'" lines="none" class="checkout-page-input">
+        <ion-label>Укажите время доставки</ion-label>
+        <ion-datetime display-format="HH:mm" name="time-full" v-model="dataTime" cancel-text="Отменить" done-text="Принять" placeholder="--:--"></ion-datetime>
+			</ion-item>
 			<div class="order-total-wrap">
 				<b>Итого:</b>
 				<b>{{ cartTotal ? cartTotal+' руб.' : '0 руб.' }}</b>
@@ -36,22 +53,7 @@
 				<b>К оплате:</b>
 				<b>{{ cartTotal - bonusPoints }} руб.</b>
 			</div>
-			<ion-radio-group>
-				<span class="order-payment-label">Оплата онлайн "Сбербанк"</span>
-				<ion-item lines="none">
-					<ion-label class="img-apple"></ion-label>
-					<!-- <ion-radio name="payment" value="apple"></ion-radio> -->
-				</ion-item>
-				<ion-item lines="none">
-					<ion-label class="img-visa"></ion-label>
-					<!-- <ion-radio name="payment" value="card"></ion-radio> -->
-				</ion-item>
-				<ion-item lines="none">
-					<ion-label class="img-google"></ion-label>
-					<!-- <ion-radio name="payment" value="google"></ion-radio> -->
-				</ion-item>
-			</ion-radio-group>
-			<ion-button expand="block btn-classic checkout-page-btn" type="submit" :disabled="isAuthorized ? `false` : `true`">Оплатить</ion-button>
+			<ion-button expand="block btn-classic checkout-page-btn" type="submit" :disabled="isAuthorized ? `false` : `true`">Оформить заказ</ion-button>
 			<div class="bottom-link-wrap flex-center">
 				<a @click="openModal('policy')" class="primary dark">Условия использования и персональные данные</a>
 			</div>
@@ -63,10 +65,10 @@
 </template>
 
 <script>
-import { IonItem, IonLabel, IonInput, IonRadioGroup, IonButton, alertController, toastController, modalController } from '@ionic/vue';
+import { IonItem, IonLabel, IonInput, IonRadioGroup, IonRadio, IonButton, IonDatetime, alertController, toastController, modalController } from '@ionic/vue';
 import Modal from '../components/misc/Modal.vue';
 import { useRouter } from 'vue-router';
-import { InAppBrowser } from '@ionic-native/in-app-browser';
+import CheckoutModal from '../components/misc/CheckoutModal.vue';
 
 export default {
 	components: {
@@ -74,11 +76,15 @@ export default {
 		IonLabel,
 		IonInput,
 		IonRadioGroup,
-		IonButton
+		IonRadio,
+		IonButton,
+    IonDatetime
 	},
 	data() {
 		return {
-			bonusPoints: ''
+			bonusPoints: '',
+      checkedTime: 'fast',
+      dataTime: '--:--',
 		}
 	},
 	setup() {
@@ -87,6 +93,14 @@ export default {
 			router
 		};
 	},
+  async ionViewDidEnter() {
+    var today = new Date();
+    var hour = today.getHours();
+    today.setHours(hour+1);
+    var later = today.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    this.dataTime = later;
+    console.log(later);
+  },
 	computed: {
 		activeShop() {
 			const activeShop = this.$store.getters.activeShop;
@@ -143,13 +157,12 @@ export default {
 
 			return alert.present();
 		},
-		async submitOrder(e, isTest = false) {
+		async submitOrder(e, isTest) {
 			e.preventDefault();
 			let items = JSON.parse(JSON.stringify(this.cart));
 			let orderFields = {};
 			let formFields = {};
 			const formData = new FormData(e.target);
-			const iab = InAppBrowser;
 
 			for(var key of formData.keys()) {
 				formFields[key] = formData.get(key);
@@ -171,7 +184,12 @@ export default {
 					}, {});
 				}, item.modifiers);
 			}, items);
-			
+
+      var timeDelivry = null;
+      if (this.dataTime){
+        timeDelivry = this.dataTime;
+      }
+
 			orderFields = {
 				terminalGroupId: formFields.terminalGroupId,
 				phone: formFields.phone,
@@ -179,12 +197,25 @@ export default {
 				customer: {
 					name: formFields.name
 				},
+        time_delivery: timeDelivry,
 				cash: this.cartTotal - (parseFloat(formFields.bonus) || 0),
 				bonus: parseFloat(formFields.bonus) || 0
 			};
+      var today = new Date();
+      var hour = today.getHours();
+      today.setHours(hour+1);
+      var later = today.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+      if (this.checkedTime === 'time'){
+        if (later > this.dataTime){
+          this.throwToast('Время заказ должно быть вабранно минимум за час с начала заказа.');
+          return
+        }
+      }
 
 			if(isTest) {
 				console.log(this.cartTotal);
+				console.log(this.dataTime);
 				console.log(formFields.bonus);
 				this.throwToast('[DEV] Заказ успешно оформлен');
 				console.log(JSON.stringify(orderFields));
@@ -192,8 +223,8 @@ export default {
 				return
 			}
 
-			console.log(orderFields);
 			const response = await this.$store.dispatch('sendOrder', {order: orderFields});
+
 			var orderId = 0;
 
 			if(!response) {
@@ -201,21 +232,27 @@ export default {
 			} else if(response.status == "Error") {
 				this.throwToast('Ошибка: ' + response.message);
 			} else {
-				orderId = response.data.orderId;
-				try {
-					const browser = await iab.create(response.data.link, '_blank', {location: 'no', zoom: 'no', hidenavigationbuttons: 'yes', fullscreen: 'no'});
-					browser.on('loadstop').subscribe(event => {
-						var interval = setInterval(function() {
-							if(event.url.indexOf('xn--b1ae3a1a.xn--e1aaiakwclacqe5a5m.xn--p1ai') >= 0) {
-								browser.close();
-								clearInterval(interval);
-							}
-						}, 100);
-					})
-				} catch(e) {
-					console.error('Yup, that\'s a browser all right');
-				}
-				this.router.replace({path: '/result', query: {shopId: formFields.terminalGroupId, orderId: orderId}});
+          if(response.data.link !== undefined) {
+            orderId = response.data.orderId;
+            const modal = await modalController.create({
+              component: CheckoutModal,
+              componentProps: {
+                title: 'Оплата',
+                src: response.data.link // Ссылка на платёжный шлюз
+              }
+            });
+
+            await modal.present();
+
+            modal.onDidDismiss().then((data) => { // data - объект данных, переданных методом dismiss() из компонента CheckoutModal.vue
+              if(data.data.isPaymentSuccessful !== undefined) {
+                // TODO: переадресовать пользователя на результирующую страницу с сообщением, соответствующим статусу проведения платежа
+                this.router.push({name: 'Result', query: (data.data.isPaymentSuccessful ? {response, orderId: orderId} : {orderId: orderId})});
+              }
+            });
+          }
+          await this.router.push({name: 'Result', query: {response, orderId: orderId}});
+
 			}
 		},
 		// Phone confirmation

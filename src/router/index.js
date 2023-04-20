@@ -59,6 +59,7 @@ const routes = [
 	},
 	{
 		path: '/result',
+		name: 'Result',
 		component: CheckoutResultPage,
 	},
 	{

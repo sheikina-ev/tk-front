@@ -9,6 +9,11 @@
 		<ion-card-content>
 			<order-item-position v-for="product in order.items" :key="product.id" :product="product"></order-item-position>
 
+      <div class="flex-between">
+        <span>Статус заказа</span>
+        <span>{{ order.status_order }}</span>
+      </div>
+
 			<div class="flex-between order-total">
 				<span>Итого</span>
 				<span>{{ order.total_sum }} руб.</span>

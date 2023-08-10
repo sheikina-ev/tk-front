@@ -157,7 +157,7 @@ export default {
 
 			return alert.present();
 		},
-		async submitOrder(e, isTest) {
+		async submitOrder(e, isTest = true) {
 			e.preventDefault();
 			let items = JSON.parse(JSON.stringify(this.cart));
 			let orderFields = {};
@@ -205,13 +205,24 @@ export default {
       var hour = today.getHours();
       today.setHours(hour+1);
       var later = today.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      var time_from = this.activeShop.time_from;
+      var time_to = this.activeShop.time_to;
 
       if (this.checkedTime === 'time'){
+        if (this.dataTime + ':00' < time_from){
+          this.throwToast('Время заказ из данной точки начинается с ' + time_from);
+          return
+        }
         if (later > this.dataTime){
           this.throwToast('Время заказ должно быть вабранно минимум за час с начала заказа.');
           return
         }
+        if (this.dataTime + ':00' > time_to){
+          this.throwToast('Время заказ из данной точки доступно до ' + time_to);
+          return
+        }
       }
+
 
 			if(isTest) {
 				console.log(this.cartTotal);
@@ -226,11 +237,13 @@ export default {
 			const response = await this.$store.dispatch('sendOrder', {order: orderFields});
 
 			var orderId = 0;
-
+      console.log(response.errorMessage);
 			if(!response) {
 				this.throwToast('Возникла непредвиденная ошибка');
 			} else if(response.status == "Error") {
-				this.throwToast('Ошибка: ' + response.message);
+				this.throwToast('Ошибка: ' + response.message + response.errorMessage);
+			} else if(response.errorMessage == 'Доступ запрещён') {
+				this.throwToast('Ошибка: ' + response.errorMessage);
 			} else {
           if(response.data.link !== undefined) {
             orderId = response.data.orderId;
@@ -252,7 +265,6 @@ export default {
             });
           }
           await this.router.push({name: 'Result', query: {response, orderId: orderId}});
-
 			}
 		},
 		// Phone confirmation

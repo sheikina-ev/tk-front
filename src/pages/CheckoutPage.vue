@@ -157,7 +157,7 @@ export default {
 
 			return alert.present();
 		},
-		async submitOrder(e, isTest = true) {
+		async submitOrder(e, isTest = false) {
 			e.preventDefault();
 			let items = JSON.parse(JSON.stringify(this.cart));
 			let orderFields = {};

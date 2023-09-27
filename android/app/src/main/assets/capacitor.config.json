@@ -1,5 +1,5 @@
 {
-  "appId": "ru.sibkod.coffee",
+  "appId": "ru.sibcode.coffee",
   "appName": "Территория Кофе",
   "bundledWebRuntime": false,
   "npmClient": "npm",
@@ -11,10 +11,10 @@
     }
   },
   "cordova": {},
-  "linuxAndroidStudioPath": "/home/victor/android-studio/bin/studio.sh",
+  "linuxAndroidStudioPath": "/home/taa/mnt/disk/android-studio/bin/studio.sh",
   "server": {
     "allowNavigation": [
-      "coffee.dev.webstripe.ru"
+      "tk.uat.sibcode.team"
     ]
   }
 }

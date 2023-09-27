@@ -12,6 +12,7 @@ import SpecialsPage from '../pages/SpecialsPage.vue';
 import OrdersPage from '../pages/OrdersPage.vue';
 import ReviewPage from '../pages/ReviewPage.vue';
 import FeedbackPage from '../pages/FeedbackPage.vue';
+import DeletePage from '../pages/DeletePage.vue';
 import ShopPickPage from '../pages/ShopPickPage.vue';
 
 import TestPage from '../pages/TestPage.vue';
@@ -77,6 +78,10 @@ const routes = [
 	{
 		path: '/feedback',
 		component: FeedbackPage
+	},
+	{
+		path: '/delete',
+		component: DeletePage
 	},
 	{
 		path: '/test',

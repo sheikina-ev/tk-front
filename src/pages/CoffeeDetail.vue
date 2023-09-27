@@ -99,7 +99,7 @@
 		</ion-content>
 		<ion-footer>
 			<ion-toolbar class="overview-footer" color="light">
-				<ion-button :disabled="coffeeItem && coffeeItem.price > 0 ? `false` : `true`" @click="addToCart" expand="block" type="submit" color="primary">
+				<ion-button :disabled="coffeeItem && useCart && coffeeItem.price > 0 ? `false` : `true`" @click="addToCart" expand="block" type="submit" color="primary">
 					<div class="content">
 						<span><ion-icon :icon="cartOutline"></ion-icon>Заказать</span>
 						<span>{{ calcPrice }} руб.</span>
@@ -141,7 +141,8 @@ export default {
 	data() {
 		return {
 			productId: this.$route.params.id,
-			calcPrice: 0
+			calcPrice: 0,
+      useCart: true,
 		}
 	},
 	setup() {
@@ -154,7 +155,7 @@ export default {
 	},
 	async ionViewWillEnter() {
 		this.$store.commit('clearState', 'product');
-
+    this.useCart = true;
 		const response = this.$store.dispatch('getProduct', {params: {id: this.productId}});
 
 		if(response) {
@@ -165,6 +166,7 @@ export default {
 	},
 	computed: {
 		coffeeItem() {
+
 			var product = this.$store.getters.product;
 			if(product) {
 				product.carbohydratesAmount = parseFloat(product.carbohydratesAmount).toFixed(1);
@@ -184,7 +186,7 @@ export default {
 	methods: {
 		async addToCart() {
 			// e.preventDefault();
-
+      this.useCart = false;
 			var params = {};
 			const form = document.getElementById('coffee-detail');
 			const formData = new FormData(form);
@@ -193,7 +195,7 @@ export default {
 				position: 'bottom',
 				cssClass: 'toast-mb',
 				mode: 'md',
-				duration: 3000
+				duration: 1000
 			});
 
 			for(var pair of formData.entries()) {

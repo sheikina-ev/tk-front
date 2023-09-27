@@ -72,7 +72,7 @@ export default {
 		CoffeeListItem
 	},
 	async mounted() {
-		const response = this.$store.dispatch('getProducts', {params: {id: this.$props.sectionId}});
+		const response = this.$store.dispatch('getProducts', {params: {id: this.$props.sectionId, shop_id: this.activeShop.id}});
 
 		if(response) {
 			// All good
@@ -83,7 +83,10 @@ export default {
 	computed: {
 		products() {
 			return this.$store.getters.products;
-		}
+		},
+    activeShop() {
+      return this.$store.getters.activeShop;
+    }
 	}
 }
 </script>

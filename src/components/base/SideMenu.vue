@@ -28,6 +28,9 @@
 				<ion-menu-toggle auto-hide="false">
 					<ion-item router-direction="/coffee" :color="isActive('/feedback') ? 'primary' : '' " router-link="/feedback">Сообщить о технической проблеме</ion-item>
 				</ion-menu-toggle>
+        <ion-menu-toggle auto-hide="false" v-if="isAuthorized" >
+					<ion-item router-direction="/coffee" :color="isActive('/delete') ? 'primary' : '' " router-link="/delete">Удалить аккаунт</ion-item>
+				</ion-menu-toggle>
 			</ion-list>
 		</ion-content>
 	</ion-menu>

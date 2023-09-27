@@ -1,4 +1,4 @@
-package ru.sibkod.coffee;
+package ru.sibcode.coffee;
 
 import android.os.Bundle;
 

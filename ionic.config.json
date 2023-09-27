@@ -1,6 +1,6 @@
 {
   "name": "Территория Кофе",
-  "id": "ru.sibkod.coffee",
+  "id": "ru.sibcode.coffee",
   "integrations": {
     "capacitor": {}
   },

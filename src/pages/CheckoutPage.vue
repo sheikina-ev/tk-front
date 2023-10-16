@@ -29,7 +29,7 @@
 				<ion-input name="bonus" type="number" @ionChange="validateBonusField" :disabled="bonus ? false : true" v-model="bonusPoints"></ion-input>
 			</ion-item>
 			<ion-item lines="none" class="checkout-page-input">
-        <ion-label position="stacked">Выберете время доставки</ion-label>
+        <ion-label class="checkout-page-label" position="stacked">Выберете время доставки</ion-label>
         <ion-radio-group mode="md" v-model='checkedTime' name="timeuse" value="fast">
           <ion-item lines="none">
             <ion-label><span>Как можно скорее</span></ion-label>
@@ -214,7 +214,7 @@ export default {
           return
         }
         if (later > this.dataTime){
-          this.throwToast('Время заказ должно быть вабранно минимум за час с начала заказа.');
+          this.throwToast('Время заказ должно быть выбрано минимум за час с начала заказа.');
           return
         }
         if (this.dataTime + ':00' > time_to){

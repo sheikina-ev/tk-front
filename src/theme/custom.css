@@ -745,7 +745,9 @@ html:not(.ios) .overview-footer ion-button {
 	letter-spacing: -0.6000000238418579px;
 	
 }
-
+.checkout-page-input .checkout-page-label{
+	margin-bottom: 10px;
+}
 .checkout-label{
 	font-size: 14px !important;
 	font-weight: 400;

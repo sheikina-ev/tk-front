@@ -28,7 +28,7 @@
 				<div v-else class="coffee-info-container">
 					<ion-skeleton-text animated></ion-skeleton-text>
 				</div>
-				
+
 				<div v-if="coffeeItem.options && coffeeItem.options.length > 0" class="coffee-modifiers-container">
 					<ion-list v-for="groups in coffeeItem.options" :key="groups.id">
 						<ion-radio-group @ionChange="setRadioOption" name="options" :allow-empty-selection="groups.min_amount === 1 || groups.required ? `false` : `true`" v-if="groups.max_amount === 1" :value="groups.min_amount === 1 || groups.required ? groups.values[0].id : ``">
@@ -200,7 +200,7 @@ export default {
 
 			for(var pair of formData.entries()) {
 				if(pair[1] == '') continue;
-				
+
 				if(params[pair[0]] !== undefined) {
 					if(typeof params[pair[0]] === 'string') {
 						params[pair[0]] = [params[pair[0]], pair[1]];
@@ -221,7 +221,7 @@ export default {
 			const hiddenInput = radioGroup.querySelector('input[name="'+radioGroup.name+'"]');
 
 			hiddenInput.value = typeof radioGroup.value === 'undefined' ? '' : radioGroup.value;
-			
+
 			if ("createEvent" in document) {
 				var evt = document.createEvent("HTMLEvents");
 				evt.initEvent("change", false, true);
@@ -237,7 +237,7 @@ export default {
 				var calcPrice = that.coffeeItem.price;
 				const form = document.getElementById('coffee-detail');
 				const formData = new FormData(form);
-	
+
 				for(var pair of formData.entries()) {
 					if(pair[1] == '' || pair[0] != 'options') continue;
 
@@ -253,7 +253,7 @@ export default {
 
 					calcPrice += option.price || 0;
 				}
-	
+
 				that.calcPrice = calcPrice;
 			}, 100);
 		}

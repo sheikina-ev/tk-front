@@ -20,9 +20,11 @@
 
 <script>
 import { IonContent, IonText, IonButton } from '@ionic/vue';
+import ToplessLayout from "@/components/base/ToplessLayout.vue";
 
 export default {
 	components: {
+    ToplessLayout,
 		IonContent,
 		IonText,
 		IonButton

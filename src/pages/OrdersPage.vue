@@ -17,7 +17,7 @@
 		</div>
 	</base-layout>
 </template>
-
+<!-- можно будет удалить-->
 <script>
 import OrderItem from '../components/order/OrderItem.vue';
 

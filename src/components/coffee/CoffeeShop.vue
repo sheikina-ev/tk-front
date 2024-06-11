@@ -1,31 +1,55 @@
 <template>
-	<div class="coffee-shop-wrap">
-		<div class="name">
-			<ion-icon color="medium" :icon="location"></ion-icon>
-			<span v-if="shop">Меню {{ shop.store_name }}</span>
-			<span v-else>Точка не выбрана</span>
-		</div>
-		<div class="link">
-			<ion-button v-if="shop" router-link="/shop">Изменить</ion-button>
-			<ion-button v-else router-link="/shop">Выбрать</ion-button>
-		</div>
-	</div>
+  <div class="coffee-shop-wrap">
+    <div class="name">
+      <span v-if="shop">Меню {{ shop.store_name }}</span>
+      <span v-else>Точка не выбрана</span>
+    </div>
+    <div class="link">
+      <ion-button fill="clear" v-if="shop" router-link="/shop" class="arrow-button">
+        <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16px" height="16px"><path d="M12 13.172l4.95-4.95.707.707-5.657 5.657-5.657-5.657.707-.707z" fill="#000"/></svg>
+      </ion-button>
+      <ion-button fill="clear" v-else router-link="/shop" class="arrow-button">
+        <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16px" height="16px"><path d="M12 13.172l4.95-4.95.707.707-5.657 5.657-5.657-5.657.707-.707z" fill="#000"/></svg>
+      </ion-button>
+    </div>
+  </div>
 </template>
 
 <script>
-import { IonIcon, IonButton } from '@ionic/vue';
-import { location } from 'ionicons/icons';
+import { IonButton } from '@ionic/vue';
 
 export default {
-	props: ['shop'],
-	components: {
-		IonIcon,
-		IonButton
-	},
-	setup() {
-		return {
-			location
-		}
-	}
+  props: ['shop'],
+  components: {
+    IonButton
+  }
 }
 </script>
+
+<style scoped>
+.coffee-shop-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.name {
+  font-size: 18px; /* Размер текста названия */
+  color: #000;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+
+}
+
+.arrow-button {
+  padding: 0; /* Убираем внутренние отступы */
+}
+
+.arrow-icon {
+  fill: #000; /* Черный цвет для иконки стрелки */
+  width: 16px; /* Размер иконки */
+  height: 16px; /* Размер иконки */
+}
+</style>

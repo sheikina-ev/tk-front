@@ -1,43 +1,51 @@
 <template>
-	<ion-page id="main">
-		<!-- <side-menu></side-menu> -->
-		<ion-header>
-			<ion-toolbar class="catalog-header">
-				<ion-buttons slot="start">
-				</ion-buttons>
-				<ion-title>{{ pageTitle }}</ion-title>
-			</ion-toolbar>
-		</ion-header>
-		<ion-content>
-			<slot />
-		</ion-content>
-		<ion-footer>
-			<ion-toolbar class="bottom-bar">
-				<tabs-panel></tabs-panel>
-			</ion-toolbar>
-		</ion-footer>
-	</ion-page>
+  <ion-page id="main">
+    <ion-header>
+      <ion-toolbar class="catalog-header bg-yellow-300">
+        <div class="header-container flex items-center justify-between px-5 md:px-0" style="padding-left: 315px; padding-right: 315px;">
+          <router-link to="/" class="logo-link">
+            <img src="@/assets/img/logoHeader.png" alt="Logo" class="logo mx-4 my-4">
+          </router-link>
+          <div class="flex items-center ml-auto">
+            <coffee-shop :shop="activeShop" class="shop"></coffee-shop>
+            <ion-button fill="clear" @click="$router.push('/cart')" class="basket-button">
+              <div class="basket-container relative flex items-center">
+                <img src="../../../public/assets/img/basket.png" height="28" width="33" alt="Basket Icon" class="basket-icon">
+                <ion-badge v-if="cartCount > 0" color="danger" class="badge ml-2 absolute top-0 right-0">{{ cartCount }}</ion-badge>
+              </div>
+            </ion-button>
+          </div>
+        </div>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <slot />
+    </ion-content>
+  </ion-page>
 </template>
 
 <script>
-import { IonPage, IonHeader, IonTitle, IonContent, IonToolbar, IonButtons, IonFooter } from '@ionic/vue';
-import { chevronBack } from 'ionicons/icons';
+import { IonPage, IonHeader, IonToolbar, IonContent, IonButton, IonBadge } from '@ionic/vue';
+import CoffeeShop from "@/components/coffee/CoffeeShop.vue";
 
 export default {
-	props: ['pageTitle'],
-	components: {
-		IonPage,
-		IonHeader,
-		IonTitle,
-		IonContent,
-		IonToolbar,
-		IonButtons,
-		IonFooter
-	},
-	setup() {
-		return {
-			chevronBack
-		}
-	}
+  computed: {
+    activeShop() {
+      return this.$store.getters.activeShop;
+    },
+    cartCount() {
+      return this.$store.getters.cartCount;
+    }
+  },
+  components: {
+    CoffeeShop,
+    IonPage,
+    IonHeader,
+    IonToolbar,
+    IonContent,
+    IonButton,
+    IonBadge
+  }
 }
 </script>

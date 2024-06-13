@@ -28,10 +28,10 @@
         <p v-for="(store, index) in stores" :key="index" class="store-name">{{ store.store_name }}</p>
         <div class="flex  mt-8" >
           <a href="#" class="text-black " style="width: 52px; height: 30px;text-align: end " >
-            <img src="@/assets/img/telegram.png" alt="telegram"   height="42" width="41" style="margin-left: 40px"/>
+            <img src="@/assets/img/telegram.png" alt="telegram"   height="42" width="41" style="margin-left: 20px"/>
           </a>
           <a href="#" class=" text-black " style="width: 52px; height: 30px;">
-            <img src="@/assets/img/vk.png" alt="vk" height="42" width="42"  style="margin-left: 40px"/>
+            <img src="@/assets/img/vk.png" alt="vk" height="42" width="42"  style="margin-left: 20px"/>
           </a>
         </div>
       </div>

@@ -1,4 +1,9 @@
 @font-face {
+    font-family: 'Montserrat';
+    src: url('Montserrat.ttf') format('truetype');
+
+}
+@font-face {
     font-family: 'Graphik';
     src: url('Graphik-Thin.eot');
     src: local('Graphik Thin'), local('Graphik-Thin'),
@@ -213,4 +218,7 @@
     font-weight: 500;
     font-style: italic;
 }
+
+
+
 

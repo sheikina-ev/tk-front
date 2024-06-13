@@ -1,45 +1,42 @@
 <template>
-	<topless-layout>
-		<ion-content class="background-image">
-      <div v-if="status == 'success'" class="checkout-result-wrap center-content">
-        <ion-text color="light"><h1 class="text-center"><b>Спасибо за заказ! &#128523;</b></h1></ion-text>
-        <ion-text color="light"><p class="text-center">Номер вашего заказа: {{ orderId }}</p></ion-text>
-        <ion-text v-if="shop !== undefined" color="light"><p class="text-center">Адрес выбранной точки: {{ shop.store_name }}</p></ion-text>
-        <ion-button expand="full" fill="clear" router-direction="/coffee" router-link="/orders">Мои заказы</ion-button>
-      </div>
-      <div v-else class="checkout-result-wrap center-content">
-        <ion-text color="light"><h1 class="text-center"><b>Спасибо за заказ! &#128523;</b></h1></ion-text>
-        <ion-text color="light"><h2 class="text-center"><b>К сожалению, заказ не был оплачен.</b></h2></ion-text>
-        <ion-text color="light"><p class="text-center">Номер вашего заказа: {{ orderId }}</p></ion-text>
-        <ion-text v-if="shop !== undefined" color="light"><p class="text-center">Адрес выбранной точки: {{ shop.store_name }}</p></ion-text>
-        <ion-button expand="full" fill="clear" router-direction="/coffee" router-link="/orders">Мои заказы</ion-button>
-      </div>
-		</ion-content>
-	</topless-layout>
+
+  <base-layout page-title="Успешное оформление заказа">
+    <div class="success-page text-center">
+      <h1 class="font-bold text-lg mb-4">Ваш заказ успешно оформлен!</h1>
+      <button class="home-link w-40 h-10 rounded-full text-sm font-medium border border-gray-400 cursor-pointer mb-60" @click="goToHomePage">На главную</button>
+    </div>
+    <AppFooter/>
+  </base-layout>
 </template>
 
 <script>
-import { IonContent, IonText, IonButton } from '@ionic/vue';
-import ToplessLayout from "@/components/base/ToplessLayout.vue";
-
+import { useRouter } from 'vue-router';
+import BaseLayout from "@/components/base/BaseLayout.vue";
+import AppFooter from "@/components/base/AppFooter.vue";
 export default {
-	components: {
-    ToplessLayout,
-		IonContent,
-		IonText,
-		IonButton
-	},
-	computed: {
-    status() {
-      return this.$route.query.status;
-    },
-		shop() {
-			const shopId = this.$route.query.shopId || false;
-			return this.$store.getters.shop(shopId);
-		},
-		orderId() {
-			return this.$route.query.orderId;
-		}
-	}
+  components: {
+    AppFooter,
+    BaseLayout
+  },
+  setup() {
+    const router = useRouter();
+    const goToHomePage = () => {
+      router.push('/');
+    };
+
+    return { goToHomePage };
+
+  }
 }
 </script>
+
+<style scoped>
+.success-page {
+  margin-top: 232px;
+}
+
+.home-link {
+  background-color: #F9D9B8;
+  border: 1px solid;
+}
+</style>

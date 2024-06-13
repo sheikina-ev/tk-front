@@ -1,64 +1,94 @@
 <template>
   <base-layout page-title="Оформить заказ">
-    <form v-if="cart.length > 0" id="checkout-form" @submit="submitOrder">
-      <ion-item lines="none" class="checkout-page-input">
-        <ion-label position="stacked">Имя*</ion-label>
-        <ion-input name="name" autocomplete="name" required="true" :value="user && user.name"></ion-input>
-      </ion-item>
-      <ion-item lines="none" class="checkout-page-input">
-        <ion-label position="stacked">Телефон*</ion-label>
-        <ion-input name="phone" placeholder="79998887766" autocomplete="tel" type="tel" required="true" :value="user && user.phone"></ion-input>
-        <ion-button fill="clear" @click="requestConfirmationCode">Подтвердить номер</ion-button>
-      </ion-item>
-      <ion-item lines="none" class="checkout-page-select">
-        <ion-label position="stacked">Выбранный адрес</ion-label>
-        <ion-input disabled="true" :value="activeShop.store_name"></ion-input>
-        <input type="hidden" name="terminalGroupId" :value="activeShop.guid" />
-      </ion-item>
-      <ion-item lines="none" class="checkout-page-input">
-        <ion-label class="checkout-page-label" position="stacked">Выберете время доставки</ion-label>
-        <ion-radio-group v-model='checkedTime' name="timeuse" value="fast">
-          <ion-item lines="none">
-            <ion-label><span>Как можно скорее</span></ion-label>
-            <ion-radio slot="start" name="fast" value="fast"></ion-radio>
-          </ion-item>
-          <ion-item lines="none">
-            <ion-label><span>К определенному времени</span></ion-label>
-            <ion-radio slot="start" name="time" value="time"></ion-radio>
-          </ion-item>
-        </ion-radio-group>
-      </ion-item>
-      <ion-item v-if="checkedTime === 'time'" lines="none" class="checkout-page-input">
-        <ion-label>Укажите время доставки</ion-label>
-        <ion-datetime display-format="HH:mm" name="time-full" v-model="dataTime" cancel-text="Отменить" done-text="Принять" placeholder="--:--"></ion-datetime>
-      </ion-item>
-      <div class="order-total-wrap">
-        <b>Итого:</b>
-        <b>{{ cartTotal }} руб.</b>
+    <div class="checkout-page ml-80">
+      <h1 class="checkout-header mt-10 mb-16" style="font-weight: 700; font-size: 18px">Оформление заказа</h1>
+      <form v-if="cart.length > 0" id="checkout-form" @submit="submitOrder">
+        <label for="name">Имя*</label>
+        <div class="checkout-page-input" style="margin-bottom: 20px;">
+          <input type="text" id="name" name="name" placeholder="Мария" style="padding-left: 12px" autocomplete="name" :value="user && Object.keys(user).length !== 0 ? user.name : ''" required>
+        </div>
+        <label for="phone">Телефон*</label>
+        <div class="checkout-page-input">
+          <input type="tel" id="phone" name="phone" placeholder="79618765364" style="padding-left: 12px" autocomplete="tel" :disabled="isAuthorized && user && Object.keys(user).length !== 0" :value="isAuthorized && user && Object.keys(user).length !== 0 ? user.phone : ''" required>
+          <button v-if="isAuthorized" @click="changePhoneNumber">Изменить номер</button>
+          <div class="mt-6 full-width">
+            <button v-if="!isAuthorized" type="button" @click="requestConfirmationCode">Подтвердить номер</button>
+          </div>
+        </div>
+
+        <div class="checkout-page-select mb-10" style="margin-top: 44px;"> <!-- Добавлен отступ 44px -->
+          <label for="address">Выбранный адрес</label>
+          <h1 id="address" class="address text-black" style="font-weight: 700;">{{ activeShop.store_name }}</h1>
+          <input type="hidden" name="terminalGroupId" :value="activeShop.guid">
+        </div>
+
+        <div class="checkout-page-input d-none" style="margin-top: 44px;"> <!-- Добавлен отступ 44px -->
+          <label v-if="bonus !== '' && bonus !== false" class="checkout-page-total">Мои баллы: <b>{{ bonus }}</b></label>
+          <label v-else class="checkout-page-total">Мои баллы: <b>Необходимо подтвердить номер</b></label>
+          <label for="bonus">Списать баллов</label>
+          <input type="number" id="bonus" name="bonus" :disabled="!bonus" v-model="bonusPoints" @change="validateBonusField">
+        </div>
+
+        <div class="checkout-page-input">
+          <label class="checkout-page-label">Выберете время доставки</label>
+          <div class="radio-options">
+            <div>
+              <input type="radio" id="fast" name="timeuse" value="fast" v-model="checkedTime">
+              <label for="fast">Как можно скорее</label>
+            </div>
+            <div>
+              <input type="radio" id="time" name="timeuse" value="time" v-model="checkedTime">
+              <label for="time">К определенному времени</label>
+              <ion-datetime v-if="checkedTime === 'time'" display-format="HH:mm" name="time-full" v-model="dataTime" cancel-text="Отменить" done-text="Принять" placeholder="--:--"></ion-datetime>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="order-total-wrap">
+          <b>Итого:</b>
+          <div style="margin-top: 34px; margin-left: -70px;	font-weight: 600;"> <!-- Добавлено стилизованное блок-обертка для цены -->
+            <b>{{ cartTotal ? cartTotal + ' руб.' : '0 руб.' }}</b>
+          </div>
+        </div>
+
+
+        <div v-if="bonusPoints > 0" class="order-total-wrap">
+          <b>К оплате:</b>
+          <b>{{ cartTotal - bonusPoints }} руб.</b>
+        </div>
+
+        <button class="btn-classic checkout-page-btn" type="submit" >Оформить заказ</button>
+
+        <div class="bottom-link-wrap flex-center">
+          <a @click="openModal('policy')" class="primary dark">Условия использования и персональные данные</a>
+        </div>
+      </form>
+      <div class="center-content" v-else>
+        <h2 class="text-center">Корзина пуста</h2>
       </div>
-      <ion-button expand="block btn-classic checkout-page-btn" type="submit">Оформить заказ</ion-button>
-    </form>
-    <div class="center-content" v-else>
-      <h2 class="text-center">Корзина пуста</h2>
     </div>
+    <AppFooter></AppFooter>
+
   </base-layout>
 </template>
 
+
+
 <script>
-import { IonItem, IonLabel, IonInput, IonRadioGroup, IonRadio, IonButton, IonDatetime, alertController, toastController, modalController } from '@ionic/vue';
+import {  alertController, toastController, modalController } from '@ionic/vue';
 import Modal from '../components/misc/Modal.vue';
 import { useRouter } from 'vue-router';
 import CheckoutModal from '../components/misc/CheckoutModal.vue';
+import BaseLayout from "@/components/base/BaseLayout.vue";
+import AppFooter from "@/components/base/AppFooter.vue";
 
 export default {
   components: {
-    IonItem,
-    IonLabel,
-    IonInput,
-    IonRadioGroup,
-    IonRadio,
-    IonButton,
-    IonDatetime
+    AppFooter,
+    BaseLayout
+
   },
   data() {
     return {
@@ -148,6 +178,9 @@ export default {
         formFields[key] = formData.get(key);
       }
 
+      // Log formFields to debug issue
+      console.log('Form Fields:', formFields);
+
       // Filter item fields
       let itemsFilter = ['type', 'productId', 'amount', 'modifiers', 'name', 'price'];
       let modifiersFilter = ['productId', 'amount', 'productGroupId', 'name'];
@@ -167,227 +200,122 @@ export default {
 
       var timeDelivry = null;
       if (this.dataTime){
-        timeDelivry = this.dataTime;
+        let arr = this.dataTime.split(":");
+        var hour = arr[0];
+        var min = arr[1];
+        var date = new Date();
+        var curr_hour = date.getHours();
+        var curr_min = date.getMinutes();
+        if((hour >= curr_hour) && (min > curr_min)) timeDelivry = this.dataTime;
+        else {
+          await this.presentToast("Указанное время не может быть меньше текущего. Если вы хотите заказать на завтра, то укажите дату и время.");
+          return false;
+        }
       }
 
       orderFields = {
-        terminalGroupId: formFields.terminalGroupId,
-        phone: formFields.phone,
         items: items,
+        isSelfService: false,
         customer: {
-          name: formFields.name
+          name: formFields['name'],
+          phone: formFields['phone']
         },
-        time_delivery: timeDelivry,
-        cash: this.cartTotal - (parseFloat(formFields.bonus) || 0),
-        bonus: parseFloat(formFields.bonus) || 0
-      };
-      var today = new Date();
-      var hour = today.getHours();
-      today.setHours(hour+1);
-      var later = today.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      var time_from = this.activeShop.time_from;
-      var time_to = this.activeShop.time_to;
-
-      if (this.checkedTime === 'time'){
-        if (this.dataTime + ':00' < time_from){
-          this.throwToast('Время заказ из данной точки начинается с ' + time_from);
-          return
-        }
-        if (later > this.dataTime){
-          this.throwToast('Время заказ должно быть выбрано минимум за час с начала заказа.');
-          return
-        }
-        if (this.dataTime + ':00' > time_to){
-          this.throwToast('Время заказ из данной точки доступно до ' + time_to);
-          return
-        }
-      }
-
-
-      if(isTest) {
-        console.log(this.cartTotal);
-        console.log(this.dataTime);
-        console.log(formFields.bonus);
-        this.throwToast('[DEV] Заказ успешно оформлен');
-        console.log(JSON.stringify(orderFields));
-        console.log(formFields);
-        return
-      }
-
-      const response = await this.$store.dispatch('sendOrder', {order: orderFields});
-
-      var orderId = 0;
-      console.log(response.errorMessage);
-      if(!response) {
-        this.throwToast('Возникла непредвиденная ошибка');
-      } else if(response.status == "Error") {
-        this.throwToast('Ошибка: ' + response.message + response.errorMessage);
-      } else if(response.errorMessage == 'Доступ запрещён') {
-        this.throwToast('Ошибка: ' + response.errorMessage);
-      } else {
-        if(response.data.link !== undefined) {
-          orderId = response.data.orderId;
-          const modal = await modalController.create({
-            component: CheckoutModal,
-            componentProps: {
-              title: 'Оплата',
-              src: response.data.link // Ссылка на платёжный шлюз
-            }
-          });
-
-          await modal.present();
-
-          modal.onDidDismiss().then((data) => { // data - объект данных, переданных методом dismiss() из компонента CheckoutModal.vue
-            if(data.data.isPaymentSuccessful !== undefined) {
-              // TODO: переадресовать пользователя на результирующую страницу с сообщением, соответствующим статусу проведения платежа
-              this.router.push({name: 'Result', query: (data.data.isPaymentSuccessful ? {response, orderId: orderId} : {orderId: orderId})});
-            }
-          });
-        }
-        await this.router.push({name: 'Result', query: {response, orderId: orderId}});
-      }
-    },
-    async requestConfirmationCode() {
-      const checkoutForm = document.getElementById('checkout-form');
-      const formData = new FormData(checkoutForm);
-      let formFields = {};
-
-      for(var key of formData.keys()) {
-        formFields[key] = formData.get(key).trim();
-      }
-
-      if(formFields['name'].length > 0 && formFields['phone'].length > 0) {
-        const response = await this.$store.dispatch('requestConfirmationCode', {params: {phone: formFields.phone}});
-        if(response) {
-          this.showConfirmationPrompt(formFields);
-        } else {
-          this.throwToast('Не удалось отправить код подтверждения');
-        }
-      } else {
-        if(formFields['name'].length <= 0 && formFields['phone'].length <= 0) this.throwToast('Заполните поля "Имя" и "Телефон"');
-        else if(formFields['name'].length <= 0) this.throwToast('Заполните поле "Имя"');
-        else if(formFields['phone'].length <= 0) this.throwToast('Заполните поле "Телефон"');
-      }
-    },
-    async throwToast(message) {
-      const toast = await toastController.create({
-        message: message,
-        position: 'bottom',
-        cssClass: 'toast-mb',
-        mode: 'md',
-        duration: 3000
-      });
-
-      toast.present();
-    },
-    async showConfirmationPrompt(params, hasError = false) {
-      const alert = await alertController.create({
-        cssClass: 'auth-code-prompt',
-        header: 'Подтверждение',
-        subHeader: hasError ? 'Код неверен' : '',
-        message: 'Введите код из SMS',
-        backdropDismiss: false,
-        inputs: [
+        orderType: 'delivery',
+        bonusPoints: parseInt(formFields['bonus']),
+        terminalGroupId: formFields['terminalGroupId'],
+        paymentItems: [
           {
-            name: 'name',
-            type: 'text',
-            cssClass: 'hidden',
-            value: params.name
-          },
-          {
-            name: 'phone',
-            type: 'phone',
-            cssClass: 'hidden',
-            value: params.phone
-          },
-          {
-            name: 'code',
-            placeholder: '1234',
-            type: 'number',
-            attributes: {
-              maxlength: 4,
-              inputmode: 'numeric',
-              enterkeyhint: 'done'
-            }
-          }
-        ],
-        buttons: [
-          {
-            text: 'Отмена',
-            role: 'cancel'
-          },
-          {
-            text: 'Отправить',
-            handler: (fields) => {
-              this.sendConfirmationCode(fields);
-            }
+            sum: (this.cartTotal - parseInt(formFields['bonus'])) * 100,
+            paymentTypeKind: "Card"
           }
         ]
+      };
+
+      if(this.checkedTime == 'time') orderFields['deliveryTime'] = timeDelivry;
+
+      this.$store.dispatch('submitOrder', orderFields).then(async (response) => {
+        if(response.success) {
+          if(isTest) return true;
+
+          const modal = await modalController.create({
+            component: CheckoutModal,
+            cssClass: 'checkout-modal',
+            backdropDismiss: false
+          });
+
+          return modal.present();
+        }
+        else return this.presentToast(response.error ? response.error.message : 'Не удалось оформить заказ');
+      });
+    },
+    async presentToast(message, duration = 2000) {
+      const toast = await toastController.create({
+        message: message,
+        duration: duration
       });
 
-      return alert.present();
+      return toast.present();
     },
-    async sendConfirmationCode(params) {
-      const response = await this.$store.dispatch('sendConfirmationCode', {params: {phone: params.phone, code: params.code}});
-      if(response) {
-        this.throwToast('Телефон подтвержден');
-      } else {
-        this.showConfirmationPrompt(params, true);
-      }
-    },
-    // Bonus validation
-    validateBonusField(e) {
-      const bonus = parseInt(this.bonus);
-      const sum = (this.cartTotal - 1); // Preventing customer from paying full sum with bonus points
-      if(e.target.value > bonus || e.target.value > sum) {
-        if(e.target.value > sum) {
-          e.target.value = sum;
-        } else if(e.target.value > bonus) {
-          e.target.value = bonus;
-        }
-        // e.target.value = (e.target.value > sum ? sum : (e.target.value > bonus ? bonus : e.target.value));
-      }
-    },
-    async openModal(code) {
+    async openModal(name) {
       const modal = await modalController.create({
         component: Modal,
-        cssClass: 'my-custom-modal',
-        componentProps: {
-          code: code
-        }
+        componentProps: { type: name }
       });
 
       return modal.present();
     },
-    // Phone mask
-    format(e) {
-      const elem = e.target;
-      const val = this.doFormat(elem.value, "***********");
-      elem.value = val;
+    async requestConfirmationCode() {
+      this.$store.dispatch('requestConfirmationCode', this.user.phone);
     },
-    doFormat(x, pattern) {
-      var strippedValue = x.replace(/[^0-9]/g, "");
-      var chars = strippedValue.split('');
-      var count = 0;
-
-      var formatted = '';
-      for (var i=0; i<pattern.length; i++) {
-        const c = pattern[i];
-        if (chars[count]) {
-          if (/\*/.test(c)) {
-            formatted += chars[count];
-            count++;
-          } else {
-            formatted += c;
-          }
-        }
-      }
-
-      if(formatted.length > 0) {
-        formatted = '7' + formatted.substring(1);
-      }
-      return formatted;
+    validateBonusField() {
+      if(this.bonusPoints > this.bonus) this.bonusPoints = this.bonus;
     }
   }
 }
 </script>
+
+<style scoped>
+/* Стили для кнопок */
+button {
+  width: 140px;
+  height: 35px;
+  border-radius: 20px;
+  background-color: #F9D9B8;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  border: 1px solid;
+}
+input {
+  background-color: white;
+  width: 520px;
+  height: 40px;
+  left: 315px;
+  font-size: 14px;
+  font-weight: 700;
+  border: 1px solid black;
+}
+.radio-options div {
+  display: flex; /* Располагаем кнопку и текст в строку */
+  align-items: center; /* Выравниваем элементы по вертикали */
+  margin-top: 10px;
+}
+
+.radio-options input[type="radio"] {
+  /* Убираем стандартные стили радио-кнопок */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Устанавливаем размер кнопок */
+  width: 20px;
+  height: 20px;
+  /* Устанавливаем стили для кнопок */
+  border: 1px solid #000;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
+  margin-right: 10px; /* Добавляем отступ между кнопками и текстом */
+}
+
+
+</style>

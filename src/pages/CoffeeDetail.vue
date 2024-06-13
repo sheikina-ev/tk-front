@@ -214,7 +214,7 @@ export default {
 
 			this.$store.dispatch('addToCart', params);
 			await toast.present();
-			this.router.go(-1); // Might need to check if previous page is equal to '/coffee' (TODO)
+      this.router.push('/'); // Might need to check if previous page is equal to '/coffee' (TODO)
 		},
 		setRadioOption(e) {
 			const radioGroup = e.target;

@@ -14,7 +14,8 @@ import ShopPickPage from '../pages/ShopPickPage.vue';
 import TestPage from '../pages/TestPage.vue';
 
 // Добавляем импорт компонента модального окна
-import Modal from "@/components/misc/Modal.vue";
+import NotFoundPage from "@/pages/NotFoundPage.vue";
+import CoffeeDetail from "@/pages/CoffeeDetail.vue";
 
 const routes = [
 	{
@@ -28,13 +29,16 @@ const routes = [
 		path: '/',
 		component: CoffeePage
 	},
+
 	{
 		path: '/coffee/:id',
-		component: () => import('../pages/CoffeeDetail.vue'),
+		component: CoffeeDetail,
 		meta: {
-			isMenuDisabled: true
+			isModal: true
 		}
 	},
+
+
 	{
 		path: '/cart',
 		component: CartPage
@@ -43,9 +47,10 @@ const routes = [
 		path: '/checkout',
 		component: CheckoutPage
 	},
+
 	{
-		path: '/result',
-		name: 'Result',
+		path: '/order-success',
+		name: 'OrderSuccess',
 		component: CheckoutResultPage,
 	},
 	{
@@ -72,14 +77,20 @@ const routes = [
 		path: '/test',
 		component: TestPage
 	},
-	// Добавляем маршрут для модального окна
+	/*
 	{
-		path: '/coffee-modal',
+		path: '/coffee/:id',
 		component: Modal,
 		meta: {
 			isModal: true
 		}
+	},
+	*/
+	{
+		path: '/:catchAll(.*)',
+		component: NotFoundPage // Перенаправление на страницу 404 для всех несуществующих маршрутов
 	}
+
 ];
 
 const router = createRouter({

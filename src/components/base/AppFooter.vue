@@ -17,7 +17,7 @@
       <div class="flex flex-col  mb-4 md:mb-0" style="margin-right: 270px;">
         <h2 class="mb-8 ">ОБРАТНАЯ СВЯЗЬ</h2>
         <ul class="list-none p-0">
-          <li class="mb-8"><router-link to="/review" class="text-white hover" style="white-space: nowrap;">Оставить отзыв</router-link></li>
+          <li class="mb-9"><router-link to="/review" class="text-white hover" style="white-space: nowrap;">Оставить отзыв</router-link></li>
           <li class="mb-2"><router-link to="/feedback" class="text-white hover" style="white-space: nowrap;">Сообщить о технической проблеме</router-link></li>
         </ul>
       </div>
@@ -69,7 +69,7 @@ export default {
 </script>
 <style>
 .hover:hover {
-  color: #F9D9B8; /* Цвет при наведении */
+  color: #F9D9B8;
 }
 
 </style>

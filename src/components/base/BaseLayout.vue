@@ -1,7 +1,7 @@
 <template>
   <ion-page id="main">
     <ion-header>
-      <ion-toolbar class="catalog-header bg-yellow-300">
+      <ion-toolbar class="catalog-header bg-custom-color">
         <div class="header-container flex items-center justify-between px-5 md:px-0" style="padding-left: 315px; padding-right: 315px;">
           <router-link to="/" class="logo-link">
             <img src="@/assets/img/logoHeader.png" alt="Logo" class="logo mx-4 my-4">
@@ -46,6 +46,20 @@ export default {
     IonContent,
     IonButton,
     IonBadge
+  },
+  created() {
+    if (!Array.isArray(this.$store.state.shops) || this.$store.state.shops.length === 0) {
+      this.$store.dispatch('getStores');
+    }
   }
 }
 </script>
+
+<style scoped>
+.bg-custom-color {
+  --background: #F9D9B8;
+}
+.catalog-header {
+  height: 120px;
+}
+</style>

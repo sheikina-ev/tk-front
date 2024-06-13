@@ -4,14 +4,14 @@
       <div class="coffee-section-outer-wrap">
         <ion-grid class="product-grid">
           <ion-row class="product-row">
-            <ion-col v-for="coffeeItem in displayedProducts" :key="coffeeItem.id" class="product-column">
+            <ion-col v-for="(coffeeItem, index) in displayedProducts" :key="index" class="product-column">
               <coffee-list-item :coffeeItem="coffeeItem"></coffee-list-item>
             </ion-col>
           </ion-row>
           <ion-row class="ion-justify-content-center" v-if="showLoadMoreButton">
             <ion-col class="ion-text-center">
               <ion-button @click="loadMoreProducts" class="click" color="none">
-                Показать еще
+                Еще
                 <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16px" height="16px">
                   <path d="M12 13.172l4.95-4.95.707.707-5.657 5.657-5.657-5.657.707-.707z" fill="#000"/>
                 </svg>
@@ -60,7 +60,13 @@ export default {
     },
     displayedProducts() {
       if (Array.isArray(this.products)) {
-        return this.products.slice(0, this.visibleProductCount);
+        return this.products.slice(0, this.visibleProductCount).map((item, index) => {
+          // Проверяем, имеет ли элемент свойство 'id', если нет, создаем его
+          if (!item.id) {
+            item.id = index;
+          }
+          return item;
+        });
       } else {
         return [];
       }
@@ -75,7 +81,6 @@ export default {
   methods: {
     async fetchProducts() {
       this.isLoading = true;
-      // Получаем продукты первой категории магазина
       await this.$store.dispatch('getProducts', { params: { id: this.sectionId, shop_id: this.activeShop.id, category_id: 1 } });
       this.isLoading = false;
     },

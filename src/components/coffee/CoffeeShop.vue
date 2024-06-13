@@ -26,30 +26,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.coffee-shop-wrap {
-  display: flex;
-  align-items: center;
-}
 
-.name {
-  font-size: 18px; /* Размер текста названия */
-  color: #000;
-}
-
-.link {
-  display: flex;
-  align-items: center;
-
-}
-
-.arrow-button {
-  padding: 0; /* Убираем внутренние отступы */
-}
-
-.arrow-icon {
-  fill: #000; /* Черный цвет для иконки стрелки */
-  width: 16px; /* Размер иконки */
-  height: 16px; /* Размер иконки */
-}
-</style>

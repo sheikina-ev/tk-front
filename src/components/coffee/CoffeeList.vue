@@ -10,12 +10,14 @@
           </ion-row>
           <ion-row class="ion-justify-content-center" v-if="showLoadMoreButton">
             <ion-col class="ion-text-center">
-              <ion-button @click="loadMoreProducts" class="click" color="none">
-                Еще
-                <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16px" height="16px">
-                  <path d="M12 13.172l4.95-4.95.707.707-5.657 5.657-5.657-5.657.707-.707z" fill="#000"/>
-                </svg>
-              </ion-button>
+              <button @click="loadMoreProducts" class="click">
+                <span class="flex items-center">
+                  <span class="mr-2">Еще</span>
+                  <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16px" height="16px">
+                    <path d="M12 13.172l4.95-4.95.707.707-5.657 5.657-5.657-5.657.707-.707z" fill="#000"/>
+                  </svg>
+                </span>
+              </button>
             </ion-col>
           </ion-row>
           <ion-row v-if="!displayedProducts.length && !isLoading">
@@ -31,7 +33,7 @@
 </template>
 
 <script>
-import { IonGrid, IonRow, IonCol, IonButton } from '@ionic/vue';
+import { IonGrid, IonRow, IonCol } from '@ionic/vue';
 import CoffeeListItem from './CoffeeListItem.vue';
 import AppFooter from "@/components/base/AppFooter.vue";
 
@@ -42,7 +44,6 @@ export default {
     IonGrid,
     IonRow,
     IonCol,
-    IonButton,
     CoffeeListItem
   },
   data() {
@@ -90,7 +91,6 @@ export default {
   }
 };
 </script>
-
 
 <style scoped>
 #app {
@@ -162,8 +162,12 @@ export default {
 }
 
 .click {
-  margin-bottom: 50px;
+  margin-bottom: 20px;
   width: auto;
   color: black;
+  border: none;
+  background: none;
+  display: inline-flex;
+  align-items: center;
 }
 </style>

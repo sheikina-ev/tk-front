@@ -5,6 +5,7 @@
       <div v-if="cart.length > 0" class="cart-container">
         <div
             v-for="cartItem in cart"
+
             :key="cartItem.line_id"
             class="cart-item relative flex items-start mb-8 w-full"
             style="display: flex;"
@@ -28,7 +29,7 @@
               <h1 class="mt-4 mb-4" style="font-size: 18px; font-weight: 700">Добавки</h1>
               <p class="text-xs">Без добавок</p>
             </div>
-            <p class="text-lg font-semibold mt-16">{{ cartItem.price }} руб</p>
+            <p class="text-lg font-semibold mt-16">{{ cartItem.price * cartItem.amount }} руб</p>
           </div>
 
           <div class="item-price flex flex-col ml-auto">

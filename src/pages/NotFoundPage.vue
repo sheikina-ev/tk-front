@@ -1,10 +1,10 @@
 <template>
-  <div class="not-found-page">
+  <div class="not-found-page min-h-screen flex flex-col justify-center items-center bg-gray-100">
     <BaseLayout>
-      <div class="not-found-content">
-        <h1 class="not-found-heading">404</h1>
-        <p class="not-found-text">Страница не найдена</p>
-        <button class="home-link" @click="goToHomePage">На главную</button>
+      <div class="not-found-content text-center">
+        <h1 class="not-found-heading text-9xl font-light mt-32" style="font-size: 200px;">404</h1>
+        <p class="not-found-text font-semibold text-lg mb-8 font-bold	">Страница не найдена</p>
+        <button class="home-link w-40 h-10 rounded-full bg-yellow-300 text-sm font-medium border border-gray-400 cursor-pointer mb-48" @click="goToHomePage" style="background-color: #F9D9B8;border: 1px solid;">На главную</button>
       </div>
       <AppFooter/>
     </BaseLayout>
@@ -18,7 +18,7 @@ import AppFooter from "@/components/base/AppFooter.vue";
 
 export default {
   name: 'NotFoundPage',
-  components: {AppFooter, BaseLayout },
+  components: { AppFooter, BaseLayout },
   setup() {
     const router = useRouter();
 
@@ -36,40 +36,4 @@ export default {
   font-family: 'Montserrat', sans-serif !important;
 }
 
-.not-found-page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #F4F4F4;
-}
-
-.not-found-content {
-  text-align: center;
-}
-
-.not-found-heading {
-  margin-top: 125px;
-  font-size: 200px;
-  font-weight: 300;
-}
-
-.not-found-text {
-  font-weight: 700;
-  font-size: 18px;
-  margin-bottom: 25px;
-}
-
-.home-link {
-  width: 140px; /* Фиксированная ширина кнопки */
-  height: 35px; /* Фиксированная высота кнопки */
-  border-radius: 20px;
-  background-color: #F9D9B8;
-  font-size: 14px;
-  font-weight: 400;
-  cursor: pointer;
-  border: 1px solid;
-  margin-bottom: 189px;
-}
 </style>

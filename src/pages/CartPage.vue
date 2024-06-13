@@ -5,7 +5,6 @@
       <div v-if="cart.length > 0" class="cart-container">
         <div
             v-for="cartItem in cart"
-
             :key="cartItem.line_id"
             class="cart-item relative flex items-start mb-8 w-full"
             style="display: flex;"

@@ -1,25 +1,27 @@
 <template>
   <base-layout page-title="Сообщить о технической проблеме">
-    <ion-grid>
-      <ion-row>
-        <ion-col>
-          <form @submit.prevent="submitForm" id="feedback-form">
-            <p>Если вы нашли техническую проблему, сообщите нам подробности и мы примем меры. Спасибо!</p>
-            <ion-textarea v-model="feedbackMessage" name="message" id="message" required placeholder="Описание проблемы*"></ion-textarea>
-            <ion-button type="submit" expand="block">Отправить</ion-button>
+    <ion-grid class="px-20 lg:px-80">
+      <ion-row class="flex justify-center">
+        <ion-col size-md="8">
+          <form @submit.prevent="submitForm" id="feedback-form" class="bg-white p-8 rounded shadow-md mt-40 mb-60">
+            <p class="text-lg mb-4">Если вы нашли техническую проблему, сообщите нам подробности и мы примем меры. Спасибо!</p>
+            <ion-textarea v-model="feedbackMessage" name="message" id="message" required placeholder="Описание проблемы*" class="w-full mb-6"></ion-textarea>
+            <ion-button type="submit" expand="block" class="w-full">Отправить</ion-button>
           </form>
         </ion-col>
       </ion-row>
     </ion-grid>
+    <AppFooter/>
   </base-layout>
 </template>
 
 <script>
 import { IonGrid, IonRow, IonCol, IonTextarea, IonButton, toastController } from '@ionic/vue';
 import BaseLayout from "@/components/base/BaseLayout.vue";
+import AppFooter from "@/components/base/AppFooter.vue";
 
 export default {
-  components: { BaseLayout, IonGrid, IonRow, IonCol, IonTextarea, IonButton },
+  components: {AppFooter, BaseLayout, IonGrid, IonRow, IonCol, IonTextarea, IonButton },
   data() {
     return {
       feedbackMessage: ''
@@ -61,3 +63,5 @@ export default {
   }
 }
 </script>
+
+

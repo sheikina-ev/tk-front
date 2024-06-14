@@ -4,7 +4,7 @@
       <h1 class="checkout-header mt-10 mb-16" style="font-weight: 700; font-size: 18px">Оформление заказа</h1>
 
       <form v-if="cart.length > 0" id="checkout-form" @submit.prevent="submitOrder">
-        <label for="name" class="text-black">Имя*</label>
+        <label for="name" class="text-black ">Имя*</label>
         <div class="checkout-page-input" style="margin-bottom: 20px;">
           <input id="name" placeholder="Ваше имя" class="pl-3" name="name" type="text" autocomplete="name" required :value="user && user.name" />
         </div>
@@ -13,7 +13,7 @@
         <div class="checkout-page-input">
           <input id="phone" name="phone" type="tel" placeholder="79998887766" class="pl-3" autocomplete="tel" required :value="user && user.phone" />
         </div>
-        <button type="button" class="mt-6 mb-10" @click="requestConfirmationCode">Подтвердить номер</button>
+        <button type="button" class="request mt-6 mb-10" @click="requestConfirmationCode">Подтвердить номер</button>
         <div class="checkout-page-select mb-10">
           <label for="selectedAddress">Выбранный адрес</label>
           <h1 id="address" class="address text-black" style="font-weight: 700;">{{ activeShop.store_name }}</h1>
@@ -36,14 +36,15 @@
           <ion-datetime display-format="HH:mm" name="time-full" v-model="dataTime" cancel-text="Отменить" done-text="Принять" placeholder="--:--"></ion-datetime>
         </ion-item>
 
-        <div class="order-total-wrap">
-          <b>Итого:</b>
-          <div>
-            <b>{{ cartTotal ? cartTotal + ' руб.' : '0 руб.' }}</b>
-          </div>
+        <div class="order-total-wrap mt-12" style="font-size: 18px">
+          <b>Итого</b>
         </div>
+          <div class="mb-5">
+            <b >{{ cartTotal ? cartTotal + ' руб.' : '0 руб.' }}</b>
+          </div>
 
-        <button class="btn-classic checkout-page-btn mt" type="submit" >Оформить заказ</button>
+
+        <button class="btn-classic checkout-page-btn" type="submit" >Оформить заказ</button>
         <div class="bottom-link-wrap flex-center">
           <a @click="openModal('policy')" class="primary dark">Условия использования и персональные данные</a>
         </div>
@@ -298,6 +299,10 @@ button {
   cursor: pointer;
   border: 1px solid;
 }
+.request{
+  width: 199px;
+  height: 35px;
+}
 input {
   background-color: white;
   width: 520px;
@@ -307,27 +312,4 @@ input {
   font-weight: 700;
   border: 1px solid black;
 }
-.radio-options div {
-  display: flex; /* Располагаем кнопку и текст в строку */
-  align-items: center; /* Выравниваем элементы по вертикали */
-  margin-top: 10px;
-}
-
-.radio-options input[type="radio"] {
-  /* Убираем стандартные стили радио-кнопок */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  /* Устанавливаем размер кнопок */
-  width: 20px;
-  height: 20px;
-  /* Устанавливаем стили для кнопок */
-  border: 1px solid #000;
-  border-radius: 50%;
-  background-color: #fff;
-  cursor: pointer;
-  margin-right: 10px; /* Добавляем отступ между кнопками и текстом */
-}
-
-
 </style>

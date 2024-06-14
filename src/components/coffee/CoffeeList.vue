@@ -32,6 +32,7 @@
   </div>
 </template>
 
+
 <script>
 import { IonGrid, IonRow, IonCol } from '@ionic/vue';
 import CoffeeListItem from './CoffeeListItem.vue';
@@ -76,21 +77,29 @@ export default {
       return this.products.length > this.visibleProductCount;
     },
   },
-  async mounted() {
-    await this.fetchProducts();
+  watch: {
+    activeShop: {
+      immediate: true,
+      handler(newShop) {
+        if (newShop) {
+          this.fetchProducts(newShop.id);
+        }
+      }
+    }
   },
   methods: {
-    async fetchProducts() {
+    async fetchProducts(shopId) {
       this.isLoading = true;
-      await this.$store.dispatch('getProducts', { params: { id: this.sectionId, shop_id: this.activeShop.id, category_id: 1 } });
+      await this.$store.dispatch('getProducts', { params: { id: this.sectionId, shop_id: shopId, category_id: 1 } });
       this.isLoading = false;
     },
-    async loadMoreProducts() {
+    loadMoreProducts() {
       this.visibleProductCount += 16;
     },
   }
 };
 </script>
+
 
 <style scoped>
 #app {

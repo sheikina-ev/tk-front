@@ -2,9 +2,7 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-back-button default-href="/coffee" text="" :icon="chevronBack"></ion-back-button>
-        </ion-buttons>
+
         <ion-title>{{ coffeeItem && Object.keys(coffeeItem).length > 0 ? coffeeItem.product_name : 'Загрузка...' }}</ion-title>
       </ion-toolbar>
     </ion-header>
@@ -111,7 +109,7 @@
 </template>
 
 <script>
-import { IonPage, IonHeader, IonTitle, IonContent, IonToolbar, IonBackButton, IonButtons, IonFooter, IonIcon, IonButton, toastController, IonRadioGroup, IonRadio, IonCheckbox, IonLabel, IonNote, IonList, IonItem, IonSkeletonText } from '@ionic/vue';
+import { IonPage, IonHeader, IonTitle, IonContent, IonToolbar,IonFooter, IonIcon, IonButton, toastController, IonRadioGroup, IonRadio, IonCheckbox, IonLabel, IonNote, IonList, IonItem, IonSkeletonText } from '@ionic/vue';
 import { chevronBack, cartOutline } from 'ionicons/icons';
 // import CoffeeOverview from '../components/coffee/CoffeeOverview.vue';
 import { useRouter } from 'vue-router';
@@ -123,8 +121,7 @@ export default {
     IonTitle,
     IonContent,
     IonToolbar,
-    IonButtons,
-    IonBackButton,
+
     // CoffeeOverview,
     IonFooter,
     IonIcon,

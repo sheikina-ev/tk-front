@@ -1,7 +1,7 @@
 <template>
   <ion-col size="6">
-    <div class="coffee-container" @click="openModal">
-      <ion-card class="coffee-card" :router-link="`/coffee/${coffeeItem.id}`" :class="{ 'modal-open': showModal }">
+    <div class="coffee-container">
+      <ion-card class="coffee-card" :router-link="`/coffee/${coffeeItem.id}`">
         <div class="skeleton-wrap">
           <ion-img :src="coffeeItem.image"></ion-img>
         </div>
@@ -15,8 +15,7 @@
 </template>
 
 <script>
-import { IonCol, IonCard, IonImg, modalController } from '@ionic/vue';
-import Modal from '../misc/Modal.vue';
+import { IonCol, IonCard, IonImg } from '@ionic/vue';
 
 export default {
   props: ['coffeeItem'],
@@ -25,25 +24,7 @@ export default {
     IonCard,
     IonImg
   },
-  methods: {
-    async openModal() {
-      console.log("Opening modal with coffeeItem:", this.coffeeItem);
-      const modal = await modalController.create({
-        component: Modal,
-        componentProps: {
-          coffeeItem: this.coffeeItem
-        }
-      });
-      await modal.present();
-      // Добавление класса для оверлея модального окна
-      document.body.classList.add('modal-open');
 
-      // Обработка закрытия модального окна
-      modal.onDidDismiss().then(() => {
-        document.body.classList.remove('modal-open');
-      });
-    }
-  }
 };
 </script>
 
@@ -58,7 +39,7 @@ export default {
 
 .skeleton-wrap {
   @apply relative w-full;
-  padding-top: 100%; /* Задаем соотношение сторон 1:1 вручную */
+  padding-top: 100%;
 }
 
 .skeleton-wrap ion-img {

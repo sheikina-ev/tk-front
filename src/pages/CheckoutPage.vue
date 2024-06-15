@@ -1,26 +1,50 @@
 <template>
   <base-layout page-title="Оформить заказ">
-    <div class="checkout-page ml-80">
-      <h1 class="checkout-header mt-10 mb-16" style="font-weight: 700; font-size: 18px">Оформление заказа</h1>
+    <div class="checkout-page lg:ml-80 px-4 lg:px-0">
+      <h1 class="checkout-header mt-10 mb-16 font-bold text-lg lg:text-xl">Оформление заказа</h1>
 
       <form v-if="cart.length > 0" id="checkout-form" @submit.prevent="submitOrder">
-        <label for="name" class="text-black ">Имя*</label>
-        <div class="checkout-page-input" style="margin-bottom: 20px;">
-          <input id="name" placeholder="Ваше имя" class="pl-3" name="name" type="text" autocomplete="name" required :value="user && user.name" />
+        <label for="name" class="text-black">Имя*</label>
+        <div class="checkout-page-input mb-5">
+          <input
+              id="name"
+              placeholder="Ваше имя"
+              name="name"
+              type="text"
+              autocomplete="name"
+              required
+              :value="user && user.name"
+              class="bg-white w-full lg:w-520 h-10 text-sm font-bold border border-black pl-3"
+          />
         </div>
 
         <label for="phone">Телефон*</label>
-        <div class="checkout-page-input">
-          <input id="phone" name="phone" type="tel" placeholder="79998887766" class="pl-3" autocomplete="tel" required :value="user && user.phone" />
+        <div class="checkout-page-input mb-5">
+          <input
+              id="phone"
+              name="phone"
+              type="tel"
+              placeholder="79998887766"
+              autocomplete="tel"
+              required
+              :value="user && user.phone"
+              class="bg-white w-full lg:w-520 h-10 text-sm font-bold border border-black pl-3"
+          />
         </div>
-        <button type="button" class="request mt-6 mb-10" @click="requestConfirmationCode">Подтвердить номер</button>
+        <button
+            type="button"
+            class="request mt-6 mb-10 w-48 h-9 rounded-full bg-custom-color text-sm font-medium border border-black"
+            @click="requestConfirmationCode" style="border: 1px solid black"
+        >
+          Подтвердить номер
+        </button>
         <div class="checkout-page-select mb-10">
           <label for="selectedAddress">Выбранный адрес</label>
-          <h1 id="address" class="address text-black" style="font-weight: 700;">{{ activeShop.store_name }}</h1>
+          <h1 id="address" class="address text-black font-bold">{{ activeShop.store_name }}</h1>
           <input type="hidden" name="terminalGroupId" :value="activeShop.guid" />
         </div>
 
-        <ion-label class="checkout-page-label" position="stacked">Выберете время доставки</ion-label>
+        <ion-label class="checkout-page-label" position="stacked">Выберите время доставки</ion-label>
         <ion-radio-group v-model="checkedTime" name="timeuse" value="fast">
           <ion-item lines="none">
             <ion-label><span>Как можно скорее</span></ion-label>
@@ -36,16 +60,20 @@
           <ion-datetime display-format="HH:mm" name="time-full" v-model="dataTime" cancel-text="Отменить" done-text="Принять" placeholder="--:--"></ion-datetime>
         </ion-item>
 
-        <div class="order-total-wrap mt-12" style="font-size: 18px">
+        <div class="order-total-wrap mt-12 text-lg">
           <b>Итого</b>
         </div>
-          <div class="mb-5">
-            <b >{{ cartTotal ? cartTotal + ' руб.' : '0 руб.' }}</b>
-          </div>
+        <div class="mb-5">
+          <b>{{ cartTotal ? cartTotal + ' руб.' : '0 руб.' }}</b>
+        </div>
 
-
-        <button class="btn-classic checkout-page-btn" type="submit" >Оформить заказ</button>
-        <div class="bottom-link-wrap flex-center">
+        <button
+            class="btn-classic checkout-page-btn w-36 h-9 rounded-full bg-custom-color text-sm font-medium border border-black"
+            type="submit"  style="border: 1px solid black"
+        >
+          Оформить заказ
+        </button>
+        <div class="bottom-link-wrap flex justify-start">
           <a @click="openModal('policy')" class="primary dark">Условия использования и персональные данные</a>
         </div>
       </form>
@@ -55,12 +83,12 @@
       </div>
     </div>
     <AppFooter></AppFooter>
-
   </base-layout>
 </template>
 
+
 <script>
-import {alertController, modalController, toastController} from '@ionic/vue';
+import { alertController, modalController, toastController } from '@ionic/vue';
 import BaseLayout from "@/components/base/BaseLayout.vue";
 import AppFooter from "@/components/base/AppFooter.vue";
 import { useRouter } from "vue-router";
@@ -76,12 +104,12 @@ export default {
       bonusPoints: '',
       checkedTime: 'fast',
       dataTime: '--:--',
-    }
+    };
   },
   setup() {
     const router = useRouter();
     return {
-      router
+      router,
     };
   },
   async ionViewDidEnter() {
@@ -151,8 +179,8 @@ export default {
         component: ModalPl,
         cssClass: 'my-custom-modal',
         componentProps: {
-          code: code
-        }
+          code: code,
+        },
       });
 
       return modal.present();
@@ -165,16 +193,16 @@ export default {
         buttons: [
           {
             text: 'Отмена',
-            role: 'cancel'
+            role: 'cancel',
           },
           {
             text: 'OK',
             handler: () => {
               this.$store.dispatch('logout');
               this.bonusPoints = 0;
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
 
       await alert.present();
@@ -208,22 +236,22 @@ export default {
             attributes: {
               maxlength: 4,
               inputmode: 'numeric',
-              enterkeyhint: 'done'
-            }
-          }
+              enterkeyhint: 'done',
+            },
+          },
         ],
         buttons: [
           {
             text: 'Отмена',
-            role: 'cancel'
+            role: 'cancel',
           },
           {
             text: 'Отправить',
             handler: (fields) => {
               this.sendConfirmationCode(fields.code);
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
 
       await alert.present();
@@ -245,7 +273,7 @@ export default {
         position: 'bottom',
         cssClass: 'toast-mb',
         mode: 'md',
-        duration: 3000
+        duration: 3000,
       });
 
       toast.present();
@@ -281,35 +309,6 @@ export default {
 
       return formatted;
     }
-  }
-}
+  },
+};
 </script>
-
-
-
-<style scoped>
-
-button {
-  width: 140px;
-  height: 35px;
-  border-radius: 20px;
-  background-color: #F9D9B8;
-  font-size: 14px;
-  font-weight: 400;
-  cursor: pointer;
-  border: 1px solid;
-}
-.request{
-  width: 199px;
-  height: 35px;
-}
-input {
-  background-color: white;
-  width: 520px;
-  height: 40px;
-  left: 315px;
-  font-size: 14px;
-  font-weight: 700;
-  border: 1px solid black;
-}
-</style>

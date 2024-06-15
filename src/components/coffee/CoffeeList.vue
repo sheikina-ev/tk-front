@@ -149,7 +149,7 @@ export default {
 @media (max-width: 1600px) {
   .product-column {
     flex: 1 0 33.33%;
-    max-width: 33.33%;
+    max-width: 43.33%;
   }
 }
 

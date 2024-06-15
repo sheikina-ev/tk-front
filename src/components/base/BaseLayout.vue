@@ -1,19 +1,23 @@
 <template>
   <ion-page id="main">
     <ion-header>
-      <ion-toolbar class="catalog-header bg-custom-color">
+      <ion-toolbar>
         <div class="header-container flex items-center justify-between px-5 md:px-0 relative z-10">
           <router-link to="/" class="logo-link">
-            <img src="@/assets/img/logoHeader.png" alt="Logo" class="logo mx-4 my-4 w-24">
+            <img src="@/assets/img/logoHeader.png" alt="Logo" class="logo mx-4 my-4 w-24 md:ml-315" />
           </router-link>
-          <div class="flex items-center ml-auto relative">
+          <div class="flex items-center ml-auto relative text-black md:text-black">
             <div class="coffee-shop-wrap">
-              <div class="name relative" @mouseover="showAddresses = true" @mouseleave="showAddresses = false">
+              <div
+                  class="name relative cursor-pointer"
+                  @mouseover="showAddresses = true"
+                  @mouseleave="showAddresses = true"
+              >
                 <span v-if="activeShop">{{ activeShop.store_name }}</span>
                 <span v-else>Точка не выбрана</span>
                 <div
                     v-if="showAddresses"
-                    class="addresses absolute bg-white rounded-md w-48 top-full left-0 shadow-lg"
+                    class="addresses absolute bg-custom-color rounded-md w-48 top-full left-0 shadow-lg"
                     ref="addresses"
                 >
                   <ul v-if="activeShop" class="list-none p-0 m-0">
@@ -21,7 +25,7 @@
                         v-for="address in activeShop.addresses"
                         :key="address.id"
                         @click="selectAddress(address)"
-                        class="px-4 py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-300"
+                        class="py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-300"
                     >
                       {{ address }}
                     </li>
@@ -40,7 +44,7 @@
               </div>
             </div>
           </div>
-          <ion-button fill="clear" @click="$router.push('/cart')" class="basket-button p-0">
+          <ion-button fill="clear" @click="$router.push('/cart')" class="basket-button p-0 md:mr-315">
             <div class="basket-container relative flex items-center">
               <img
                   src="../../../public/assets/img/basket.png"
@@ -49,11 +53,9 @@
                   alt="Basket Icon"
                   class="basket-icon m-0"
               />
-              <ion-badge
-                  v-if="cartCount > 0"
-                  color="danger"
-                  class="badge ml-2 absolute top-0 right-0"
-              >{{ cartCount }}</ion-badge>
+              <ion-badge v-if="cartCount > 0" color="danger" class="badge ml-2 absolute top-0 right-0">
+                {{ cartCount }}
+              </ion-badge>
             </div>
           </ion-button>
         </div>
@@ -64,8 +66,6 @@
     </ion-content>
   </ion-page>
 </template>
-
-
 
 <script>
 import { IonPage, IonHeader, IonToolbar, IonContent, IonButton, IonBadge } from '@ionic/vue';
@@ -116,81 +116,3 @@ export default {
   },
 };
 </script>
-
-
-<style scoped>
-.bg-custom-color {
-  --background: #f9d9b8;
-}
-
-.header-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.logo {
-  width: 100px;
-  height: auto;
-}
-
-.name {
-  font-size: 18px;
-  color: #000;
-  cursor: pointer;
-  position: relative;
-}
-
-.name:hover .addresses {
-  visibility: visible;
-  top: -100%;
-  position: absolute;
-}
-
-.addresses {
-  top: -100%;
-  left: 0;
-  background-color: #fff;
-  border-radius: 5px;
-  width: 200px;
-  visibility: hidden;
-  z-index: 10;
-}
-
-.addresses ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-.addresses li {
-  padding: 8px 10px;
-  border-radius: 5px;
-  border: 0.5px solid #ccc;
-  opacity: 1;
-  cursor: pointer;
-  transition: background-color 0.3s, border-color 0.3s;
-}
-
-.addresses li:hover {
-  background-color: #61473b;
-  border-color: #888;
-}
-
-.basket-button {
-  padding: 0;
-}
-
-.basket-icon {
-  margin: 0;
-}
-
-.badge {
-  top: -5px; /* Корректируем положение значка корзины */
-  right: -5px;
-}
-.catalog-header {
-  padding-left: 315px;
-  padding-right: 315px;
-}
-</style>

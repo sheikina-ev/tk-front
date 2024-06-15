@@ -222,16 +222,14 @@ span.coffee-item-name {
 .coffee-picture-container {
 	position: relative;
 	margin: 0;
-	margin-bottom: 12px;
-	padding-bottom: 100%;
-	background-size: cover;
-	background-position-x: 50%;
-	background-position-y: 50%;
-
+	margin-bottom: 12px; /* Уменьшаем отступ снизу */
+	padding-bottom: 60%; /* Пропорциональный отступ снизу для сохранения соотношения сторон */
+	background-size: cover; /* Масштабируем изображение, чтобы оно покрывало всю область */
+	background-position: center; /* Центрируем изображение */
 	border-radius: 5px;
 	overflow: hidden;
-	color: var(--ion-color-primary-contrast);
 }
+
 .coffee-picture-container > .coffee-picture-info-wrap {
 	position: absolute;
 	top: 0;
@@ -240,13 +238,16 @@ span.coffee-item-name {
 	flex-direction: column;
 	justify-content: space-between;
 	padding: 10px;
-
+	width: 100%; /* Растягиваем содержимое на всю ширину контейнера */
+	height: 100%; /* Растягиваем содержимое на всю высоту контейнера */
 }
+
 .coffee-picture-info-wrap > .coffee-picture-info-top,
 .coffee-picture-info-wrap > .coffee-picture-info-bottom {
 	display: flex;
 	flex-direction: column;
 }
+
 .coffee-info-container,
 .coffee-modifiers-container h3,
 .coffee-calorific-info-container {

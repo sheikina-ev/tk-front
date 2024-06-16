@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col md:flex-row justify-between items-center p-5 text-white md:px-32 md:py-10" style="background-color: #553b2f;">
+  <div class="flex flex-col md:flex-row justify-between items-center bg-custom-color1 p-5 text-white md:px-32 md:py-10">
     <div class="flex justify-center ml-44 mb-4 md:mb-0">
       <img src="@/assets/img/logo.png" alt="Logo" class="w-48 h-52 md:w-60 md:h-60" />
     </div>

@@ -2,7 +2,7 @@
   <ion-page id="main">
     <ion-header>
       <ion-toolbar>
-        <div class="header-container flex items-center justify-between px-5 md:px-0 relative z-10">
+        <div class="header-container bg-custom-color flex items-center justify-between px-5 md:px-0 relative z-10">
           <router-link to="/" class="logo-link">
             <img src="@/assets/img/logoHeader.png" alt="Logo" class="logo mx-4 my-4 w-24 md:ml-315" />
           </router-link>
@@ -11,13 +11,13 @@
               <div
                   class="name relative cursor-pointer"
                   @mouseover="showAddresses = true"
-                  @mouseleave="showAddresses = true"
+                  @mouseleave="showAddresses = false"
               >
                 <span v-if="activeShop">{{ activeShop.store_name }}</span>
                 <span v-else>Точка не выбрана</span>
                 <div
                     v-if="showAddresses"
-                    class="addresses absolute bg-custom-color rounded-md w-48 top-full left-0 shadow-lg"
+                    class="addresses absolute bg-custom-color1 rounded-md w-48 top-full left-0 shadow-lg "
                     ref="addresses"
                 >
                   <ul v-if="activeShop" class="list-none p-0 m-0">
@@ -25,7 +25,7 @@
                         v-for="address in activeShop.addresses"
                         :key="address.id"
                         @click="selectAddress(address)"
-                        class="py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-300"
+                        class="py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50"
                     >
                       {{ address }}
                     </li>
@@ -81,7 +81,7 @@ export default {
   },
   data() {
     return {
-      showAddresses: true,
+      showAddresses: false,
     };
   },
   computed: {
@@ -108,7 +108,7 @@ export default {
     },
     selectAddress(address) {
       console.log('Выбран адрес:', address);
-      this.showAddresses = true;
+      this.showAddresses = false;
     },
     loadProducts(shopId) {
       return this.$store.dispatch('loadProducts', shopId);

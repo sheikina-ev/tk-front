@@ -20,15 +20,15 @@
           </div>
         </div>
 
-        <div v-if="coffeeItem.constructor === Object" class="coffee-info-container">
+        <div v-if="coffeeItem.constructor === Object" class="coffee-info-container p-4 bg-white rounded shadow-md mt-4">
           <p v-if="coffeeItem.product_description" class="text-gray-800">{{ coffeeItem.product_description }}</p>
           <p v-else class="text-gray-800"><i>Описание отсутствует</i></p>
         </div>
-        <div v-else class="coffee-info-container">
+        <div v-else class="coffee-info-container p-4 bg-white rounded shadow-md mt-4">
           <ion-skeleton-text animated></ion-skeleton-text>
         </div>
 
-        <div v-if="coffeeItem.options && coffeeItem.options.length > 0" class="coffee-modifiers-container">
+        <div v-if="coffeeItem.options && coffeeItem.options.length > 0" class="coffee-modifiers-container p-4 bg-white rounded shadow-md mt-4">
           <ion-list v-for="groups in coffeeItem.options" :key="groups.id">
             <ion-radio-group @ionChange="setRadioOption" name="options" :allow-empty-selection="`${groups.min_amount === 1 || groups.required}`" v-if="groups.max_amount === 1" :value="groups.min_amount === 1 || groups.required ? groups.values[0].id : ''">
               <input @change="calculatePrice" type="hidden" name="options" :value="groups.min_amount === 1 || groups.required ? groups.values[0].id : ''">
@@ -49,7 +49,7 @@
             </div>
           </ion-list>
         </div>
-        <div v-else-if="coffeeItem.constructor !== Object" class="coffee-modifiers-container">
+        <div v-else-if="coffeeItem.constructor !== Object" class="coffee-modifiers-container p-4 bg-white rounded shadow-md mt-4">
           <ion-list>
             <div class="checkbox-wrap">
               <h3><ion-skeleton-text animated></ion-skeleton-text></h3>
@@ -73,34 +73,34 @@
           </ion-list>
         </div>
 
-        <div v-if="coffeeItem.energyAmount !== 'NaN' && coffeeItem.proteinsAmount !== 'NaN' && coffeeItem.fatAmount !== 'NaN' && coffeeItem.carbohydratesAmount !== 'NaN'" class="coffee-calorific-info-container">
+        <div v-if="coffeeItem.energyAmount !== 'NaN' && coffeeItem.proteinsAmount !== 'NaN' && coffeeItem.fatAmount !== 'NaN' && coffeeItem.carbohydratesAmount !== 'NaN'" class="coffee-calorific-info-container p-4 bg-white rounded shadow-md mt-4">
           <h3 class="text-gray-800">Калорийность "{{ coffeeItem.product_name }}"</h3>
-          <div class="wrap">
-            <div class="item">
-              <div class="value">{{ coffeeItem.energyAmount && coffeeItem.energyAmount !== 'NaN' ? coffeeItem.energyAmount : 0 }}</div>
-              <div class="label">Ккал</div>
+          <div class="flex justify-between mt-2">
+            <div class="text-center">
+              <div class="font-bold text-2xl">{{ coffeeItem.energyAmount && coffeeItem.energyAmount !== 'NaN' ? coffeeItem.energyAmount : 0 }}</div>
+              <div class="text-gray-600">Ккал</div>
             </div>
-            <div class="item">
-              <div class="value">{{ coffeeItem.proteinsAmount && coffeeItem.proteinsAmount !== 'NaN' ? coffeeItem.proteinsAmount : 0 }}</div>
-              <div class="label">Белки, г</div>
+            <div class="text-center">
+              <div class="font-bold text-2xl">{{ coffeeItem.proteinsAmount && coffeeItem.proteinsAmount !== 'NaN' ? coffeeItem.proteinsAmount : 0 }}</div>
+              <div class="text-gray-600">Белки, г</div>
             </div>
-            <div class="item">
-              <div class="value">{{ coffeeItem.fatAmount && coffeeItem.fatAmount !== 'NaN' ? coffeeItem.fatAmount : 0 }}</div>
-              <div class="label">Жиры, г</div>
+            <div class="text-center">
+              <div class="font-bold text-2xl">{{ coffeeItem.fatAmount && coffeeItem.fatAmount !== 'NaN' ? coffeeItem.fatAmount : 0 }}</div>
+              <div class="text-gray-600">Жиры, г</div>
             </div>
-            <div class="item">
-              <div class="value">{{ coffeeItem.carbohydratesAmount && coffeeItem.carbohydratesAmount !== 'NaN' ? coffeeItem.carbohydratesAmount : 0 }}</div>
-              <div class="label">Углеводы, г</div>
+            <div class="text-center">
+              <div class="font-bold text-2xl">{{ coffeeItem.carbohydratesAmount && coffeeItem.carbohydratesAmount !== 'NaN' ? coffeeItem.carbohydratesAmount : 0 }}</div>
+              <div class="text-gray-600">Углеводы, г</div>
             </div>
           </div>
         </div>
       </form>
     </ion-content>
-    <ion-footer class="bg-white">
+    <ion-footer class="bg-white ">
       <ion-toolbar class="overview-footer" color="light">
-        <ion-button :disabled="coffeeItem && useCart && coffeeItem.price > 0 ? false : true" @click="addToCart" expand="block" type="submit" color="primary">
-          <div class="content">
-            <span><ion-icon :icon="cartOutline"></ion-icon>Заказать</span>
+        <ion-button :disabled="coffeeItem && useCart && coffeeItem.price > 0 ? false : true" @click="addToCart" expand="block" type="submit" color="primary" class="mt-4">
+          <div class="flex justify-between items-center text-black ">
+            <span  class="mr-5"><ion-icon :icon="cartOutline" style="margin-right: 12px;"></ion-icon>Заказать</span>
             <span>{{ calcPrice }} руб.</span>
           </div>
         </ion-button>

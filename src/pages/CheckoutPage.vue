@@ -100,10 +100,12 @@ import {
 } from '@ionic/vue';
 import AppFooter from "@/components/base/AppFooter.vue";
 import CheckoutModal from '../components/misc/CheckoutModal.vue';
+import BaseLayout from "@/components/base/BaseLayout.vue";
 
 
 export default {
   components: {
+    BaseLayout,
     IonItem,
     IonLabel,
     IonRadioGroup,

@@ -15,7 +15,7 @@
       <!-- Конец блока с ссылками для клиентов -->
       <!-- Блок обратной связи -->
       <div class="flex flex-col mb-4 md:mb-0">
-        <h2 class="mb-4 md:mb-8">ОБРАТНАЯ СВЯЗЬ</h2>
+        <h2 class="mb-4 md:mb-8 py-1">ОБРАТНАЯ СВЯЗЬ</h2>
         <ul class="list-none p-0">
           <li class="mb-2 md:mb-9"><router-link to="/review" class="text-white hover" style="white-space: nowrap;">Оставить отзыв</router-link></li>
           <li class="mb-2"><router-link to="/feedback" class="text-white hover" style="white-space: nowrap;">Сообщить о технической проблеме</router-link></li>
@@ -26,8 +26,8 @@
       <div class="w-full md:w-1/2 mb-8 md:mb-0  md:text-right ">
         <p class="text-white">{{ firstStorePhone || ' ' }}</p>
         <p v-for="(store, index) in stores" :key="index" class="store-name">{{ store.store_name }}</p>
-        <div class="flex justify-center md:justify-end mt-4 md:mt-8">
-          <a href="#" class="text-black mx-2">
+        <div class="flex justify-center md:justify-end mt-4 py-1 -mr-2 md:mt-8">
+          <a href="#" class="text-black mx-2 ">
             <img src="@/assets/img/telegram.png" alt="telegram" class="w-8 h-8" />
           </a>
           <a href="#" class="text-black mx-2">

@@ -45,7 +45,7 @@
         </div>
 
         <ion-label class="checkout-page-label" position="stacked">Выберите время доставки</ion-label>
-        <ion-radio-group v-model="checkedTime" name="timeuse" value="fast">
+        <ion-radio-group v-model="checkedTime" name="timeuse">
           <ion-item lines="none">
             <ion-label><span>Как можно скорее</span></ion-label>
             <ion-radio slot="start" name="fast" value="fast"></ion-radio>
@@ -88,43 +88,44 @@
 
 
 <script>
-import { alertController, modalController, toastController } from '@ionic/vue';
-import BaseLayout from "@/components/base/BaseLayout.vue";
+import {
+  IonItem,
+  IonLabel,
+  IonRadioGroup,
+  IonRadio,
+  IonDatetime,
+  alertController,
+  modalController,
+  toastController
+} from '@ionic/vue';
 import AppFooter from "@/components/base/AppFooter.vue";
-import { useRouter } from "vue-router";
-import ModalPl from "@/components/misc/ModalPl.vue";
+import CheckoutModal from '../components/misc/CheckoutModal.vue';
+
 
 export default {
   components: {
-    AppFooter,
-    BaseLayout,
+    IonItem,
+    IonLabel,
+    IonRadioGroup,
+    IonRadio,
+    IonDatetime,
+    AppFooter
   },
   data() {
     return {
       bonusPoints: '',
       checkedTime: 'fast',
       dataTime: '--:--',
-    };
-  },
-  setup() {
-    const router = useRouter();
-    return {
-      router,
-    };
-  },
-  async ionViewDidEnter() {
-    var today = new Date();
-    var hour = today.getHours();
-    today.setHours(hour + 1);
-    var later = today.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    this.dataTime = later;
-    console.log(later);
+
+    }
   },
   computed: {
     activeShop() {
       const activeShop = this.$store.getters.activeShop;
       const shops = this.$store.getters.shops;
-      if (!activeShop || shops.length <= 0) this.$store.dispatch('getStores', { setActiveShop: true });
+      if (!activeShop || shops.length <= 0) {
+        this.$store.dispatch('getStores', { setActiveShop: true });
+      }
       return this.$store.getters.activeShop;
     },
     cart() {
@@ -142,8 +143,9 @@ export default {
     bonus() {
       let bonus = this.$store.getters.bonus;
 
-      if (this.isAuthorized && bonus !== '') return bonus;
-      else if (this.isAuthorized && !bonus !== '') {
+      if (this.isAuthorized && bonus !== '') {
+        return bonus;
+      } else if (this.isAuthorized && !bonus !== '') {
         this.$store.dispatch('getBonuses', this.user.phone);
         return bonus;
       }
@@ -151,41 +153,14 @@ export default {
       return false;
     }
   },
-  unmounted() {
-    // this.$store.commit('clearState', 'bonus');
+  async ionViewDidEnter() {
+    var today = new Date();
+    var hour = today.getHours();
+    today.setHours(hour + 1);
+    var later = today.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    this.dataTime = later;
   },
   methods: {
-    async submitOrder(e) {
-      e.preventDefault();
-
-      const formData = new FormData(e.target);
-
-      try {
-        const response = await this.$store.dispatch('sendOrder', { order: Object.fromEntries(formData) });
-
-        if (response && response.status === "Success") {
-          const orderId = response.data.orderId;
-          this.$router.push({ name: 'OrderSuccess', params: { orderId: orderId } });
-        } else {
-          throw new Error('Не удалось оформить заказ. Получен неправильный ответ от сервера.');
-        }
-      } catch (error) {
-        console.error('Ошибка при отправке заказа:', error);
-        this.throwToast('Произошла ошибка при оформлении заказа. Пожалуйста, попробуйте еще раз позже.');
-      }
-    },
-    async openModal(code) {
-      const modal = await modalController.create({
-        component: ModalPl,
-        cssClass: 'my-custom-modal',
-        componentProps: {
-          code: code,
-        },
-      });
-
-      return modal.present();
-    },
-
     async changePhoneNumber() {
       const alert = await alertController.create({
         header: 'Изменить номер',
@@ -193,42 +168,149 @@ export default {
         buttons: [
           {
             text: 'Отмена',
-            role: 'cancel',
+            role: 'cancel'
           },
           {
             text: 'OK',
             handler: () => {
               this.$store.dispatch('logout');
               this.bonusPoints = 0;
-            },
-          },
-        ],
+            }
+          }
+        ]
       });
 
       await alert.present();
     },
+    async submitOrder(event, isTest = false) {
+      event.preventDefault();
 
-    async requestConfirmationCode() {
-      const checkoutForm = document.getElementById('checkout-form');
-      const formData = new FormData(checkoutForm);
+      if (!this.isNameFilled || !this.isPhoneFilled) {
+        this.throwToast('Заполните обязательные поля: Имя и Телефон');
+        return;
+      }
 
-      // Отправка запроса на подтверждение кода
-      const response = await this.$store.dispatch('requestConfirmationCode', { params: { phone: formData.get('phone') } });
+      let items = JSON.parse(JSON.stringify(this.cart));
+      let orderFields = {};
+      const formData = new FormData(event.target);
 
-      if (response) {
-        this.showConfirmationPrompt();
+      for (let key of formData.keys()) {
+        orderFields[key] = formData.get(key);
+      }
+
+      let timeDelivery = null;
+      if (this.dataTime) {
+        timeDelivery = this.dataTime;
+      }
+
+      orderFields = {
+        terminalGroupId: orderFields.terminalGroupId,
+        phone: orderFields.phone,
+        items: items,
+        customer: {
+          name: orderFields.name
+        },
+        time_delivery: timeDelivery,
+        cash: this.cartTotal - (parseFloat(orderFields.bonus) || 0),
+        bonus: parseFloat(orderFields.bonus) || 0
+      };
+
+      var today = new Date();
+      var hour = today.getHours();
+      today.setHours(hour + 1);
+      var later = today.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"});
+      var timeFrom = this.activeShop.time_from;
+      var timeTo = this.activeShop.time_to;
+
+      if (this.checkedTime === 'time') {
+        if (this.dataTime + ':00' < timeFrom) {
+          this.throwToast('Время заказа из данной точки начинается с ' + timeFrom);
+          return;
+        }
+        if (later > this.dataTime) {
+          this.throwToast('Время заказа должно быть выбрано минимум за час с начала заказа.');
+          return;
+        }
+        if (this.dataTime + ':00' > timeTo) {
+          this.throwToast('Время заказа из данной точки доступно до ' + timeTo);
+          return;
+        }
+      }
+
+      if (isTest) {
+        console.log(this.cartTotal);
+        console.log(this.dataTime);
+        console.log(orderFields.bonus);
+        this.throwToast('[DEV] Заказ успешно оформлен');
+        console.log(JSON.stringify(orderFields));
+        console.log(orderFields);
+        return;
+      }
+
+      const response = await this.$store.dispatch('sendOrder', {order: orderFields});
+
+      var orderId = 0;
+      console.log(response.errorMessage);
+      if (!response) {
+        this.throwToast('Возникла непредвиденная ошибка');
+      } else if (response.status == "Error") {
+        this.throwToast('Ошибка: ' + response.message + response.errorMessage);
+      } else if (response.errorMessage == 'Доступ запрещён') {
+        this.throwToast('Ошибка: ' + response.errorMessage);
       } else {
-        this.throwToast('Не удалось отправить код подтверждения');
+        if (response.data.link !== undefined) {
+          orderId = response.data.orderId;
+          const modal = await modalController.create({
+            component: CheckoutModal,
+            componentProps: {
+              title: 'Оплата',
+              src: response.data.link
+            }
+          });
+
+          await modal.present();
+
+          modal.onDidDismiss().then((data) => {
+            if (data.data.isPaymentSuccessful !== undefined) {
+              this.router.push({
+                name: 'Result',
+                query: (data.data.isPaymentSuccessful ? {response, orderId: orderId} : {orderId: orderId})
+              });
+            }
+          });
+        }
+        await this.router.push({name: 'Result', query: {response, orderId: orderId}});
       }
     },
+    async authorize(params) {
+      const response = await this.$store.dispatch('login', {params: params});
 
-    async showConfirmationPrompt() {
+      if (response) {
+        this.throwToast(response.message === 'Sign-up' ? 'Регистрация выполнена успешно' : 'С возвращением!');
+      } else {
+        this.throwToast('Ошибка подтверждения номера');
+      }
+    },
+    async showConfirmationPrompt(params, hasError = false) {
       const alert = await alertController.create({
         cssClass: 'auth-code-prompt',
         header: 'Подтверждение',
+        subHeader: hasError ? 'Код неверен' : '',
         message: 'Введите код из SMS',
         backdropDismiss: false,
         inputs: [
+          {
+            name: 'name',
+            type: 'text',
+            cssClass: 'hidden',
+            value: params.name
+          },
+          {
+            name: 'phone',
+            type: 'phone',
+            cssClass: 'hidden',
+            value: params.phone
+          },
           {
             name: 'code',
             placeholder: '1234',
@@ -236,79 +318,81 @@ export default {
             attributes: {
               maxlength: 4,
               inputmode: 'numeric',
-              enterkeyhint: 'done',
-            },
-          },
+              enterkeyhint: 'done'
+            }
+          }
         ],
         buttons: [
           {
             text: 'Отмена',
-            role: 'cancel',
+            role: 'cancel'
           },
           {
             text: 'Отправить',
             handler: (fields) => {
-              this.sendConfirmationCode(fields.code);
-            },
-          },
-        ],
+              this.sendConfirmationCode(fields);
+            }
+          }
+        ]
       });
 
       await alert.present();
     },
-
-    async sendConfirmationCode(code) {
-      const response = await this.$store.dispatch('sendConfirmationCode', { params: { phone: this.user.phone, code: code } });
-
-      if (response) {
-        this.throwToast('Телефон подтвержден');
-      } else {
-        this.throwToast('Неверный код подтверждения');
-      }
-    },
-
-    async throwToast(message) {
-      const toast = await toastController.create({
-        message: message,
-        position: 'bottom',
-        cssClass: 'toast-mb',
-        mode: 'md',
-        duration: 3000,
-      });
-
-      toast.present();
-    },
-
-    format(e) {
-      const elem = e.target;
-      const val = this.doFormat(elem.value, "***********");
-      elem.value = val;
-    },
-
-    doFormat(x, pattern) {
-      var strippedValue = x.replace(/[^0-9]/g, "");
-      var chars = strippedValue.split('');
-      var count = 0;
-      var formatted = '';
-
-      for (var i = 0; i < pattern.length; i++) {
-        const c = pattern[i];
-        if (chars[count]) {
-          if (/\*/.test(c)) {
-            formatted += chars[count];
-            count++;
-          } else {
-            formatted += c;
-          }
+    async sendConfirmationCode(params) {
+      const response = await this.$store.dispatch('sendConfirmationCode', {
+        params: {
+          phone: params.phone,
+          code: params.code
         }
+      });
+      if (response) {
+        this.authorize(params);
+      } else {
+        this.showConfirmationPrompt(params, true);
+      }
+    },
+    async requestConfirmationCode() {
+      const checkoutForm = document.getElementById('checkout-form');
+      const formData = new FormData(checkoutForm);
+      let formFields = {};
+
+      for (let key of formData.keys()) {
+        formFields[key] = formData.get(key).trim();
       }
 
-      if (formatted.length > 0) {
-        formatted = '7' + formatted.substring(1);
+      if (formFields['name'].length > 0 && formFields['phone'].length > 0) {
+        const response = await this.$store.dispatch('requestConfirmationCode', {params: {phone: formFields.phone}});
+        if (response) {
+          this.showConfirmationPrompt(formFields);
+        } else {
+          this.throwToast('Не удалось отправить код подтверждения');
+        }
+      } else {
+        this.throwToast('Заполните обязательные поля: Имя и Телефон');
       }
-
-      return formatted;
+    },
+    throwToast(message) {
+      toastController.create({
+        message: message,
+        duration: 3000,
+        color: 'danger'
+      }).then(toast => {
+        toast.present();
+      });
+    },
+    async openModal(type) {
+      if (type === 'policy') {
+        const modal = await modalController.create({
+          component: CheckoutModal,
+          componentProps: {
+            title: 'Условия использования и персональные данные'
+          }
+        });
+        await modal.present();
+      }
     }
-  },
+  }
 };
 </script>
+
+

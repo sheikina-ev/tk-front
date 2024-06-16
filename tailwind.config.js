@@ -18,7 +18,8 @@ module.exports = {
                 '227': '227px',
             },
             colors: {
-                'custom-color': '#f9d9b8',
+                'custom-color': '#F9D9B8',
+                'custom-color1': '#61473B',
             },
             borderRadius: {
                 'custom-radius': '1px',

@@ -17,7 +17,7 @@
                 <span v-else>Точка не выбрана</span>
                 <div
                     v-if="showAddresses"
-                    class="addresses absolute bg-custom-color1 rounded-md w-48 top-full left-0 shadow-lg "
+                    class="addresses absolute  rounded-md w-48 top-full left-0 shadow-lg "
                     ref="addresses"
                 >
                   <ul v-if="activeShop" class="list-none p-0 m-0">
@@ -35,7 +35,7 @@
                         v-for="shop in shops"
                         :key="shop.id"
                         @click="selectShop(shop)"
-                        class="px-4 py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-300"
+                        class="px-4 py-2 border bg-gray-50 rounded-md cursor-pointer hover:bg-custom-color1"
                     >
                       {{ shop.store_name }}
                     </li>

@@ -1,44 +1,44 @@
 <template>
-  <div class="flex flex-col md:flex-row justify-between items-center p-5 bg-brown-800 text-white" style="background-color: #553b2f; height: 333px; padding-left: 315px; padding-right: 315px;">
-    <div class="flex justify-center md:mb-0">
-      <img src="@/assets/img/logo.png" alt="Logo" class="w-[188px] h-[248px]" style="width: 190px; height: 198px" />
+  <div class="flex flex-col md:flex-row justify-between items-center p-5 text-white md:px-32 md:py-10" style="background-color: #553b2f;">
+    <div class="flex justify-center ml-44 mb-4 md:mb-0">
+      <img src="@/assets/img/logo.png" alt="Logo" class="w-48 h-52 md:w-60 md:h-60" />
     </div>
-    <div class="flex-2 flex md:flex-row w-full md:w-auto">
+    <div class="flex flex-col md:flex-row w-full md:w-auto md:space-x-297 md:mr-44">
       <!-- Блок с ссылками для клиентов -->
-      <div class="flex flex-col  mb-4 md:mb-0" style="margin-right: 270px;">
-        <h2 class="mb-8 py-1">КЛИЕНТАМ</h2>
+      <div class="flex flex-col mb-4 md:mb-0 ">
+        <h2 class="mb-4 md:mb-8 py-1">КЛИЕНТАМ</h2>
         <ul class="list-none p-0">
-          <li class="mb-8"><router-link to="/" class="text-white hover">Меню</router-link></li>
+          <li class="mb-2 md:mb-8"><router-link to="/" class="text-white hover">Меню</router-link></li>
           <li class="mb-2"><router-link to="/cart" class="text-white hover">Корзина</router-link></li>
         </ul>
       </div>
       <!-- Конец блока с ссылками для клиентов -->
       <!-- Блок обратной связи -->
-      <div class="flex flex-col  mb-4 md:mb-0" style="margin-right: 270px;">
-        <h2 class="mb-8 ">ОБРАТНАЯ СВЯЗЬ</h2>
+      <div class="flex flex-col mb-4 md:mb-0">
+        <h2 class="mb-4 md:mb-8">ОБРАТНАЯ СВЯЗЬ</h2>
         <ul class="list-none p-0">
-          <li class="mb-9"><router-link to="/review" class="text-white hover" style="white-space: nowrap;">Оставить отзыв</router-link></li>
+          <li class="mb-2 md:mb-9"><router-link to="/review" class="text-white hover" style="white-space: nowrap;">Оставить отзыв</router-link></li>
           <li class="mb-2"><router-link to="/feedback" class="text-white hover" style="white-space: nowrap;">Сообщить о технической проблеме</router-link></li>
         </ul>
       </div>
       <!-- Конец блока обратной связи -->
       <!-- Блок с контактной информацией -->
-      <div class="w-full md:w-1/2 mb-8 md:mb-0 " style="text-align: end">
+      <div class="w-full md:w-1/2 mb-8 md:mb-0  md:text-right ">
         <p class="text-white">{{ firstStorePhone || ' ' }}</p>
         <p v-for="(store, index) in stores" :key="index" class="store-name">{{ store.store_name }}</p>
-        <div class="flex  mt-8" >
-          <a href="#" class="text-black " style="width: 52px; height: 30px;text-align: end " >
-            <img src="@/assets/img/telegram.png" alt="telegram"   height="42" width="41" style="margin-left: 20px"/>
+        <div class="flex justify-center md:justify-end mt-4 md:mt-8">
+          <a href="#" class="text-black mx-2">
+            <img src="@/assets/img/telegram.png" alt="telegram" class="w-8 h-8" />
           </a>
-          <a href="#" class=" text-black " style="width: 52px; height: 30px;">
-            <img src="@/assets/img/vk.png" alt="vk" height="42" width="42"  style="margin-left: 20px"/>
+          <a href="#" class="text-black mx-2">
+            <img src="@/assets/img/vk.png" alt="vk" class="w-8 h-8" />
           </a>
         </div>
       </div>
       <!-- Конец блока с контактной информацией -->
     </div>
   </div>
-  <div class="flex justify-end -mt-8 text-white"  style="margin-right: 314px; opacity: 0.8">
+  <div class="flex justify-center md:justify-end  -mt-14 text-white opacity-80  md:mr-297">
     <p>Разработано Sibcode</p>
   </div>
 </template>
@@ -67,9 +67,9 @@ export default {
   }
 }
 </script>
+
 <style>
 .hover:hover {
   color: #F9D9B8;
 }
-
 </style>

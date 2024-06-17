@@ -1,4 +1,5 @@
 <template>
+  <!-- можно будет удалить-->
 	<base-layout page-title="Наши акции">
 		<ion-refresher slot="fixed" @ionRefresh="doRefresh">
 			<ion-refresher-content></ion-refresher-content>
@@ -19,6 +20,7 @@
 		</div>
 	</base-layout>
 </template>
+<!-- можно будет удалить-->
 
 <script>
 import { IonGrid, IonRow, IonRefresher, IonRefresherContent } from '@ionic/vue';

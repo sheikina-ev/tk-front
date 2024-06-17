@@ -17,7 +17,7 @@
 	<div v-else class="coffee-info-container">
 		<ion-skeleton-text animated></ion-skeleton-text>
 	</div>
-	
+
 	<div v-if="coffeeItem.options && coffeeItem.options.length > 0" class="coffee-modifiers-container">
 		<ion-list v-for="groups in coffeeItem.options" :key="groups.id">
 			<ion-radio-group @ionChange="setRadioOption" name="options" :allow-empty-selection="groups.min_amount === 1 || groups.required ? `false` : `true`" v-if="groups.max_amount === 1" :value="groups.min_amount === 1 || groups.required ? groups.values[0].id : ``">

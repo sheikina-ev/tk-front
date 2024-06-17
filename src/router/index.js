@@ -1,9 +1,6 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { menuController } from '@ionic/vue';
 
-// import store from '../store/index.js';
-import SplashPage from '../pages/SplashPage.vue';
-import AuthorizationPage from '../pages/AuthorizationPage.vue';
 import CoffeePage from '../pages/CoffeePage.vue';
 import CartPage from '../pages/CartPage.vue';
 import CheckoutPage from '../pages/CheckoutPage.vue';
@@ -14,24 +11,13 @@ import ReviewPage from '../pages/ReviewPage.vue';
 import FeedbackPage from '../pages/FeedbackPage.vue';
 import DeletePage from '../pages/DeletePage.vue';
 import ShopPickPage from '../pages/ShopPickPage.vue';
-
 import TestPage from '../pages/TestPage.vue';
 
+// Добавляем импорт компонента модального окна
+import NotFoundPage from "@/pages/NotFoundPage.vue";
+import CoffeeDetail from "@/pages/CoffeeDetail.vue";
+
 const routes = [
-	{
-		path: '/',
-		component: SplashPage,
-		meta: {
-			isMenuDisabled: true
-		}
-	},
-	{
-		path: '/auth',
-		component: AuthorizationPage,
-		meta: {
-			isMenuDisabled: true
-		}
-	},
 	{
 		path: '/shop',
 		component: ShopPickPage,
@@ -40,16 +26,19 @@ const routes = [
 		}
 	},
 	{
-		path: '/coffee',
+		path: '/',
 		component: CoffeePage
 	},
+
 	{
 		path: '/coffee/:id',
-		component: () => import('../pages/CoffeeDetail.vue'),
+		component: CoffeeDetail,
 		meta: {
-			isMenuDisabled: true
+			isModal: true
 		}
 	},
+
+
 	{
 		path: '/cart',
 		component: CartPage
@@ -58,9 +47,10 @@ const routes = [
 		path: '/checkout',
 		component: CheckoutPage
 	},
+
 	{
-		path: '/result',
-		name: 'Result',
+		path: '/order-success',
+		name: 'OrderSuccess',
 		component: CheckoutResultPage,
 	},
 	{
@@ -86,36 +76,41 @@ const routes = [
 	{
 		path: '/test',
 		component: TestPage
+	},
+	/*
+	{
+		path: '/coffee/:id',
+		component: Modal,
+		meta: {
+			isModal: true
+		}
+	},
+	*/
+	{
+		path: '/:catchAll(.*)',
+		component: NotFoundPage // Перенаправление на страницу 404 для всех несуществующих маршрутов
 	}
-]
+
+];
 
 const router = createRouter({
 	history: createWebHistory(process.env.BASE_URL),
 	routes
 });
+
 const mainMenuId = 'main';
 
 router.beforeEach(async (to, from, next) => {
-	if(to.matched.some(record => record.meta.isMenuDisabled)) {
-		if(menuController.isEnabled(mainMenuId)) {
+	if (to.matched.some(record => record.meta.isMenuDisabled)) {
+		if (menuController.isEnabled(mainMenuId)) {
 			await menuController.close(mainMenuId);
 			await menuController.enable(false, mainMenuId);
 		}
 		next();
-		/* if(store.getters.isAuthorized) {
-			next({
-				path: '/shop',
-				query: {isAuthorized: true}
-			})
-		} else {
-			next({
-				path: '/auth'
-			});
-		} */
 	} else {
 		await menuController.enable(true, 'main');
 		next();
 	}
 });
 
-export default router
+export default router;

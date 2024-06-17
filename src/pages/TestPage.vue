@@ -7,9 +7,10 @@
 <script>
 import { IonButton } from '@ionic/vue';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import BaseLayout from "@/components/base/BaseLayout.vue";
 
 export default {
-	components: { IonButton },
+	components: {BaseLayout, IonButton },
 	methods: {
 		openBrowser() {
 			const iab = InAppBrowser;

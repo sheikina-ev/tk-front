@@ -114,7 +114,7 @@ export default {
 
       if (response) {
         this.throwToast(response.message === 'Sign-up' ? 'Регистрация выполнена успешно' : 'С возвращением!');
-        this.router.replace('/');
+        this.router.replace('/profile');
       } else {
         this.throwToast('Ошибка авторизации');
       }

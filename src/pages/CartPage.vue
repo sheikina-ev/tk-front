@@ -14,6 +14,7 @@
                   <div v-if="cartItem.modifiers && cartItem.modifiers.length > 0" class="mt-4 mb-4">
                     <h1 class="font-bold text-lg mb-2">Добавки</h1>
                     <span v-for="(modifier, index) in cartItem.modifiers" :key="getModifierKey(cartItem, modifier, index)">
+
                       <span v-if="modifier.name">{{ modifier.name }}{{ index !== cartItem.modifiers.length - 1 ? ', ' : '' }}</span>
                     </span>
                   </div>
@@ -79,7 +80,12 @@ export default {
       addCircleOutline
     }
   },
-  computed: {
+  async mounted() {
+      this.$store.dispatch('loadStateFromStorage');  // Загружаем сохраненные данные
+    this.$store.commit('calculateCartTotal');      // Пересчитываем сумму корзины
+
+  },
+      computed: {
     cart() {
       return this.$store.getters.cart;
     },

@@ -17,24 +17,33 @@ export default {
     CoffeeList
   },
   async mounted() {
-    const response = this.$store.dispatch('getCategories');
+    try {
+      this.$store.dispatch('loadStateFromStorage');  // Загружаем сохраненные данные
 
-    if(response) {
-      // All good
-    } else {
-      // Not good
+      // Асинхронный вызов для получения категорий
+      const response = await this.$store.dispatch('getCategories');
+
+      if (response) {
+        // Все успешно
+        console.log('Categories fetched:', response);
+      } else {
+        // Обработка ошибки, если данные не были получены
+        console.error('Failed to fetch categories');
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
     }
   },
   computed: {
     sections() {
-      return this.$store.getters.sections;
+      return this.$store.getters.sections;  // Список категорий
     },
     activeSection() {
-      return this.$store.getters.activeSection;
+      return this.$store.getters.activeSection;  // Активная категория
     },
     activeShop() {
-      return this.$store.getters.activeShop;
+      return this.$store.getters.activeShop;  // Информация о магазине (если есть)
     }
   }
-}
+};
 </script>

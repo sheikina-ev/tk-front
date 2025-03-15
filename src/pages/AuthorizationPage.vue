@@ -1,200 +1,225 @@
 <template>
-  <base-layout page-title="Вход">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-center items-center min-h-screen">
-      <div class="auth-container bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-        <h1 class="text-xl font-extrabold mb-6 text-center">Вход в профиль</h1>
-        <p class="text-gray-600 text-center mb-6">Войдите, чтобы заказывать кофе заранее и пользоваться нашими акциями!</p>
+  <ion-page id="main">
+    <base-layout page-title="Вход">
 
-        <!-- Ввод номера и имени -->
-        <form v-if="step === 1" @submit.prevent="requestConfirmationCode">
-          <div class="mb-4">
-            <label class="block text-gray-700 font-medium mb-2">Введите свой номер телефона</label>
-            <ion-input
-                v-model="phone"
-                class="w-full px-4 py-2 border rounded-lg focus:border-custom-color focus:ring-2 focus:ring-custom-color"
-                placeholder="+7 (___) ___-__-__"
-                type="tel"
-                required>
-            </ion-input>
-          </div>
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-center items-center min-h-screen">
+        <div class="auth-container bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+        <form @submit="requestConfirmationCode">
+          <h1 class="text-xl font-extrabold mb-6 text-center">Вход в профиль</h1>
 
-          <div class="mb-6">
-            <label class="block text-gray-700 font-medium mb-2">Как Вас зовут?</label>
-            <ion-input
-                v-model="name"
-                class="w-full px-4 py-2 border rounded-lg focus:border-custom-color focus:ring-2 focus:ring-custom-color"
-                type="text"
-                required>
-            </ion-input>
-          </div>
+          <p class="text-gray-600 text-center mb-6">Войдите, чтобы заказывать кофе заранее и пользоваться нашими акциями!</p>
 
-          <button
-              class="w-full bg-custom-color text-white text-sm font-medium py-3 rounded-full hover:bg-opacity-80 transition"
-              type="submit">
-            Получить код
-          </button>
+          <!-- Ввод номера телефона -->
+          <ion-label class="auth-input-label" position="stacked">Введите свой номер телефона</ion-label>
+          <ion-input color="dark" class="auth-input mb-4 p-3 border rounded-lg w-full" name="phone" @ionChange="format" placeholder="+ 7 ( ___ ) ___- __- __" autocomplete="tel" type="tel" required="true" :value="user.phone"></ion-input>
+
+          <!-- Ввод имени -->
+          <ion-label class="auth-input-label" position="stacked">Как Вас зовут?</ion-label>
+          <ion-input color="dark" class="auth-input mb-6 p-3 border rounded-lg w-full" name="name" autocomplete="name" type="text" required="true" :value="user.name"></ion-input>
+
+          <!-- Кнопки -->
+          <ion-button  class="w-full bg-custom-color text-white text-sm font-medium  rounded-full hover:bg-opacity-80 transition"
+                       type="submit">
+            Войти по номеру телефона</ion-button>
         </form>
 
-        <!-- Ввод кода из SMS -->
-        <form v-if="step === 2" @submit.prevent="sendConfirmationCode">
-          <div class="mb-4">
-            <label class="block text-gray-700 font-medium mb-2">Введите код из SMS</label>
-            <ion-input
-                v-model="smsCode"
-                class="w-full px-4 py-2 border rounded-lg focus:border-custom-color focus:ring-2 focus:ring-custom-color"
-                placeholder="1234"
-                type="number"
-                required>
-            </ion-input>
-          </div>
+        <!-- Ссылка на условия -->
+          <div class="mt-6 text-center">
+          <div class="bottom-link-wrap flex justify-center mt-4">
+          <a @click="openPolicyModal"  class="text-xs text-gray-500 hover:underline cursor-pointer">
 
-          <button
-              class="w-full bg-custom-color text-white text-sm font-medium py-3 rounded-full hover:bg-opacity-80 transition"
-              type="submit">
-            Подтвердить
-          </button>
-        </form>
-
-        <div class="mt-6 text-center">
-          <a @click="openModal" class="text-xs text-gray-500 hover:underline cursor-pointer">
-            Обработка персональных данных
-          </a>
+          Обработка персональных данных</a>
         </div>
+          </div>
       </div>
-    </div>
+      </div>
+      <!-- Модалка для обработки персональных данных -->
+      <ion-modal :is-open="isPolicyModalOpen" @didDismiss="closePolicyModal">
+        <div class="modal-content p-6 bg-white rounded-lg shadow-lg text-center">
+          <h2 class="text-lg font-bold mb-4">Обработка персональных данных</h2>
+          <p class="text-sm text-gray-600 text-left">
+            Мы заботимся о безопасности ваших данных и соблюдаем требования законодательства о защите персональной информации.
+            <br><br>
+            При использовании нашего сервиса мы можем собирать и обрабатывать следующие данные:
+          </p>
+          <ul class="text-sm text-gray-600 text-left mt-2 list-disc pl-6">
+            <li>Ваше имя и номер телефона для идентификации и авторизации.</li>
+            <li>Историю заказов и предпочтения для улучшения сервиса.</li>
+            <li>Данные об использовании приложения для анализа и улучшения пользовательского опыта.</li>
+          </ul>
+          <p class="text-sm text-gray-600 text-left mt-4">
+            Мы не передаем ваши данные третьим лицам без вашего согласия и используем их только в целях предоставления сервиса.
+            <br><br>
+            Полную информацию о политике обработки персональных данных вы можете найти в
+            <a href="#" class="text-blue-500 underline">Политике конфиденциальности</a>.
+          </p>
+          <button class="mt-4 w-full bg-gray-700 text-white py-2 rounded-lg" @click="closePolicyModal">
+            Закрыть
+          </button>
+        </div>
+      </ion-modal>
 
-    <!-- Модальное окно -->
-    <ion-modal :is-open="isModalOpen" @didDismiss="closeModal">
-      <div class="modal-content p-6 bg-white rounded-lg">
-        <h2 class="text-lg font-bold mb-4">Обработка персональных данных</h2>
-        <p class="text-sm text-gray-600">
-          Мы собираем и храним ваши данные в соответствии с законодательством...
-        </p>
-        <button class="mt-4 w-full bg-gray-700 text-white py-2 rounded-lg" @click="closeModal">Закрыть</button>
-      </div>
-    </ion-modal>
-  </base-layout>
+
+    </base-layout>
+  </ion-page>
 </template>
 
 <script>
-import { IonInput, IonModal } from '@ionic/vue';
+import { IonPage, IonLabel, IonInput, IonButton, IonModal, alertController, toastController } from '@ionic/vue';
+import { useRouter } from 'vue-router';
 import BaseLayout from "@/components/base/BaseLayout.vue";
 
 export default {
   components: {
     BaseLayout,
+    IonPage,
+    IonLabel,
     IonInput,
+    IonButton,
     IonModal
+  },
+  setup() {
+    const router = useRouter();
+    return { router };
   },
   data() {
     return {
-      phone: '',
-      name: '',
-      smsCode: '',
-      isModalOpen: false,
-      step: 1, // 1 - Ввод номера и имени, 2 - Ввод кода
+      isPolicyModalOpen: false
     };
   },
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    }
+  },
   methods: {
-    formatPhoneNumber(phone) {
-      return phone.replace(/^8/, "+7"); // Заменяем 8 на +7
+    openPolicyModal() {
+      this.isPolicyModalOpen = true;
     },
-
-    async requestConfirmationCode() {
-      if (!this.phone || !this.name) {
-        alert('Введите корректные данные');
-        return;
-      }
-
-      const formattedPhone = this.formatPhoneNumber(this.phone);
-
-      try {
-        const response = await this.$store.dispatch('requestConfirmationCode', {params: {phone: formattedPhone}});
-        console.log("Ответ API (SMS):", response);
-
-        if (response?.status === 'OK') {
-          this.step = 2; // Переключаем на ввод кода
-        } else {
-          alert(response?.message || 'Ошибка отправки SMS');
-        }
-      } catch (error) {
-        console.error("Ошибка при отправке SMS:", error);
-        alert('Ошибка отправки SMS. Попробуйте снова.');
-      }
+    closePolicyModal() {
+      this.isPolicyModalOpen = false;
     },
+    async throwToast(message) {
+      const toast = await toastController.create({
+        message: message,
+        cssClass: 'toast-mb',
+        mode: 'md',
+        duration: 3000,
+      });
 
-    async sendConfirmationCode() {
-      if (!this.smsCode) {
-        alert('Введите код из SMS');
-        return;
-      }
-
-      try {
-        const response = await this.$store.dispatch('sendConfirmationCode', {
-          params: {
-            phone: this.formatPhoneNumber(this.phone),
-            code: this.smsCode
-          }
-        });
-
-        console.log("Ответ API (Проверка кода):", response);
-
-        if (response?.status === 'OK') {
-          this.authorize();
-        } else {
-          alert(response?.message || 'Неверный код');
-        }
-      } catch (error) {
-        console.error("Ошибка при проверке кода:", error);
-        alert('Ошибка проверки кода. Попробуйте снова.');
-      }
+      toast.present();
     },
+    async authorize(params) {
+      const response = await this.$store.dispatch('login', { params: params });
 
-    async authorize() {
-      console.log("Отправка авторизационного запроса:", this.phone, this.name);
-      const response = await this.$store.dispatch('login', {phone: this.phone, name: this.name});
-      console.log("Ответ API (Авторизация):", response);
-
-      if (response?.success) {
-        this.$router.push('/');
+      if (response) {
+        this.throwToast(response.message === 'Sign-up' ? 'Регистрация выполнена успешно' : 'С возвращением!');
+        this.router.replace('/');
       } else {
-        alert('Ошибка авторизации');
+        this.throwToast('Ошибка авторизации');
       }
+    },
+    async showConfirmationPrompt(params, message = '') {
+      const alert = await alertController.create({
+        cssClass: 'auth-code-prompt',
+        header: 'Подтверждение',
+        subHeader: message,
+        message: 'Введите код из SMS',
+        backdropDismiss: false,
+        inputs: [
+          {
+            name: 'name',
+            type: 'text',
+            cssClass: 'hidden',
+            value: params.name
+          },
+          {
+            name: 'phone',
+            type: 'phone',
+            cssClass: 'hidden',
+            value: params.phone
+          },
+          {
+            name: 'code',
+            placeholder: '1234',
+            type: 'number',
+            attributes: {
+              maxlength: 4,
+              inputmode: 'numeric',
+              enterkeyhint: 'done'
+            }
+          }
+        ],
+        buttons: [
+          {
+            text: 'Отмена',
+            role: 'cancel'
+          },
+          {
+            text: 'Отправить',
+            handler: (fields) => {
+              this.sendConfirmationCode(fields);
+            }
+          }
+        ]
+      });
 
-      try {
-        const response = await this.$store.dispatch('login', {
-          phone: this.formatPhoneNumber(this.phone),
-          name: this.name
-        });
+      return alert.present();
+    },
+    async sendConfirmationCode(params) {
+      console.log("Отправляем код для подтверждения:", params);
 
-        console.log("Ответ API (Авторизация):", response);
-
-        if (response?.success) {
-          this.$router.push('/');
-        } else {
-          alert(response?.message || 'Ошибка авторизации');
+      const response = await this.$store.dispatch('sendConfirmationCode', {
+        params: {
+          phone: params.phone,
+          code: params.code
         }
-      } catch (error) {
-        console.error("Ошибка авторизации:", error);
-        alert('Ошибка авторизации. Попробуйте снова.');
+      });
+
+      if (response) {
+        console.log("Ответ от сервера (проверка кода):", response);
+
+        if (response.status === 'OK') {
+          this.authorize(params);
+        } else {
+          this.showConfirmationPrompt(params, 'Код неверен');
+        }
+      } else {
+        this.throwToast('Проверьте подключение к интернету или повторите попытку позже');
+        this.showConfirmationPrompt(params);
       }
     },
+    async requestConfirmationCode(e) {
+      e.preventDefault();
 
-    openModal() {
-      this.isModalOpen = true;
-    },
+      var params = {};
+      const formData = new FormData(e.target);
 
-    closeModal() {
-      this.isModalOpen = false;
+      for (var key of formData.keys()) {
+        params[key] = formData.get(key);
+      }
+
+      console.log('Параметры для отправки на сервер:', params);
+
+      const response = await this.$store.dispatch('requestConfirmationCode', { params: { phone: params.phone } });
+      if (response) {
+        console.log('Ответ от сервера (запрос кода):', response);
+
+        if (response.status === 'OK') {
+          this.showConfirmationPrompt(params);
+        } else {
+          this.throwToast('Проверьте введённые данные');
+        }
+      } else {
+        this.throwToast('Проверьте подключение к интернету или повторите попытку позже');
+      }
     }
   }
-};
+}
 </script>
 
+
 <style scoped>
-.auth-container {
-  min-height: 400px;
-}
 
 .modal-content {
   max-width: 400px;

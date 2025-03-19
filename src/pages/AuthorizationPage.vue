@@ -4,41 +4,48 @@
 
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-center items-center min-h-screen">
         <div class="auth-container bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-        <form @submit="requestConfirmationCode">
-          <h1 class="text-xl font-extrabold mb-6 text-center">Вход в профиль</h1>
+          <form @submit="requestConfirmationCode">
+            <h1 class="text-xl font-extrabold mb-6 text-center">Вход в профиль</h1>
 
-          <p class="text-gray-600 text-center mb-6">Войдите, чтобы заказывать кофе заранее и пользоваться нашими акциями!</p>
+            <p class="text-gray-600 text-center mb-6">Войдите, чтобы заказывать кофе заранее и пользоваться нашими
+              акциями!</p>
 
-          <!-- Ввод номера телефона -->
-          <ion-label class="auth-input-label" position="stacked">Введите свой номер телефона</ion-label>
-          <ion-input color="dark" class="auth-input mb-4 p-3 border rounded-lg w-full" name="phone" @ionChange="format" placeholder="+ 7 ( ___ ) ___- __- __" autocomplete="tel" type="tel" required="true" :value="user.phone"></ion-input>
+            <!-- Ввод номера телефона -->
+            <ion-label class="auth-input-label" position="stacked">Введите свой номер телефона</ion-label>
+            <ion-input color="dark" class="auth-input mb-4 p-3 border rounded-lg w-full" name="phone"
+                       @ionChange="format" placeholder="+ 7 ( ___ ) ___- __- __" autocomplete="tel" type="tel"
+                       required="true" :value="user?.phone"></ion-input>
 
-          <!-- Ввод имени -->
-          <ion-label class="auth-input-label" position="stacked">Как Вас зовут?</ion-label>
-          <ion-input color="dark" class="auth-input mb-6 p-3 border rounded-lg w-full" name="name" autocomplete="name" type="text" required="true" :value="user.name"></ion-input>
+            <!-- Ввод имени -->
+            <ion-label class="auth-input-label" position="stacked">Как Вас зовут?</ion-label>
+            <ion-input color="dark" class="auth-input mb-6 p-3 border rounded-lg w-full" name="name" autocomplete="name"
+                       type="text" required="true" :value="user?.name"></ion-input>
 
-          <!-- Кнопки -->
-          <ion-button  class="w-full bg-custom-color text-white text-sm font-medium  rounded-full hover:bg-opacity-80 transition"
-                       type="submit">
-            Войти по номеру телефона</ion-button>
-        </form>
+            <!-- Кнопки -->
+            <ion-button
+                class="w-full bg-custom-color text-white text-sm font-medium  rounded-full hover:bg-opacity-80 transition"
+                type="submit">
+              Войти по номеру телефона
+            </ion-button>
+          </form>
 
-        <!-- Ссылка на условия -->
+          <!-- Ссылка на условия -->
           <div class="mt-6 text-center">
-          <div class="bottom-link-wrap flex justify-center mt-4">
-          <a @click="openPolicyModal"  class="text-xs text-gray-500 hover:underline cursor-pointer">
+            <div class="bottom-link-wrap flex justify-center mt-4">
+              <a @click="openPolicyModal" class="text-xs text-gray-500 hover:underline cursor-pointer">
 
-          Обработка персональных данных</a>
-        </div>
+                Обработка персональных данных</a>
+            </div>
           </div>
-      </div>
+        </div>
       </div>
       <!-- Модалка для обработки персональных данных -->
       <ion-modal :is-open="isPolicyModalOpen" @didDismiss="closePolicyModal">
         <div class="modal-content p-6 bg-white rounded-lg shadow-lg text-center">
           <h2 class="text-lg font-bold mb-4">Обработка персональных данных</h2>
           <p class="text-sm text-gray-600 text-left">
-            Мы заботимся о безопасности ваших данных и соблюдаем требования законодательства о защите персональной информации.
+            Мы заботимся о безопасности ваших данных и соблюдаем требования законодательства о защите персональной
+            информации.
             <br><br>
             При использовании нашего сервиса мы можем собирать и обрабатывать следующие данные:
           </p>
@@ -48,7 +55,8 @@
             <li>Данные об использовании приложения для анализа и улучшения пользовательского опыта.</li>
           </ul>
           <p class="text-sm text-gray-600 text-left mt-4">
-            Мы не передаем ваши данные третьим лицам без вашего согласия и используем их только в целях предоставления сервиса.
+            Мы не передаем ваши данные третьим лицам без вашего согласия и используем их только в целях предоставления
+            сервиса.
             <br><br>
             Полную информацию о политике обработки персональных данных вы можете найти в
             <a href="#" class="text-blue-500 underline">Политике конфиденциальности</a>.
@@ -65,8 +73,8 @@
 </template>
 
 <script>
-import { IonPage, IonLabel, IonInput, IonButton, IonModal, alertController, toastController } from '@ionic/vue';
-import { useRouter } from 'vue-router';
+import {IonPage, IonLabel, IonInput, IonButton, IonModal, alertController, toastController} from '@ionic/vue';
+import {useRouter} from 'vue-router';
 import BaseLayout from "@/components/base/BaseLayout.vue";
 
 export default {
@@ -80,7 +88,7 @@ export default {
   },
   setup() {
     const router = useRouter();
-    return { router };
+    return {router};
   },
   data() {
     return {
@@ -110,7 +118,7 @@ export default {
       toast.present();
     },
     async authorize(params) {
-      const response = await this.$store.dispatch('login', { params: params });
+      const response = await this.$store.dispatch('login', {params: params});
 
       if (response) {
         this.throwToast(response.message === 'Sign-up' ? 'Регистрация выполнена успешно' : 'С возвращением!');
@@ -201,7 +209,7 @@ export default {
 
       console.log('Параметры для отправки на сервер:', params);
 
-      const response = await this.$store.dispatch('requestConfirmationCode', { params: { phone: params.phone } });
+      const response = await this.$store.dispatch('requestConfirmationCode', {params: {phone: params.phone}});
       if (response) {
         console.log('Ответ от сервера (запрос кода):', response);
 

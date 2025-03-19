@@ -18,7 +18,7 @@ export default {
   },
   async mounted() {
     try {
-      this.$store.dispatch('loadStateFromStorage');  // Загружаем сохраненные данные
+      // this.$store.dispatch('loadStateFromStorage');  // Загружаем сохраненные данные
 
       // Асинхронный вызов для получения категорий
       const response = await this.$store.dispatch('getCategories');
@@ -41,9 +41,6 @@ export default {
     activeSection() {
       return this.$store.getters.activeSection;  // Активная категория
     },
-    activeShop() {
-      return this.$store.getters.activeShop;  // Информация о магазине (если есть)
-    }
   }
 };
 </script>

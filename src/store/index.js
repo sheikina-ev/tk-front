@@ -3,6 +3,7 @@ import operations from '@/api/operations';
 import loadingCtrl from '@/api/loading';
 import { Plugins } from '@capacitor/core';
 const { Storage } = Plugins;
+
 const store = createStore({
 	state: {
 		sections: [],
@@ -20,7 +21,7 @@ const store = createStore({
 		orders: [],
 		bonus: '',
 		isAuthorized: false,
-		user: {}
+		user: JSON.parse(localStorage.getItem('user')) || null, // Загружаем пользователя сразу
 	},
 	getters: {
 		activeSection(state) {
@@ -46,6 +47,7 @@ const store = createStore({
 			state.cart.forEach(item => {
 				count += item.amount;
 			});
+
 			return count > 0 ? count : false;
 		},
 		cartTotal(state) {
@@ -63,6 +65,10 @@ const store = createStore({
 		},
 		shops(state) {
 			return state.shops;
+		},
+		// Пример проверки, авторизован ли пользователь
+		isAuthenticated: (state) => {
+			return !!state.user; // Если есть объект пользователя, значит, он авторизован
 		},
 		activeShop(state) {
 			if(!state.activeShop || state.shops === false) return false;
@@ -114,19 +120,22 @@ const store = createStore({
 			state.cart.push(payload);
 			state.lineIdCount = payload.line_id;
 			/* const item_id = payload.item_id;
-            const line_id = state.lineIdCount + 1;
-            const product = state.product;
-            const item = {
-                line_id: line_id,
-                item_id: item_id,
-                product_name: product.product_name,
-                weight: Math.round(product.weight * 1000),
-                weight_unit: 'мл',
-                amount: 1,
-                price: product.price
-            };
-            state.cart.push(item);
-            state.lineIdCount = line_id; */
+			const line_id = state.lineIdCount + 1;
+			const product = state.product;
+			const item = {
+				line_id: line_id,
+				item_id: item_id,
+				product_name: product.product_name,
+				weight: Math.round(product.weight * 1000),
+				weight_unit: 'мл',
+				amount: 1,
+				price: product.price
+			};
+
+			state.cart.push(item);
+			state.lineIdCount = line_id; */
+			localStorage.setItem('cart', JSON.stringify(state.cart));
+
 		},
 		calculateCartTotal(state) {
 			var total = 0;
@@ -134,6 +143,7 @@ const store = createStore({
 			cart.forEach(item => {
 				total += item.price * item.amount;
 			});
+
 			state.cartTotal = total;
 		},
 		updateShops(state, payload) {
@@ -141,11 +151,14 @@ const store = createStore({
 		},
 		selectShop(state, payload) {
 			const shopId = payload.shopId;
+
 			state.activeShop = shopId;
 			// state.cart = [];
+			localStorage.setItem('activeShop', JSON.stringify(shopId));
 		},
 		setOrderHistory(state, payload) {
 			state.orders = payload;
+			localStorage.setItem('orders', JSON.stringify(state.orders));
 		},
 		// Placeholders
 		changeAmount(state, payload) {
@@ -168,10 +181,12 @@ const store = createStore({
 		removeCartItem(state, payload) {
 			const line_id = payload.line_id;
 			state.cart = state.cart.filter(item => item.line_id !== line_id);
+
 			if(state.cart.length === 0) state.lineIdCount = 0;
 		},
 		dropCart(state) {
 			state.cart = [];
+			localStorage.removeItem('cart');  // Очищаем корзину из localStorage
 		},
 		authorize(state) {
 			state.isAuthorized = true;
@@ -185,6 +200,16 @@ const store = createStore({
 		updateSpecials(state, payload) {
 			state.specials = payload;
 		},
+		setUser(state, user) {
+			console.log("Данные пользователя сохраняются в Vuex:", user);
+			state.user = user;
+			localStorage.setItem('user', JSON.stringify(user));  // Сохраняем данные
+		},
+		updateCart(state, cart) {
+			state.cart = cart;
+			localStorage.setItem('cart', JSON.stringify(cart)); // Сохраняем корзину
+		},
+
 		saveUser(state, payload) {
 			state.user = payload;
 		},
@@ -201,20 +226,23 @@ const store = createStore({
 	},
 	actions: {
 		async auth({ commit }) {
-			const userData = await Storage.get({key: 'userData'});
-			if(userData.value === null || userData.value === "undefined") return false;
+			const userData = await Storage.get({ key: 'userData' });
+			if (userData.value === null || userData.value === 'undefined') return false;
 
 			let params = JSON.parse(userData.value);
+
 			try {
-				const { data } = await operations.auth({params: params});
-				if(data.status === 'OK') {
+				const { data } = await operations.auth({ params: params });
+
+				if (data.status === 'OK') {
 					commit('saveUser', params);
 					commit('authorize');
 					return data;
 				}
-			} catch(err) {
+			} catch (err) {
 				console.log(err);
 			}
+
 			return false;
 		},
 		async login({ commit }, params) {
@@ -230,6 +258,9 @@ const store = createStore({
 						phone: params.params.phone,
 						api_token: data.token
 					};
+
+					localStorage.setItem('user', JSON.stringify(userData))
+
 					commit('saveUser', userData);
 					await Storage.set({
 						'key': 'userData',
@@ -243,6 +274,7 @@ const store = createStore({
 				console.log(err);
 				loading.dismiss();
 			}
+
 			return false;
 		},
 		// eslint-disable-next-line no-unused-vars
@@ -256,6 +288,7 @@ const store = createStore({
 				console.log(err);
 				loading.dismiss();
 			}
+
 			return false;
 		},
 		// eslint-disable-next-line no-unused-vars
@@ -269,6 +302,7 @@ const store = createStore({
 				console.log(err);
 				loading.dismiss();
 			}
+
 			return false;
 		},
 		async getCategories({ commit }) {
@@ -287,6 +321,7 @@ const store = createStore({
 				console.log(err);
 				loading.dismiss();
 			}
+
 			return false;
 		},
 		async getProducts({ commit }, params) {
@@ -307,15 +342,19 @@ const store = createStore({
 		async getProduct({ commit }, params) {
 			// const loading = await loadingCtrl.loading();
 			commit('SET_LOADING_STATE', 'product');
+
 			try {
 				const { data } = await operations.getProduct(params);
 				// loading.dismiss();
+
 				commit('setProduct', data.product);
+
 				return true
 			} catch(err) {
 				console.log(err);
 				// loading.dismiss();
 			}
+
 			return false;
 		},
 		async getStores({ commit }, params = {}) {
@@ -334,6 +373,7 @@ const store = createStore({
 				console.log(err);
 				// loading.dismiss();
 			}
+
 			return false;
 		},
 		async getOrderHistory({ commit }, phone) {
@@ -342,23 +382,29 @@ const store = createStore({
 			try {
 				commit('SET_LOADING_STATE', 'orders');
 				const { data } = await operations.getOrderHistory(phone);
+
 				commit('setOrderHistory', data.orders_list);
 				// loading.dismiss();
+
 				return true;
 			} catch(err) {
 				console.log(err);
 				// loading.dismiss();
 			}
+
 			return false;
+
 		},
 		async getBonuses({ commit }, phone) {
 			const loading = await loadingCtrl.loading();
 			const { data } = await operations.getBonuses({params: {phone: phone}});
+
 			if(data.walletBalances !== undefined) {
 				commit('setBonuses', data.walletBalances[0].balance);
 			} else {
 				commit('setBonuses', 0);
 			}
+
 			loading.dismiss();
 		},
 		async getSpecials({ commit }) {
@@ -370,11 +416,13 @@ const store = createStore({
 
 				commit('updateSpecials', data.special_list);
 				// loading.dismiss();
+
 				return true;
 			} catch(err) {
 				console.log(err);
 				// loading.dismiss();
 			}
+
 			return false;
 		},
 		// eslint-disable-next-line no-unused-vars
@@ -383,6 +431,7 @@ const store = createStore({
 			const cart = this.getters.cart;
 			const line_id = this.state.lineIdCount + 1;
 			let fields = {};
+
 			fields.line_id = line_id;
 			fields.type = 'Product'; // Tmp
 			fields.productId = product.guid;
@@ -390,29 +439,41 @@ const store = createStore({
 			fields.price = parseFloat(params.price);
 			fields.amount = 1;
 			fields.image = product.image;
+
 			if(params.options !== undefined && params.options.length > 0) {
 				fields.modifiers = [];
 				params.options.forEach(optionId => {
-					const group = product.options.find(options => {
-						return options.values.some(value => {
-							return value.id == optionId;
-						})
-					});
-					const option = group.values.find(value => {
-						return value.id == optionId;
-					});
+					const group = product.options.find(options =>
+						options.values.some(value => value.id == Number(optionId))
+					);
+
+					if (!group) {
+						console.error("Group not found for optionId:", optionId);
+						return;
+					}
+
+					const option = group.values.find(value => value.id == Number(optionId));
+
+					if (!option) {
+						console.error("Option not found for optionId:", optionId);
+						return;
+					}
+
 					const modifier = {
 						productId: option.guid,
 						name: option.name,
 						amount: 1,
 						productGroupId: group.guid,
-						// groupName: group.name
 					};
 
+					console.log("Добавляем в modifiers:", modifier);
 					fields.modifiers.push(modifier);
+
 					if(option.price > 0) fields.price += parseFloat(option.price);
 				});
 			}
+
+
 			const item = cart.find(line => {
 				return line.productId === fields.productId && JSON.stringify(line.modifiers) === JSON.stringify(fields.modifiers);
 			});
@@ -424,6 +485,7 @@ const store = createStore({
 			} else {
 				commit('addToCart', fields);
 			}
+
 			commit('calculateCartTotal');
 		},
 		async logout({ commit }) {
@@ -436,7 +498,9 @@ const store = createStore({
 			const loading = await loadingCtrl.loading();
 			try {
 				const { data } = await operations.sendOrder(params);
+
 				loading.dismiss();
+
 				if(data.status !== 'error') {
 					commit('dropCart');
 					return data;
@@ -446,29 +510,44 @@ const store = createStore({
 
 				loading.dismiss();
 			}
+
+
 			return false;
 		},
 		// eslint-disable-next-line no-unused-vars
 		async checkOrder({ commit }, params) {
 			const loading = await loadingCtrl.loading();
 			const { data } = await operations.checkOrder(params);
+
 			loading.dismiss();
+
 			if(data.status !== 'error') {
+
 				return data;
 			}
+
 			return false;
+		},
+		loadUserFromStorage({ commit }) {
+			const user = localStorage.getItem('user');
+			if (user) {
+				commit('setUser', JSON.parse(user));
+			}
 		},
 		// eslint-disable-next-line no-unused-vars
 		async getInfoPage({ commit }, params) {
 			const loading = await loadingCtrl.loading();
 			try {
 				const { data } = await operations.getInfoPage(params);
+
 				loading.dismiss();
+
 				if(data.status !== 'error') {
 					return data;
 				}
 			} catch(err) {
 				console.log(err);
+
 				loading.dismiss();
 			}
 
@@ -479,14 +558,18 @@ const store = createStore({
 			const loading = await loadingCtrl.loading();
 			try {
 				const { data } = await operations.sendReview(params);
+
 				loading.dismiss();
+
 				if(data.status !== 'error') {
 					return data;
 				}
 			} catch(err) {
 				console.log(err);
+
 				loading.dismiss();
 			}
+
 			return false;
 		},
 		// eslint-disable-next-line no-unused-vars
@@ -494,16 +577,42 @@ const store = createStore({
 			const loading = await loadingCtrl.loading();
 			try {
 				const { data } = await operations.sendFeedback(params);
+
 				loading.dismiss();
+
 				if(data.status !== 'error') {
 					return data;
 				}
 			} catch(err) {
 				console.log(err);
+
 				loading.dismiss();
 			}
+
 			return false;
+		},
+		loadStateFromStorage({ commit }) {
+			const cart = JSON.parse(localStorage.getItem('cart')) || [];
+			const user = JSON.parse(localStorage.getItem('user')) || { phone: '', name: '' };
+			const activeShop = JSON.parse(localStorage.getItem('activeShop')) || false;
+
+			console.log('acAAtiveShop', activeShop)
+
+			commit('updateCart', cart);        // Предположим, у вас есть мутация для обновления корзины
+			commit('setUser', user);          // Загружаем данные пользователя
+			commit('selectShop', { shopId: activeShop });  // Восстанавливаем выбранный магазин
+		},
+		async fetchUser({ commit }) {
+			try {
+				const response = await fetch('http://ВАШ_СЕРВЕР/api/user');
+				const user = await response.json();
+				console.log("API вернул пользователя:", user);
+				commit('setUser', user);
+			} catch (error) {
+				console.error("Ошибка загрузки пользователя:", error);
+			}
 		}
 	}
 });
+
 export default store;

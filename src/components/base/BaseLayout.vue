@@ -43,6 +43,7 @@
                 </div>
               </div>
             </div>
+
           </div>
           <ion-button fill="clear" @click="$router.push('/cart')" class="basket-button p-0 md:mr-315">
             <div class="basket-container relative flex items-center">
@@ -57,6 +58,14 @@
                 {{ cartCount }}
               </ion-badge>
             </div>
+
+
+
+          </ion-button>
+          <!-- Кнопка перехода в профиль -->
+          <ion-button fill="clear" @click="goToProfile" class="profile-button p-0">
+            <span v-if="isAuthenticated">Профиль</span>
+            <span v-else>Войти</span>
           </ion-button>
         </div>
       </ion-toolbar>
@@ -79,6 +88,12 @@ export default {
     IonButton,
     IonBadge,
   },
+  mounted() {
+    // const response = this.$store.dispatch('getStores');
+    // console.log('response', response)
+    this.$store.commit('calculateCartTotal');      // Пересчитываем сумму корзины
+    this.$store.dispatch('loadStateFromStorage');  // Загружаем сохраненные данные
+  },
   data() {
     return {
       showAddresses: false,
@@ -94,10 +109,14 @@ export default {
     cartCount() {
       return this.$store.getters.cartCount;
     },
+    isAuthenticated() {
+      // Проверка, авторизован ли пользователь, возвращаем булевое значение
+      return !!this.$store.getters.user.name;
+    },
   },
   methods: {
     async selectShop(shop) {
-      this.$store.commit('selectShop', { shopId: shop.id });
+      this.$store.commit('selectShop', {shopId: shop.id});
       this.showAddresses = false;
       try {
         await this.loadProducts(shop.id);
@@ -113,6 +132,15 @@ export default {
     loadProducts(shopId) {
       return this.$store.dispatch('loadProducts', shopId);
     },
+    goToProfile() {
+      if (this.isAuthenticated) {
+        // Если пользователь авторизован, перенаправляем на страницу профиля
+        this.$router.push('/profile');
+      } else {
+        // Если не авторизован, перенаправляем на страницу авторизации
+        this.$router.push('/auth');
+      }
+    }
   },
 };
 </script>

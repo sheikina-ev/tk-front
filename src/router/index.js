@@ -9,13 +9,14 @@ import SpecialsPage from '../pages/SpecialsPage.vue';
 import OrdersPage from '../pages/OrdersPage.vue';
 import ReviewPage from '../pages/ReviewPage.vue';
 import FeedbackPage from '../pages/FeedbackPage.vue';
-import DeletePage from '../pages/DeletePage.vue';
 import ShopPickPage from '../pages/ShopPickPage.vue';
 import TestPage from '../pages/TestPage.vue';
 
 // Добавляем импорт компонента модального окна
 import NotFoundPage from "@/pages/NotFoundPage.vue";
 import CoffeeDetail from "@/pages/CoffeeDetail.vue";
+import ProfilePage from "@/pages/ProfilePage.vue";
+import AuthorizationPage from "@/pages/AuthorizationPage.vue";
 
 const routes = [
 	{
@@ -37,8 +38,6 @@ const routes = [
 			isModal: true
 		}
 	},
-
-
 	{
 		path: '/cart',
 		component: CartPage
@@ -70,12 +69,19 @@ const routes = [
 		component: FeedbackPage
 	},
 	{
-		path: '/delete',
-		component: DeletePage
-	},
-	{
 		path: '/test',
 		component: TestPage
+	},
+	{
+		path: '/auth',
+		component: AuthorizationPage
+	},
+
+
+
+	{
+		path: '/profile',
+		component: ProfilePage
 	},
 	/*
 	{

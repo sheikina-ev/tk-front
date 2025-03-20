@@ -8,12 +8,11 @@
         <p><b>Телефон:</b> {{ user.phone }}</p>
 
         <!-- Кнопка выхода с анимацией -->
-        <button
-            class="btn-classic w-36 h-9 rounded-full bg-red-500 text-white text-sm font-medium border border-black mt-5 transition-transform transform hover:scale-105 active:scale-95"
-            @click="confirmLogout"
-        >
-          Выйти
-        </button>
+        <ion-button
+            class="btn-classic w-36 h-9 rounded-full  text-white text-sm font-medium border  mt-5 transition-transform transform hover:scale-105 active:scale-95"
+            @click="confirmLogout">
+        Выйти
+        </ion-button>
       </div>
 
       <div v-else>
@@ -27,11 +26,14 @@
         <h2 class="text-lg font-bold mb-4">Вы уверены?</h2>
         <p class="text-gray-600 mb-4">Вы действительно хотите выйти?</p>
         <div class="flex justify-between">
-          <button class="px-4 py-2 bg-gray-300 rounded-md" @click="showConfirmModal = false">Отмена</button>
-          <button class="px-4 py-2 bg-red-500 text-white rounded-md" @click="logout">Выйти</button>
+          <ion-button  class="px-4 py-2 rounded-md" @click="showConfirmModal = false">Отмена</ion-button>
+          <ion-button @click="logout">  <!-- Здесь вызов метода logout -->
+            Выйти
+          </ion-button>
         </div>
       </div>
     </div>
+
     <AppFooter></AppFooter>
   </base-layout>
 </template>
@@ -64,17 +66,19 @@ export default {
   },
   methods: {
     confirmLogout() {
-      this.showConfirmModal = true;
+      this.showConfirmModal = true; // Показать модальное окно
     },
     logout() {
-      this.$store.dispatch("logout");
-      this.$router.push("/auth");
-      this.showConfirmModal = false;
+      this.$store.dispatch("logout");  // Логика выхода из приложения
+      this.$router.push("/auth");  // Перенаправить пользователя на страницу авторизации
+      this.showConfirmModal = false;  // Закрыть модальное окно
     }
   }
 };
 </script>
 
 <style scoped>
-/* Дополнительные стили (если нужны) */
+.profile-page {
+  min-height: calc(90vh - 155px); /* Высота видимой части окна минус высота футера */
+}
 </style>

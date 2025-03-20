@@ -187,10 +187,11 @@ export default {
     async submitOrder(event, isTest = false) {
       event.preventDefault();
 
-      if (!this.isNameFilled || !this.isPhoneFilled) {
+      if (!this.user.name || !this.user.phone) {
         this.throwToast('Заполните обязательные поля: Имя и Телефон');
         return;
       }
+
 
       let items = JSON.parse(JSON.stringify(this.cart));
       let orderFields = {};
@@ -253,6 +254,7 @@ export default {
 
       var orderId = 0;
       console.log(response.errorMessage);
+
       if (!response) {
         this.throwToast('Возникла непредвиденная ошибка');
       } else if (response.status == "Error") {
@@ -288,6 +290,7 @@ export default {
       const response = await this.$store.dispatch('login', {params: params});
 
       if (response) {
+
         this.throwToast(response.message === 'Sign-up' ? 'Регистрация выполнена успешно' : 'С возвращением!');
       } else {
         this.throwToast('Ошибка подтверждения номера');
@@ -332,6 +335,7 @@ export default {
           {
             text: 'Отправить',
             handler: (fields) => {
+
               this.sendConfirmationCode(fields);
             }
           }
@@ -342,12 +346,14 @@ export default {
     },
     async sendConfirmationCode(params) {
       const response = await this.$store.dispatch('sendConfirmationCode', {
+
         params: {
           phone: params.phone,
           code: params.code
         }
       });
       if (response) {
+
         this.authorize(params);
       } else {
         this.showConfirmationPrompt(params, true);
@@ -365,6 +371,8 @@ export default {
       if (formFields['name'].length > 0 && formFields['phone'].length > 0) {
         const response = await this.$store.dispatch('requestConfirmationCode', {params: {phone: formFields.phone}});
         if (response) {
+          console.log("Ответ сервера:", response); // Выводим весь ответ сервера в консоль
+
           this.showConfirmationPrompt(formFields);
         } else {
           this.throwToast('Не удалось отправить код подтверждения');

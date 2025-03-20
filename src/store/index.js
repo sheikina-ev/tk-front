@@ -158,7 +158,6 @@ const store = createStore({
 		},
 		setOrderHistory(state, payload) {
 			state.orders = payload;
-			localStorage.setItem('orders', JSON.stringify(state.orders));
 		},
 		// Placeholders
 		changeAmount(state, payload) {
@@ -201,7 +200,6 @@ const store = createStore({
 			state.specials = payload;
 		},
 		setUser(state, user) {
-			console.log("Данные пользователя сохраняются в Vuex:", user);
 			state.user = user;
 			localStorage.setItem('user', JSON.stringify(user));  // Сохраняем данные
 		},
@@ -395,6 +393,7 @@ const store = createStore({
 			return false;
 
 		},
+
 		async getBonuses({ commit }, phone) {
 			const loading = await loadingCtrl.loading();
 			const { data } = await operations.getBonuses({params: {phone: phone}});
@@ -489,10 +488,8 @@ const store = createStore({
 			commit('calculateCartTotal');
 		},
 		async logout({ commit }) {
-			commit('unauthorize');
-			commit('dropUser');
-			await Storage.remove({key: 'userData'});
-			commit('clearState', 'bonus');
+			commit('setUser', null); // Очистка данных пользователя
+			localStorage.removeItem('user'); // Удаление пользователя из localStorage
 		},
 		async sendOrder({ commit }, params) {
 			const loading = await loadingCtrl.loading();
@@ -596,7 +593,7 @@ const store = createStore({
 			const user = JSON.parse(localStorage.getItem('user')) || { phone: '', name: '' };
 			const activeShop = JSON.parse(localStorage.getItem('activeShop')) || false;
 
-			console.log('acAAtiveShop', activeShop)
+			console.log('activeShop', activeShop)
 
 			commit('updateCart', cart);        // Предположим, у вас есть мутация для обновления корзины
 			commit('setUser', user);          // Загружаем данные пользователя
@@ -604,7 +601,7 @@ const store = createStore({
 		},
 		async fetchUser({ commit }) {
 			try {
-				const response = await fetch('http://ВАШ_СЕРВЕР/api/user');
+				const response = await fetch('https://tk.uat.sibcode.team/api/user');
 				const user = await response.json();
 				console.log("API вернул пользователя:", user);
 				commit('setUser', user);

@@ -17,7 +17,7 @@
                 <span v-else>Точка не выбрана</span>
                 <div
                     v-if="showAddresses"
-                    class="addresses absolute bg-custom-color1 rounded-md w-48 top-full left-0 shadow-lg "
+                    class="addresses absolute bg-custom-color1 rounded-md w-48 top-full left-0 shadow-lg"
                     ref="addresses"
                 >
                   <ul v-if="activeShop" class="list-none p-0 m-0">
@@ -43,30 +43,32 @@
                 </div>
               </div>
             </div>
-
           </div>
-          <ion-button fill="clear" @click="$router.push('/cart')" class="basket-button p-0 md:mr-315">
-            <div class="basket-container relative flex items-center">
+          <div class="flex items-center space-x-2 md:mr-315">
+            <ion-button fill="clear" @click="$router.push('/cart')" class="basket-button p-0">
+              <div class="basket-container relative flex items-center">
+                <img
+                    src="../../../public/assets/img/basket.png"
+                    height="28"
+                    width="33"
+                    alt="Basket Icon"
+                    class="basket-icon m-0"
+                />
+                <ion-badge v-if="cartCount > 0" color="danger" class="badge ml-2 absolute top-0 right-0">
+                  {{ cartCount }}
+                </ion-badge>
+              </div>
+            </ion-button>
+
+            <!-- Иконка профиля -->
+            <ion-button fill="clear" @click="goToProfile" class="profile-button p-0">
               <img
-                  src="../../../public/assets/img/basket.png"
-                  height="28"
-                  width="33"
-                  alt="Basket Icon"
-                  class="basket-icon m-0"
+                  src="@/assets/img/profile-icon.png"
+                  alt="Profile Icon"
+                  class="w-8 h-8"
               />
-              <ion-badge v-if="cartCount > 0" color="danger" class="badge ml-2 absolute top-0 right-0">
-                {{ cartCount }}
-              </ion-badge>
-            </div>
-
-
-
-          </ion-button>
-          <!-- Кнопка перехода в профиль -->
-          <ion-button fill="clear" @click="goToProfile" class="profile-button p-0">
-            <span v-if="isAuthenticated">Профиль</span>
-            <span v-else>Войти</span>
-          </ion-button>
+            </ion-button>
+          </div>
         </div>
       </ion-toolbar>
     </ion-header>
@@ -89,10 +91,8 @@ export default {
     IonBadge,
   },
   mounted() {
-    // const response = this.$store.dispatch('getStores');
-    // console.log('response', response)
-    this.$store.commit('calculateCartTotal');      // Пересчитываем сумму корзины
-    this.$store.dispatch('loadStateFromStorage');  // Загружаем сохраненные данные
+    this.$store.commit('calculateCartTotal');
+    this.$store.dispatch('loadStateFromStorage');
   },
   data() {
     return {
@@ -110,13 +110,12 @@ export default {
       return this.$store.getters.cartCount;
     },
     isAuthenticated() {
-      // Проверка, авторизован ли пользователь, возвращаем булевое значение
       return !!this.$store.getters.user.name;
     },
   },
   methods: {
     async selectShop(shop) {
-      this.$store.commit('selectShop', {shopId: shop.id});
+      this.$store.commit('selectShop', { shopId: shop.id });
       this.showAddresses = false;
       try {
         await this.loadProducts(shop.id);
@@ -133,13 +132,7 @@ export default {
       return this.$store.dispatch('loadProducts', shopId);
     },
     goToProfile() {
-      if (this.isAuthenticated) {
-        // Если пользователь авторизован, перенаправляем на страницу профиля
-        this.$router.push('/profile');
-      } else {
-        // Если не авторизован, перенаправляем на страницу авторизации
-        this.$router.push('/auth');
-      }
+      this.$router.push(this.isAuthenticated ? '/profile' : '/auth');
     }
   },
 };

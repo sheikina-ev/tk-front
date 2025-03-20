@@ -12,12 +12,6 @@
       <!-- Загружаем заказы -->
       <div v-else-if="Array.isArray(orders) && orders.length > 0" class="orders-grid">
         <order-item v-for="order in orders" :key="order.id" :order="order" class="order-card">
-          <template #footer>
-            <!-- Кнопка повторить заказ -->
-            <button v-if="canRepeatOrder(order)" class="repeat-btn" @click="repeatOrder(order)">
-              Повторить заказ
-            </button>
-          </template>
         </order-item>
       </div>
 
@@ -66,20 +60,6 @@ export default {
   methods: {
     redirectToAuth() {
       this.$router.push('/auth');
-    },
-    canRepeatOrder(order) {
-      // Логика для проверки, можно ли повторить заказ (например, статус "Завершен")
-      return order.status === 'completed'; // Пример условия, которое нужно адаптировать под вашу логику
-    },
-    repeatOrder(order) {
-      // Логика для повторения заказа
-      this.$store.dispatch('repeatOrder', order.id)
-          .then(() => {
-            this.$router.push('/checkout'); // Перенаправляем пользователя на страницу оформления заказа
-          })
-          .catch(error => {
-            console.error('Ошибка при повторении заказа:', error);
-          });
     }
   }
 }

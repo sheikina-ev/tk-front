@@ -122,11 +122,15 @@ export default {
 
       if (response) {
         this.throwToast(response.message === 'Sign-up' ? 'Регистрация выполнена успешно' : 'С возвращением!');
-        this.router.replace('/profile');
+
+        // Проверяем, есть ли redirect, если нет — переходим в профиль
+        const redirectPath = this.$route.query.redirect || '/profile';
+        this.router.replace(redirectPath);
       } else {
         this.throwToast('Ошибка авторизации');
       }
-    },
+    }
+    ,
     async showConfirmationPrompt(params, message = '') {
       const alert = await alertController.create({
         cssClass: 'auth-code-prompt',
@@ -221,7 +225,8 @@ export default {
       } else {
         this.throwToast('Проверьте подключение к интернету или повторите попытку позже');
       }
-    }
+    },
+
   }
 }
 </script>

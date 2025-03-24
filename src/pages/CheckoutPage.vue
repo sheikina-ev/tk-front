@@ -29,15 +29,10 @@
               required
               :value="user && user.phone"
               class="bg-white w-full lg:w-520 h-10 text-sm font-bold border border-black pl-3"
+              disabled
           />
         </div>
-        <button
-            type="button"
-            class="request mt-6 mb-10 w-48 h-9 rounded-full bg-custom-color text-sm font-medium border border-black"
-            @click="requestConfirmationCode" style="border: 1px solid black"
-        >
-          Подтвердить номер
-        </button>
+
         <div class="checkout-page-select mb-10">
           <label for="selectedAddress">Выбранный адрес</label>
           <h1 id="address" class="address text-black font-bold">{{ activeShop.store_name }}</h1>
@@ -86,7 +81,6 @@
   </base-layout>
 </template>
 
-
 <script>
 import {
   IonItem,
@@ -94,7 +88,6 @@ import {
   IonRadioGroup,
   IonRadio,
   IonDatetime,
-  alertController,
   modalController,
   toastController
 } from '@ionic/vue';
@@ -118,7 +111,6 @@ export default {
       bonusPoints: '',
       checkedTime: 'fast',
       dataTime: '--:--',
-
     }
   },
   computed: {
@@ -163,35 +155,14 @@ export default {
     this.dataTime = later;
   },
   methods: {
-    async changePhoneNumber() {
-      const alert = await alertController.create({
-        header: 'Изменить номер',
-        message: 'Обратите внимание: если вы измените номер телефона, то корзина будет очищена и баланс баллов изменится',
-        buttons: [
-          {
-            text: 'Отмена',
-            role: 'cancel'
-          },
-          {
-            text: 'OK',
-            handler: () => {
-              this.$store.dispatch('logout');
-              this.bonusPoints = 0;
-            }
-          }
-        ]
-      });
-
-      await alert.present();
-    },
     async submitOrder(event, isTest = false) {
       event.preventDefault();
 
+      // Проверка, что имя и телефон заполнены
       if (!this.user.name || !this.user.phone) {
         this.throwToast('Заполните обязательные поля: Имя и Телефон');
         return;
       }
-
 
       let items = JSON.parse(JSON.stringify(this.cart));
       let orderFields = {};
@@ -208,7 +179,7 @@ export default {
 
       orderFields = {
         terminalGroupId: orderFields.terminalGroupId,
-        phone: orderFields.phone,
+        phone: this.user.phone, // Используем телефон пользователя, который уже авторизован
         items: items,
         customer: {
           name: orderFields.name
@@ -276,109 +247,14 @@ export default {
 
           modal.onDidDismiss().then((data) => {
             if (data.data.isPaymentSuccessful !== undefined) {
-              this.router.push({
-                name: 'Result',
-                query: (data.data.isPaymentSuccessful ? {response, orderId: orderId} : {orderId: orderId})
-              });
+              // Перенаправление на страницу успеха после оформления заказа
+              this.router.push({path: '/order-success', query: {orderId: orderId}});
             }
           });
-        }
-        await this.router.push({name: 'Result', query: {response, orderId: orderId}});
-      }
-    },
-    async authorize(params) {
-      const response = await this.$store.dispatch('login', {params: params});
-
-      if (response) {
-
-        this.throwToast(response.message === 'Sign-up' ? 'Регистрация выполнена успешно' : 'С возвращением!');
-      } else {
-        this.throwToast('Ошибка подтверждения номера');
-      }
-    },
-    async showConfirmationPrompt(params, hasError = false) {
-      const alert = await alertController.create({
-        cssClass: 'auth-code-prompt',
-        header: 'Подтверждение',
-        subHeader: hasError ? 'Код неверен' : '',
-        message: 'Введите код из SMS',
-        backdropDismiss: false,
-        inputs: [
-          {
-            name: 'name',
-            type: 'text',
-            cssClass: 'hidden',
-            value: params.name
-          },
-          {
-            name: 'phone',
-            type: 'phone',
-            cssClass: 'hidden',
-            value: params.phone
-          },
-          {
-            name: 'code',
-            placeholder: '1234',
-            type: 'number',
-            attributes: {
-              maxlength: 4,
-              inputmode: 'numeric',
-              enterkeyhint: 'done'
-            }
-          }
-        ],
-        buttons: [
-          {
-            text: 'Отмена',
-            role: 'cancel'
-          },
-          {
-            text: 'Отправить',
-            handler: (fields) => {
-
-              this.sendConfirmationCode(fields);
-            }
-          }
-        ]
-      });
-
-      await alert.present();
-    },
-    async sendConfirmationCode(params) {
-      const response = await this.$store.dispatch('sendConfirmationCode', {
-
-        params: {
-          phone: params.phone,
-          code: params.code
-        }
-      });
-      if (response) {
-
-        this.authorize(params);
-      } else {
-        this.showConfirmationPrompt(params, true);
-      }
-    },
-    async requestConfirmationCode() {
-      const checkoutForm = document.getElementById('checkout-form');
-      const formData = new FormData(checkoutForm);
-      let formFields = {};
-
-      for (let key of formData.keys()) {
-        formFields[key] = formData.get(key).trim();
-      }
-
-      if (formFields['name'].length > 0 && formFields['phone'].length > 0) {
-        const response = await this.$store.dispatch('requestConfirmationCode', {params: {phone: formFields.phone}});
-        if (response) {
-          console.log("Ответ сервера:", response); // Выводим весь ответ сервера в консоль
-
-          this.showConfirmationPrompt(formFields);
         } else {
-          this.throwToast('Не удалось отправить код подтверждения');
+          // Перенаправление на страницу успеха, если ссылка на оплату не требуется
+          this.router.push({path: '/order-success', query: {orderId: orderId}});
         }
-      } else {
-        this.throwToast('Заполните обязательные поля: Имя и Телефон');
       }
     },
     throwToast(message) {
@@ -404,5 +280,3 @@ export default {
   }
 };
 </script>
-
-

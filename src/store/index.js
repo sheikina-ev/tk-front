@@ -69,6 +69,7 @@ const store = createStore({
 		// Пример проверки, авторизован ли пользователь
 		isAuthenticated: (state) => {
 			return !!state.user; // Если есть объект пользователя, значит, он авторизован
+
 		},
 		activeShop(state) {
 			if(!state.activeShop || state.shops === false) return false;

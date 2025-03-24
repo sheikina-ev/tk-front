@@ -60,6 +60,7 @@
                     style="border: 1px solid black" @click="goToCheckout">
               Оформить заказ
             </button>
+
           </div>
         </div>
       </div>
@@ -67,7 +68,6 @@
     <AppFooter></AppFooter>
   </base-layout>
 </template>
-
 
 <script>
 import {IonIcon} from '@ionic/vue';
@@ -88,10 +88,6 @@ export default {
       removeCircleOutline,
       addCircleOutline
     }
-  },
-  async mounted() {
-    // this.$store.dispatch('loadStateFromStorage');  // Загружаем сохраненные данные
-    // this.$store.commit('calculateCartTotal');      // Пересчитываем сумму корзины
   },
   computed: {
     cart() {
@@ -117,22 +113,28 @@ export default {
     getModifierKey(cartItem, modifier, index) {
       return `${cartItem.line_id}_${modifier.id}_${index}`;
     },
+
     goToCheckout() {
-      // Проверяем, авторизован ли пользователь
-      if (this.$store.getters.isAuthenticated) {
-        // Если авторизован, переходим на страницу оформления заказа
+      const user = this.$store.state.user;
+      const isAuthenticated = !!user && !!user.phone && !!user.name;
+
+      console.log('Пользователь:', user);
+      console.log('isAuthenticated:', isAuthenticated);
+
+      if (isAuthenticated) {
         this.$router.push('/checkout');
       } else {
-        // Если не авторизован, переходим на страницу входа
-        this.$router.push('/auth');
+        this.$router.push({ path: '/auth', query: { redirect: '/checkout' } });
       }
     }
+
+
   }
 };
 </script>
+
 <style scoped>
 .order-summary {
   min-height: calc(90vh - 155px); /* Высота видимой части окна минус высота футера */
 }
 </style>
-

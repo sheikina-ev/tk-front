@@ -89,7 +89,6 @@ import {
   IonRadio,
   IonDatetime,
   modalController,
-  toastController
 } from '@ionic/vue';
 import AppFooter from "@/components/base/AppFooter.vue";
 import CheckoutModal from '../components/misc/CheckoutModal.vue';
@@ -158,7 +157,6 @@ export default {
     async submitOrder(event, isTest = false) {
       event.preventDefault();
 
-      // Проверка, что имя и телефон заполнены
       if (!this.user.name || !this.user.phone) {
         this.throwToast('Заполните обязательные поля: Имя и Телефон');
         return;
@@ -172,100 +170,61 @@ export default {
         orderFields[key] = formData.get(key);
       }
 
-      let timeDelivery = null;
-      if (this.dataTime) {
-        timeDelivery = this.dataTime;
-      }
+      let timeDelivery = this.dataTime || null;
 
       orderFields = {
         terminalGroupId: orderFields.terminalGroupId,
-        phone: this.user.phone, // Используем телефон пользователя, который уже авторизован
+        phone: this.user.phone,
         items: items,
-        customer: {
-          name: orderFields.name
-        },
+        customer: { name: orderFields.name },
         time_delivery: timeDelivery,
         cash: this.cartTotal - (parseFloat(orderFields.bonus) || 0),
         bonus: parseFloat(orderFields.bonus) || 0
       };
 
-      var today = new Date();
-      var hour = today.getHours();
-      today.setHours(hour + 1);
-      var later = today.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"});
-      var timeFrom = this.activeShop.time_from;
-      var timeTo = this.activeShop.time_to;
-
-      if (this.checkedTime === 'time') {
-        if (this.dataTime + ':00' < timeFrom) {
-          this.throwToast('Время заказа из данной точки начинается с ' + timeFrom);
-          return;
-        }
-        if (later > this.dataTime) {
-          this.throwToast('Время заказа должно быть выбрано минимум за час с начала заказа.');
-          return;
-        }
-        if (this.dataTime + ':00' > timeTo) {
-          this.throwToast('Время заказа из данной точки доступно до ' + timeTo);
-          return;
-        }
-      }
-
       if (isTest) {
-        console.log(this.cartTotal);
-        console.log(this.dataTime);
-        console.log(orderFields.bonus);
+        console.log(this.cartTotal, this.dataTime, orderFields.bonus, orderFields);
         this.throwToast('[DEV] Заказ успешно оформлен');
-        console.log(JSON.stringify(orderFields));
-        console.log(orderFields);
         return;
       }
 
-      const response = await this.$store.dispatch('sendOrder', {order: orderFields});
-
-      var orderId = 0;
-      console.log(response.errorMessage);
+      const response = await this.$store.dispatch('sendOrder', { order: orderFields });
 
       if (!response) {
         this.throwToast('Возникла непредвиденная ошибка');
-      } else if (response.status == "Error") {
+      } else if (response.status === "Error") {
         this.throwToast('Ошибка: ' + response.message + response.errorMessage);
-      } else if (response.errorMessage == 'Доступ запрещён') {
+      } else if (response.errorMessage === 'Доступ запрещён') {
         this.throwToast('Ошибка: ' + response.errorMessage);
       } else {
-        if (response.data.link !== undefined) {
-          orderId = response.data.orderId;
+        let orderId = response?.data?.orderId || 0;
+
+        if (response?.data?.link) {
+          // Если есть ссылка на оплату, показываем модальное окно
           const modal = await modalController.create({
             component: CheckoutModal,
-            componentProps: {
-              title: 'Оплата',
-              src: response.data.link
-            }
+            componentProps: { title: 'Оплата', src: response.data.link }
           });
 
           await modal.present();
 
-          modal.onDidDismiss().then((data) => {
-            if (data.data.isPaymentSuccessful !== undefined) {
-              // Перенаправление на страницу успеха после оформления заказа
-              this.router.push({path: '/order-success', query: {orderId: orderId}});
-            }
+          modal.onDidDismiss().then(() => {
+            // После закрытия модального окна переходим на order-success
+            this.$router.push({ path: '/order-success', query: { orderId } });
           });
+
         } else {
-          // Перенаправление на страницу успеха, если ссылка на оплату не требуется
-          this.router.push({path: '/order-success', query: {orderId: orderId}});
+          // Если оплаты нет, сразу переходим на order-success
+          this.$router.push({ path: '/order-success', query: { orderId } });
         }
       }
-    },
-    throwToast(message) {
-      toastController.create({
-        message: message,
-        duration: 3000,
-        color: 'danger'
-      }).then(toast => {
-        toast.present();
-      });
-    },
+
+      // Гарантируем переход на страницу успеха в любом случае
+      setTimeout(() => {
+        this.$router.push({ path: '/order-success' });
+      }, 3000); // Подстраховка через 3 секунды
+    }
+    ,
     async openModal(type) {
       if (type === 'policy') {
         const modal = await modalController.create({

@@ -9,6 +9,7 @@
         <h2 class="mb-4 md:mb-8 py-1">КЛИЕНТАМ</h2>
         <ul class="list-none p-0">
           <li class="mb-2 md:mb-8"><router-link to="/" class="text-white hover">Меню</router-link></li>
+          <li class="mb-2 md:mb-8"><router-link to="/specials" class="text-white hover">Акции</router-link></li>
           <li class="mb-2"><router-link to="/cart" class="text-white hover">Корзина</router-link></li>
         </ul>
       </div>

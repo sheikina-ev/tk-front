@@ -1,27 +1,21 @@
 <template>
-  <ion-col size="12">
-    <ion-card
-        class="special-content"
-        :class="{ 'skeleton': !special }"
-        :style="special ? getBackgroundStyle(special.image) : ''"
-    >
-      <div class="content-wrapper">
-        <ion-card-title>
-          <ion-skeleton-text v-if="!special" animated></ion-skeleton-text>
-          <span v-else>{{ special.title }}</span>
-        </ion-card-title>
-        <ion-card-subtitle>
-          <ion-skeleton-text v-if="!special" animated></ion-skeleton-text>
-          <span v-else>{{ special.subtitle }}</span>
-        </ion-card-subtitle>
-      </div>
-    </ion-card>
-    <p v-if="special" v-html="special.content" class="content-text"></p>
+  <ion-col size="6">
+    <transition name="fade-slide" appear>
+      <ion-card class="special-content" :class="{ 'skeleton': !special }">
+        <div class="content-wrapper">
+          <ion-card-title class="center-text">
+            <ion-skeleton-text v-if="!special" animated></ion-skeleton-text>
+            <span v-else>{{ special.title }}</span>
+          </ion-card-title>
+          <div v-if="special" class="content-body" v-html="special.content"></div>
+        </div>
+      </ion-card>
+    </transition>
   </ion-col>
 </template>
 
 <script>
-import { IonCol, IonCard, IonCardTitle, IonCardSubtitle, IonSkeletonText } from '@ionic/vue';
+import { IonCol, IonCard, IonCardTitle, IonSkeletonText } from '@ionic/vue';
 
 export default {
   props: ['special'],
@@ -29,13 +23,7 @@ export default {
     IonCol,
     IonCard,
     IonCardTitle,
-    IonCardSubtitle,
     IonSkeletonText
-  },
-  methods: {
-    getBackgroundStyle(image) {
-      return `background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${image || 'assets/img/no-image.jpg'}) center/cover no-repeat;`;
-    }
   }
 }
 </script>
@@ -45,30 +33,47 @@ export default {
   color: white;
   padding: 1rem;
   border-radius: 10px;
-  transition: transform 0.3s ease-in-out;
+  background: rgba(97, 71, 59, 0.9); /* Подобран теплый оттенок для фона */
+  transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
 }
 
 .special-content:hover {
-  transform: scale(1.02);
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.content-wrapper {
+  background: rgba(249, 217, 184, 0.8); /* Используем основной цвет фона для контента */
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
 }
 
 .skeleton {
-  background: #e0e0e0;
+  background: rgba(249, 217, 184, 0.8);
   height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.content-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.center-text {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #61473b; /* Цвет текста в заголовке с учетом цвета подвала */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Меньше тени для лучшего контраста */
+  margin-bottom: 1rem;
 }
 
-.content-text {
-  margin-top: 1rem;
-  font-size: 0.9rem;
-  color: #333;
+/* Оформление контента акции */
+.content-body {
+  width: 100%;
+  color: #61473b; /* Цвет текста более теплый, чтобы он сочетался с подвалом */
+  font-size: 1rem;
+  line-height: 1.6;
+  background: rgba(249, 217, 184, 0.9); /* Цвет фона контента */
+  padding: 1.2rem;
+  border-radius: 10px;
+  margin-top: 10px;
 }
 </style>

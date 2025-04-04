@@ -29,13 +29,13 @@ ion-chip.selected {
 ion-toolbar.bottom-bar {
 	--background: var(--ion-color-light);
 }
-.center-content {
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
-}
+/*.center-content {*/
+/*	position: absolute;*/
+/*	left: 0;*/
+/*	right: 0;*/
+/*	top: 50%;*/
+/*	transform: translateY(-50%);*/
+/*}*/
 .bottom-content {
 	position: absolute;
 	left: 0;

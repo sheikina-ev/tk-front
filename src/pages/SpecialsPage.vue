@@ -63,7 +63,7 @@ export default {
       e.target.complete();
     },
     getAnimationDelay(index) {
-      return { animationDelay: `${index * 100}ms` };
+      return {animationDelay: `${index * 100}ms`};
     }
   }
 }

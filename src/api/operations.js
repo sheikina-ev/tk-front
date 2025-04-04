@@ -45,5 +45,8 @@ export default {
 	},
 	sendFeedback(params) {
 		return api.post('feedback/send', params);
+	},
+	updateName(params) {
+		return api.post('customer/updateName', params);
 	}
 }

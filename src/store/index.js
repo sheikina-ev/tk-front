@@ -21,7 +21,7 @@ const store = createStore({
 		orders: [],
 		bonus: '',
 		isAuthorized: false,
-		user: JSON.parse(localStorage.getItem('user')) || null, // Загружаем пользователя сразу
+		user: JSON.parse(localStorage.getItem('user')) || null,
 	},
 	getters: {
 		activeSection(state) {

@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { IonCol, IonCard, IonCardTitle, IonSkeletonText } from '@ionic/vue';
+import { IonCol, IonCard, IonCardTitle, IonSkeletonText} from '@ionic/vue';
 
 export default {
   props: ['special'],

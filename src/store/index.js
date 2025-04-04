@@ -244,6 +244,21 @@ const store = createStore({
 
 			return false;
 		},
+		async updateUserName({ commit, state }, newName) {
+			try {
+				const response = await operations.post("/customer/updateName", {
+					name: newName,
+					api_token: state.user.api_token
+				});
+
+				if (response.status === 200) {
+					const updatedUser = {...state.user, name: newName};
+					commit("setUser", updatedUser);
+				}
+			} catch (error) {
+				console.error("Ошибка обновления имени:", error);
+			}
+		},
 		async login({ commit }, params) {
 			const loading = await loadingCtrl.loading();
 			try {

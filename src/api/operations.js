@@ -48,5 +48,8 @@ export default {
 	},
 	updateName(params) {
 		return api.post('customer/updateName', params);
+	},
+	repeatOrder(params) {
+		return api.post('repeat-order', params);
 	}
 }

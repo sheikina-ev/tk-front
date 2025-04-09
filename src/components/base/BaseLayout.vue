@@ -8,7 +8,7 @@
           </router-link>
 
           <!-- Контейнер для кнопок выбора точки и корзины -->
-          <div class="action-buttons flex items-center space-x-1">
+          <div class="action-buttons flex items-center space-x-1 mr-4 md:mr-315">
             <!-- Кнопка для выбора точки -->
             <ion-button fill="clear" @click="openModal" class="select-shop-button">
               <ion-card class="shop-card" :class="{ 'selected': activeShop }">
@@ -42,6 +42,11 @@
                     alt="Profile Icon"
                     class="w-8 h-8"
                 />
+              </ion-button>
+
+              <!-- Иконка избранного -->
+              <ion-button fill="clear" @click="$router.push('/favorites')" class="favorites-button p-0">
+                <ion-icon :icon="isFavorite ? heart : heartOutline" class="text-black icon-size" />
               </ion-button>
             </div>
           </div>
@@ -90,6 +95,7 @@
 
 <script>
 import { IonPage, IonHeader, IonToolbar, IonContent, IonButton, IonBadge, IonModal, IonCard, IonCardContent } from '@ionic/vue';
+import { heartOutline } from 'ionicons/icons';
 
 export default {
   components: {
@@ -111,6 +117,7 @@ export default {
     return {
       isModalOpen: false,
       selectedAddress: null,
+      heartOutline,
     };
   },
   computed: {
@@ -159,6 +166,7 @@ export default {
 };
 </script>
 
+
 <style scoped>
 .modal-container {
   background-color: #f9d9b8;
@@ -202,17 +210,28 @@ ul li:hover {
 }
 
 .basket-button ion-card {
-  background-color: transparent; /* Убираем фон */
-  box-shadow: none; /* Убираем тень */
-  color: #61473b; /* Устанавливаем цвет текста кнопки */
+  background-color: transparent;
+  box-shadow: none;
+  color: #61473b;
 }
 
 .action-buttons {
-  margin-left: 0px; /* Уменьшаем отступ слева */
-  gap: 8px; /* Уменьшаем отступ между кнопками */
+  margin-right: 1rem;
+}
+
+@media (min-width: 768px) {
+  .action-buttons {
+    margin-right: 315px; /* Отступ справа, как у логотипа */
+  }
 }
 
 .basket-button {
   margin-left: -8px; /* Перемещаем кнопку корзины чуть левее */
+}
+
+/* Новое CSS правило для одинакового размера иконок */
+.icon-size {
+  width: 28px;
+  height: 28px;
 }
 </style>

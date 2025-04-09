@@ -17,6 +17,7 @@ import NotFoundPage from "@/pages/NotFoundPage.vue";
 import CoffeeDetail from "@/pages/CoffeeDetail.vue";
 import ProfilePage from "@/pages/ProfilePage.vue";
 import AuthorizationPage from "@/pages/AuthorizationPage.vue";
+import FavoritesPage from "@/pages/FavoritesPage.vue";
 
 const routes = [
 	{
@@ -77,11 +78,14 @@ const routes = [
 		component: AuthorizationPage
 	},
 
-
-
 	{
 		path: '/profile',
 		component: ProfilePage
+	},
+	{
+		path: '/favorites',
+		name: 'Favorites',
+		component: FavoritesPage
 	},
 	/*
 	{

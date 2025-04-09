@@ -22,6 +22,7 @@ const store = createStore({
 		bonus: '',
 		isAuthorized: false,
 		user: JSON.parse(localStorage.getItem('user')) || null,
+		favorites: JSON.parse(localStorage.getItem('favorites')) || []  // Загружаем избранное из localStorage или пустой массив
 	},
 	getters: {
 		activeSection(state) {
@@ -91,7 +92,11 @@ const store = createStore({
 		},
 		user(state) {
 			return state.user;
-		}
+		},
+		isFavorite: (state) => (productId) => {
+			return state.favorites.some(product => product.id === productId);  // Проверяем, есть ли товар в избранном
+		},
+		favorites: state => state.favorites  // Возвращаем все избранные товары
 	},
 	mutations: {
 		clearState(state, propertyName) {
@@ -104,6 +109,19 @@ const store = createStore({
 					state[propertyName] = [];
 					break;
 			}
+		},
+		addFavorite(state, product) {
+			// Добавляем товар в список избранных
+			state.favorites.push(product);
+			localStorage.setItem('favorites', JSON.stringify(state.favorites));  // Сохраняем избранные товары в localStorage
+		},
+		removeFavorite(state, productId) {
+			// Удаляем товар из избранных
+			state.favorites = state.favorites.filter(product => product.id !== productId);
+			localStorage.setItem('favorites', JSON.stringify(state.favorites));  // Сохраняем обновленный список в localStorage
+		},
+		clearCart(state) {
+			state.cart = [];
 		},
 		setActiveSection(state, id) {
 			state.activeSection = id;
@@ -243,6 +261,10 @@ const store = createStore({
 			}
 
 			return false;
+		},
+
+		clearCart({ commit }) {
+			commit('clearCart');
 		},
 		async updateUserName({ commit, state }, newName) {
 			try {
@@ -440,22 +462,23 @@ const store = createStore({
 
 			return false;
 		},
-		// eslint-disable-next-line no-unused-vars
-		addToCart({ commit }, params) {
-			const product = this.getters.product;
-			const cart = this.getters.cart;
-			const line_id = this.state.lineIdCount + 1;
+		addToCart({ commit, getters, state }, params) {
+			const product = getters.product; // Получаем текущий продукт
+			const cart = getters.cart; // Получаем текущую корзину
+			const line_id = state.lineIdCount + 1; // Уникальный ID для товара в корзине
 			let fields = {};
 
+			// Формируем объект для товара
 			fields.line_id = line_id;
-			fields.type = 'Product'; // Tmp
+			fields.type = 'Product'; // Тип товара
 			fields.productId = product.guid;
 			fields.name = product.product_name;
 			fields.price = parseFloat(params.price);
-			fields.amount = 1;
+			fields.amount = 1; // Начальное количество
 			fields.image = product.image;
 
-			if(params.options !== undefined && params.options.length > 0) {
+			// Обработка опций товара
+			if (params.options !== undefined && params.options.length > 0) {
 				fields.modifiers = [];
 				params.options.forEach(optionId => {
 					const group = product.options.find(options =>
@@ -484,24 +507,29 @@ const store = createStore({
 					console.log("Добавляем в modifiers:", modifier);
 					fields.modifiers.push(modifier);
 
-					if(option.price > 0) fields.price += parseFloat(option.price);
+					if (option.price > 0) fields.price += parseFloat(option.price);
 				});
 			}
 
-
+			// Проверяем, есть ли такой товар в корзине
 			const item = cart.find(line => {
 				return line.productId === fields.productId && JSON.stringify(line.modifiers) === JSON.stringify(fields.modifiers);
 			});
-			if(typeof item !== 'undefined') {
+
+			if (item) {
+				// Если товар есть, увеличиваем количество
 				commit('changeAmount', {
 					line_id: item.line_id,
 					action: 'increase'
 				});
 			} else {
+				// Если товара нет, добавляем его в корзину
 				commit('addToCart', fields);
 			}
 
+			// Пересчитываем общую сумму
 			commit('calculateCartTotal');
+			console.log('Cart after add:', cart); // Проверка содержимого корзины
 		},
 		async logout({ commit }) {
 			commit('setUser', null); // Очистка данных пользователя
@@ -605,15 +633,15 @@ const store = createStore({
 			return false;
 		},
 		loadStateFromStorage({ commit }) {
+			// Загружаем данные из localStorage асинхронно
 			const cart = JSON.parse(localStorage.getItem('cart')) || [];
 			const user = JSON.parse(localStorage.getItem('user')) || { phone: '', name: '' };
 			const activeShop = JSON.parse(localStorage.getItem('activeShop')) || false;
 
-			console.log('activeShop', activeShop)
-
-			commit('updateCart', cart);        // Предположим, у вас есть мутация для обновления корзины
-			commit('setUser', user);          // Загружаем данные пользователя
-			commit('selectShop', { shopId: activeShop });  // Восстанавливаем выбранный магазин
+			// Коммитим данные в store
+			commit('updateCart', cart);
+			commit('setUser', user);
+			commit('selectShop', { shopId: activeShop });
 		},
 		async fetchUser({ commit }) {
 			try {

@@ -94,7 +94,6 @@ import AppFooter from "@/components/base/AppFooter.vue";
 import CheckoutModal from '../components/misc/CheckoutModal.vue';
 import BaseLayout from "@/components/base/BaseLayout.vue";
 
-
 export default {
   components: {
     BaseLayout,
@@ -110,6 +109,8 @@ export default {
       bonusPoints: '',
       checkedTime: 'fast',
       dataTime: '--:--',
+      showToast: false,  // Уведомление
+      toastMessage: '',  // Сообщение уведомления
     }
   },
   computed: {
@@ -154,23 +155,36 @@ export default {
     this.dataTime = later;
   },
   methods: {
-    async submitOrder(event, isTest = false) {
+    throwToast(message) {
+      this.toastMessage = message;
+      this.showToast = true;
+      setTimeout(() => {
+        this.showToast = false;
+      }, 3000);  // Уведомление исчезает через 3 секунды
+    },
+
+    async submitOrder(event = false) {
       event.preventDefault();
 
+      // Проверка обязательных полей
       if (!this.user.name || !this.user.phone) {
         this.throwToast('Заполните обязательные поля: Имя и Телефон');
         return;
       }
 
+      // Копируем корзину для отправки
       let items = JSON.parse(JSON.stringify(this.cart));
-      let orderFields = {};
+
+      // Собираем данные формы
       const formData = new FormData(event.target);
+      let orderFields = {};
 
       for (let key of formData.keys()) {
         orderFields[key] = formData.get(key);
       }
 
-      let timeDelivery = this.dataTime || null;
+      // Формируем объект для отправки
+      const timeDelivery = this.dataTime || null;
 
       orderFields = {
         terminalGroupId: orderFields.terminalGroupId,
@@ -182,49 +196,46 @@ export default {
         bonus: parseFloat(orderFields.bonus) || 0
       };
 
-      if (isTest) {
-        console.log(this.cartTotal, this.dataTime, orderFields.bonus, orderFields);
-        this.throwToast('[DEV] Заказ успешно оформлен');
-        return;
-      }
 
-      const response = await this.$store.dispatch('sendOrder', { order: orderFields });
 
-      if (!response) {
-        this.throwToast('Возникла непредвиденная ошибка');
-      } else if (response.status === "Error") {
-        this.throwToast('Ошибка: ' + response.message + response.errorMessage);
-      } else if (response.errorMessage === 'Доступ запрещён') {
-        this.throwToast('Ошибка: ' + response.errorMessage);
-      } else {
-        let orderId = response?.data?.orderId || 0;
+      try {
+        const response = await this.$store.dispatch('sendOrder', { order: orderFields });
 
-        if (response?.data?.link) {
-          // Если есть ссылка на оплату, показываем модальное окно
-          const modal = await modalController.create({
-            component: CheckoutModal,
-            componentProps: { title: 'Оплата', src: response.data.link }
-          });
-
-          await modal.present();
-
-          modal.onDidDismiss().then(() => {
-            // После закрытия модального окна переходим на order-success
-            this.$router.push({ path: '/order-success', query: { orderId } });
-          });
-
+        // Проверяем ответ от сервера
+        if (response.status === "Error") {
+          this.throwToast(`Ошибка: ${response.message} ${response.errorMessage}`);
+        } else if (response.errorMessage === 'Доступ запрещён') {
+          this.throwToast(`Ошибка: ${response.errorMessage}`);
         } else {
-          // Если оплаты нет, сразу переходим на order-success
-          this.$router.push({ path: '/order-success', query: { orderId } });
-        }
-      }
+          let orderId = response?.data?.orderId || 0;
+          this.$store.dispatch('clearCart');
+          localStorage.removeItem('cart');
 
-      // Гарантируем переход на страницу успеха в любом случае
-      setTimeout(() => {
-        this.$router.push({ path: '/order-success' });
-      }, 3000); // Подстраховка через 3 секунды
+          // Если есть ссылка на оплату, показываем модальное окно
+          if (response?.data?.link) {
+            const modal = await modalController.create({
+              component: CheckoutModal,
+              componentProps: { title: 'Оплата', src: response.data.link }
+            });
+
+            await modal.present();
+
+            modal.onDidDismiss().then(() => {
+              // После закрытия модального окна переходим на страницу успеха
+              this.$router.push({ path: '/order-success', query: { orderId } });
+            });
+          } else {
+            // Если оплаты нет, сразу переходим на страницу успеха
+            this.$router.push({ path: '/order-success', query: { orderId } });
+          }
+        }
+      } catch (error) {
+        this.throwToast('Возникла ошибка при отправке заказа. Попробуйте снова!');
+      }
     }
+
     ,
+
     async openModal(type) {
       if (type === 'policy') {
         const modal = await modalController.create({

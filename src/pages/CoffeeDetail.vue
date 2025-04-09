@@ -7,6 +7,8 @@
         </ion-buttons>
         <ion-title>{{ coffeeItem && Object.keys(coffeeItem).length > 0 ? coffeeItem.product_name : 'Загрузка...' }}</ion-title>
       </ion-toolbar>
+
+
     </ion-header>
     <ion-content>
       <form id="coffee-detail">
@@ -105,16 +107,31 @@
             <span>{{ calcPrice }} руб.</span>
           </div>
         </ion-button>
+        <ion-buttons slot="end">
+          <ion-button @click="toggleFavorite">
+            <ion-icon :icon="isFavorite ? heart : heartOutline" class="favorite-icon"></ion-icon>
+          </ion-button>
+
+        </ion-buttons>
       </ion-toolbar>
+
     </ion-footer>
   </ion-page>
 </template>
+<style>
+.favorite-icon {
+  font-size: 24px;
+  transition: color 0.3s ease;
+}
 
+
+</style>
 <script>
 import { IonPage, IonHeader, IonTitle, IonContent, IonToolbar, IonBackButton, IonButtons, IonFooter, IonIcon, IonButton, toastController, IonRadioGroup, IonRadio, IonCheckbox, IonLabel, IonNote, IonList, IonItem, IonSkeletonText } from '@ionic/vue';
 import { chevronBack, cartOutline } from 'ionicons/icons';
 // import CoffeeOverview from '../components/coffee/CoffeeOverview.vue';
 import { useRouter } from 'vue-router';
+import { heart, heartOutline } from 'ionicons/icons';
 
 export default {
   components: {
@@ -140,6 +157,7 @@ export default {
   },
   data() {
     return {
+      isFavoriteLocal: false, // Статус избранного
       productId: this.$route.params.id,
       calcPrice: 0,
       useCart: true,
@@ -150,9 +168,12 @@ export default {
     return {
       router,
       chevronBack,
-      cartOutline
+      cartOutline,
+      heart,
+      heartOutline
     }
   },
+
   async ionViewWillEnter() {
     this.$store.commit('clearState', 'product');
     this.useCart = true;
@@ -176,8 +197,12 @@ export default {
       }
 
       return product;
+    },
+    isFavorite() {
+      return this.$store.getters.isFavorite(this.coffeeItem.id); // Проверяем, является ли товар избранным
     }
   },
+
   watch: {
     coffeeItem(val) {
       if(val !== false && val !== undefined) this.calculatePrice();
@@ -216,6 +241,36 @@ export default {
       await toast.present();
       this.router.go(-1); // Might need to check if previous page is equal to '/coffee' (TODO)
     },
+    async toggleFavorite() {
+      const product = this.$store.getters.product;
+
+      if (this.$store.getters.isFavorite(product.id)) {
+        // Удаляем из избранного
+        this.$store.commit('removeFavorite', product.id);
+        const toast = await toastController.create({
+          message: 'Удалено из избранного',
+          position: 'bottom',
+          cssClass: 'toast-mb',
+          mode: 'md',
+          duration: 1000,
+          color: 'danger'
+        });
+        await toast.present();
+      } else {
+        // Добавляем в избранное
+        this.$store.commit('addFavorite', product);
+        const toast = await toastController.create({
+          message: 'Добавлено в избранное',
+          position: 'bottom',
+          cssClass: 'toast-mb',
+          mode: 'md',
+          duration: 1000,
+          color: 'success'
+        });
+        await toast.present();
+      }
+    },
+
     setRadioOption(e) {
       const radioGroup = e.target;
       const hiddenInput = radioGroup.querySelector('input[name="'+radioGroup.name+'"]');

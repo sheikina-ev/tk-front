@@ -26,6 +26,10 @@ export default {
 
     return { goToHomePage };
 
+  },
+  mounted() {
+    // Очистить корзину при переходе на страницу /order-success
+    this.$store.dispatch('clearCart');
   }
 }
 </script>

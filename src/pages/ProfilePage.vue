@@ -59,7 +59,7 @@
         <h2 class="text-2xl font-semibold mb-6 text-center">Последние заказы</h2>
         <div class="orders-grid">
           <order-item
-              v-for="order in orders.slice(0, 4)"
+              v-for="order in orders.slice(0, 3)"
               :key="order.id"
               :order="order"
               class="order-card"
@@ -217,11 +217,13 @@ export default {
 
 .orders-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 20px;
-  justify-content: center; /* Центрирование по горизонтали */
-  align-items: center; /* Центрирование по вертикали */
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 2px;
+  justify-items: center; /* Центрирует карточки внутри ячеек */
+  justify-content: center; /* Центрирует сами ячейки грида по горизонтали */
+  align-items: center; /* Центрирует карточки по вертикали */
 }
+
 
 .order-card {
   background: #fff;

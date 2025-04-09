@@ -6,7 +6,11 @@
       <!-- Проверяем авторизацию -->
       <div v-if="!isAuthorized" class="auth-prompt">
         <p class="text-center text-lg text-gray-700">Для просмотра истории заказов необходимо авторизоваться.</p>
-        <button class="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-6 rounded-full text-sm font-medium shadow-lg transition-all" @click="redirectToAuth">Войти</button>
+        <div class="flex justify-center items-center mt-6">
+          <ion-button @click="redirectToAuth">
+            Войти
+          </ion-button>
+        </div>
       </div>
 
       <!-- Загружаем заказы -->
@@ -23,6 +27,9 @@
       <!-- Если заказов нет -->
       <div v-else class="center-content">
         <p class="text-center text-lg text-gray-500">У вас пока нет заказов. Сделайте первый!</p>
+        <div class="flex justify-center items-center mt-6">
+          <ion-button  @click="redirectToAuth">Сделать первый заказ</ion-button>
+        </div>
       </div>
     </div>
 
@@ -81,9 +88,10 @@ export default {
 }
 
 .orders-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  display: flex;
+  flex-wrap: wrap; /* Обеспечивает оборачивание элементов, если их больше, чем помещается */
+  justify-content: center; /* Центрирует элементы по горизонтали */
+  gap: 20px; /* Отступ между карточками заказов */
 }
 
 .order-card {
@@ -92,14 +100,11 @@ export default {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: transform 0.2s ease;
+  width: 300px; /* Ограничение ширины карточки */
 }
 
 .order-card:hover {
   transform: translateY(-5px);
-}
-
-.order-card .order-item {
-  padding: 20px;
 }
 
 .error-message {
@@ -117,10 +122,6 @@ export default {
   height: 60vh;
 }
 
-.bg-custom-color {
-  background-color: #4F46E5;
-}
-
 button {
   transition: background-color 0.3s ease;
 }
@@ -136,7 +137,8 @@ button:hover {
   border-radius: 25px;
   font-weight: bold;
   text-align: center;
-  width: 100%;
+  width: 100%; /* Убираем fixed ширину, чтобы кнопка адаптировалась к размерам экрана */
+  max-width: 300px; /* Ограничиваем максимальную ширину кнопки */
   margin-top: 10px;
   border: none;
   transition: background-color 0.3s ease;
@@ -146,13 +148,14 @@ button:hover {
   background-color: #059669;
 }
 
+/* Медиазапрос для маленьких экранов */
 @media (max-width: 768px) {
-  .page-header {
-    font-size: 2xl;
-  }
-
   .orders-grid {
     grid-template-columns: 1fr;
+  }
+
+  .repeat-btn {
+    width: auto; /* Позволяем кнопке адаптироваться на малых экранах */
   }
 }
 </style>

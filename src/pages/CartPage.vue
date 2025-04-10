@@ -8,8 +8,8 @@
           <div v-if="cart.length > 0" class="flex flex-col">
             <div v-for="cartItem in cart" :key="cartItem.line_id" class="">
               <div class="bg-white rounded-lg p-6 flex items-start relative">
-                <img :src="cartItem.image" alt="item image"
-                     class="w-24 h-24 sm:w-36 sm:h-36 md:w-48 md:h-48 object-cover mr-6"/>
+                <img :src="cartItem.image" alt="item image" class="w-24 h-24 sm:w-36 sm:h-36 md:w-48 md:h-48 object-cover mr-6"/>
+
                 <div class="flex-1">
                   <h2 class="text-lg font-semibold mb-1 -mt-1 uppercase">{{ cartItem.name }}</h2>
                   <div v-if="cartItem.modifiers && cartItem.modifiers.length > 0" class="mt-4 mb-4">
@@ -97,6 +97,9 @@ export default {
       return this.$store.getters.cartTotal;
     }
   },
+  mounted() {
+    this.$store.dispatch('loadStateFromStorage'); // Загружает корзину из localStorage
+  },
   methods: {
     increment(cartItem) {
       this.$store.commit('changeAmount', {line_id: cartItem.line_id, action: 'increase'});
@@ -118,13 +121,11 @@ export default {
       const user = this.$store.state.user;
       const isAuthenticated = !!user && !!user.phone && !!user.name;
 
-      console.log('Пользователь:', user);
-      console.log('isAuthenticated:', isAuthenticated);
 
       if (isAuthenticated) {
         this.$router.push('/checkout');
       } else {
-        this.$router.push({ path: '/auth', query: { redirect: '/checkout' } });
+        this.$router.push({path: '/auth', query: {redirect: '/checkout'}});
       }
     }
 

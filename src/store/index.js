@@ -99,6 +99,9 @@ const store = createStore({
 		favorites: state => state.favorites  // Возвращаем все избранные товары
 	},
 	mutations: {
+		incrementLineIdCount(state) {
+			state.lineIdCount += 1; // инкрементируем счетчик
+		},
 		clearState(state, propertyName) {
 			switch(typeof state[propertyName]) {
 				case 'string':
@@ -200,7 +203,8 @@ const store = createStore({
 			const line_id = payload.line_id;
 			state.cart = state.cart.filter(item => item.line_id !== line_id);
 
-			if(state.cart.length === 0) state.lineIdCount = 0;
+			if(state.cart.length === 0) state.lineIdCount = 0;  // Синхронизируем с localStorage
+			localStorage.setItem('cart', JSON.stringify(state.cart));  // Обновляем данные в localStorage
 		},
 		dropCart(state) {
 			state.cart = [];
@@ -462,38 +466,34 @@ const store = createStore({
 
 			return false;
 		},
-		addToCart({ commit, getters, state }, params) {
-			const product = getters.product; // Получаем текущий продукт
-			const cart = getters.cart; // Получаем текущую корзину
-			const line_id = state.lineIdCount + 1; // Уникальный ID для товара в корзине
-			let fields = {};
+		addToCart({ commit, state }, params) {
+			const line_id = state.lineIdCount + 1;
 
-			// Формируем объект для товара
-			fields.line_id = line_id;
-			fields.type = 'Product'; // Тип товара
-			fields.productId = product.guid;
-			fields.name = product.product_name;
-			fields.price = parseFloat(params.price);
-			fields.amount = 1; // Начальное количество
-			fields.image = product.image;
+			let fields = {
+				line_id: line_id,
+				type: 'Product',
+				productId: params.productId,
+				name: params.name,
+				price: parseFloat(params.price),
+				amount: +params.amount || 1,
+				image: params.image || '',
+				modifiers: []
+			};
 
-			// Обработка опций товара
-			if (params.options !== undefined && params.options.length > 0) {
-				fields.modifiers = [];
+			// Обработка опций, если есть
+			if (params.options && params.options.length > 0 && params.productOptions) {
 				params.options.forEach(optionId => {
-					const group = product.options.find(options =>
-						options.values.some(value => value.id == Number(optionId))
+					const group = params.productOptions.find(group =>
+						group.values.some(value => value.id == Number(optionId))
 					);
 
 					if (!group) {
-						console.error("Group not found for optionId:", optionId);
 						return;
 					}
 
 					const option = group.values.find(value => value.id == Number(optionId));
 
 					if (!option) {
-						console.error("Option not found for optionId:", optionId);
 						return;
 					}
 
@@ -504,33 +504,19 @@ const store = createStore({
 						productGroupId: group.guid,
 					};
 
-					console.log("Добавляем в modifiers:", modifier);
 					fields.modifiers.push(modifier);
 
-					if (option.price > 0) fields.price += parseFloat(option.price);
+					if (option.price > 0) {
+						fields.price += parseFloat(option.price);
+					}
 				});
 			}
 
-			// Проверяем, есть ли такой товар в корзине
-			const item = cart.find(line => {
-				return line.productId === fields.productId && JSON.stringify(line.modifiers) === JSON.stringify(fields.modifiers);
-			});
-
-			if (item) {
-				// Если товар есть, увеличиваем количество
-				commit('changeAmount', {
-					line_id: item.line_id,
-					action: 'increase'
-				});
-			} else {
-				// Если товара нет, добавляем его в корзину
-				commit('addToCart', fields);
-			}
-
-			// Пересчитываем общую сумму
+			commit('addToCart', fields);
+			commit('incrementLineIdCount');
 			commit('calculateCartTotal');
-			console.log('Cart after add:', cart); // Проверка содержимого корзины
-		},
+		}
+		,
 		async logout({ commit }) {
 			commit('setUser', null); // Очистка данных пользователя
 			localStorage.removeItem('user'); // Удаление пользователя из localStorage
@@ -647,7 +633,6 @@ const store = createStore({
 			try {
 				const response = await fetch('https://tk.uat.sibcode.team/api/user');
 				const user = await response.json();
-				console.log("API вернул пользователя:", user);
 				commit('setUser', user);
 			} catch (error) {
 				console.error("Ошибка загрузки пользователя:", error);

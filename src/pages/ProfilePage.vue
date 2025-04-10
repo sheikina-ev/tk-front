@@ -187,12 +187,9 @@ export default {
 
         const response = await operations.getOrderHistory(phoneNumber);
 
-        console.log("Ответ от сервера:", response);
-
         if (response.status === 200) {
           // Исправлено: теперь мы используем 'orders_list' вместо 'orders'
           this.orders = response.data.orders_list || [];
-          console.log("Заказы:", this.orders);
         } else {
           this.errorMessage = 'Не удалось загрузить заказы.';
         }

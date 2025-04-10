@@ -1,5 +1,6 @@
 <template>
-  <ion-card v-if="order" class="order-tracking">
+  <!-- Отображение информации о заказе -->
+  <ion-card v-if="!loading && order" class="order-tracking">
     <ion-card-header>
       <div class="flex-between">
         <span>№{{ order.id }}</span>
@@ -28,7 +29,7 @@
 
       <!-- Кнопка для повторения заказа -->
       <div class="button-container">
-        <ion-button  expand="block" @click="repeatOrder">
+        <ion-button expand="block" @click="repeatOrder">
           Повторить заказ
         </ion-button>
       </div>
@@ -36,7 +37,7 @@
   </ion-card>
 
   <!-- Скелетон для загрузки данных -->
-  <ion-card v-else class="order-tracking">
+  <ion-card v-if="loading" class="order-tracking">
     <ion-card-header>
       <div class="flex-between">
         <ion-skeleton-text animated style="width: 3em" />
@@ -44,13 +45,9 @@
       </div>
     </ion-card-header>
     <ion-card-content>
-      <order-item-position :product="false" />
-      <div class="flex-between order-total">
-        <ion-skeleton-text animated style="width: 9em" />
-      </div>
-      <div class="order-address">
-        <ion-skeleton-text animated style="width: 12em" />
-      </div>
+      <ion-skeleton-text animated style="width: 100%" />
+      <ion-skeleton-text animated style="width: 100%" />
+      <ion-skeleton-text animated style="width: 12em" />
     </ion-card-content>
   </ion-card>
 </template>
@@ -65,7 +62,7 @@ import {
   toastController
 } from '@ionic/vue';
 import OrderItemPosition from './OrderItemPosition.vue';
-import operations from "@/api/operations";
+import api from "@/api/operations";
 
 export default {
   name: 'OrderItem',
@@ -78,43 +75,71 @@ export default {
     IonButton,
     OrderItemPosition
   },
+  data() {
+    return {
+      loading: false, // Состояние загрузки
+    };
+  },
   methods: {
     // Метод для повторения заказа
     async repeatOrder() {
       try {
-        // Запрос для повторения заказа
-        const response = await operations.repeatOrder({
-          phone: this.$store.state.user.phone,  // Извлекаем телефон из Vuex
-          name: this.$store.state.user.name,    // Имя пользователя из Vuex
-          order_id: this.order.id,              // ID текущего заказа
-        });
+        const orderId = this.order.id; // Получаем ID текущего заказа
+        const orderDetails = await this.getOrderDetails(orderId); // Получаем детали заказа
 
-        // Если запрос успешен
-        if (response.data.status === 'OK') {
-          const products = response.data.products;  // Список продуктов из ответа
-
-          // Логируем каждый продукт перед добавлением в корзину
-          console.log('Товары, добавленные в корзину:', products);
-
-          // Добавляем каждый продукт в корзину
-          products.forEach(product => {
-            this.$store.dispatch('addToCart', product);  // Используем Vuex для добавления товаров
-          });
-
-          // Показываем сообщение об успешном добавлении товаров
-          const toast = await toastController.create({
-            message: 'Товары добавлены в корзину!',
-            position: 'bottom',
-            duration: 2000,
-            mode: 'md',
-          });
-          await toast.present();
-
+        if (orderDetails && orderDetails.products) {
+          this.addProductsToCart(orderDetails.products); // Добавляем продукты в корзину
         } else {
-          this.showErrorToast('Не удалось повторить заказ.');
+          this.showErrorToast('Не удалось получить товары из заказа.');
         }
       } catch (error) {
+        console.error(error);
         this.showErrorToast('Ошибка при повторении заказа.');
+      }
+    },
+
+// Метод для добавления товаров в корзину
+    addProductsToCart(products) {
+      products.forEach(product => {
+        const cartProduct = {
+          productId: product.productId || product.line_id,
+          name: product.name || "Неизвестный продукт",
+          price: product.price || 0,
+          amount: product.amount || 1,
+          image: product.image || "default_image.jpg",
+          modifiers: product.modifiers || [],
+          _uniqueKey: Date.now() + Math.random(),
+        };
+
+        const existingProduct = this.$store.state.cart.find(item => item.productId === cartProduct.productId);
+
+        if (existingProduct) {
+          this.$store.dispatch('updateCartProductAmount', {
+            productId: cartProduct.productId,
+            amount: existingProduct.amount + cartProduct.amount,
+          });
+        } else {
+          this.$store.dispatch('addToCart', cartProduct);
+        }
+      });
+
+      this.showToast('Товары добавлены в корзину!');
+      this.$router.push({ path: 'cart' });
+    }
+    ,
+
+    // Метод для получения данных о заказе
+    async getOrderDetails(orderId) {
+      try {
+        const response = await api.OrderHistory(orderId);
+        if (response.status === 200) {
+          return response.data;
+        } else {
+          this.showErrorToast('Не удалось получить информацию о заказе.');
+        }
+      } catch (error) {
+        console.error(error);
+        this.showErrorToast('Ошибка при получении данных.');
       }
     },
 
@@ -126,6 +151,17 @@ export default {
         duration: 2000,
         mode: 'md',
         color: 'danger',
+      });
+      await toast.present();
+    },
+
+    // Метод для отображения общего сообщения
+    async showToast(message) {
+      const toast = await toastController.create({
+        message,
+        position: 'bottom',
+        duration: 1500,
+        mode: 'md',
       });
       await toast.present();
     }
@@ -154,5 +190,4 @@ export default {
   margin-top: 10px;
   font-style: italic;
 }
-
 </style>

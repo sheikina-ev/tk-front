@@ -1,13 +1,13 @@
 <template>
   <ion-col size="6">
-    <div class="coffee-container">
-      <ion-card class="coffee-card" :router-link="`/coffee/${coffeeItem.id}`">
+    <div class="coffee-container" @click="openModal">
+      <ion-card class="coffee-card">
         <div class="skeleton-wrap">
           <ion-img :src="coffeeItem.image"></ion-img>
         </div>
       </ion-card>
       <div class="coffee-item-info mt-2">
-        <span class="block  font-bold text-lg">{{ coffeeItem.product_name }}</span>
+        <span class="block font-bold text-lg">{{ coffeeItem.product_name }}</span>
         <p v-if="coffeeItem.price" class="text-center text-black">от {{ coffeeItem.price }}₽</p>
       </div>
     </div>
@@ -15,7 +15,8 @@
 </template>
 
 <script>
-import { IonCol, IonCard, IonImg } from '@ionic/vue';
+import { IonCol, IonCard, IonImg, modalController } from '@ionic/vue';
+import CoffeeDetail from "@/pages/CoffeeDetail.vue";
 
 export default {
   props: ['coffeeItem'],
@@ -24,9 +25,22 @@ export default {
     IonCard,
     IonImg
   },
-
+  methods: {
+    async openModal() {
+      const modal = await modalController.create({
+        component: CoffeeDetail,
+        componentProps: {
+          coffeeItem: this.coffeeItem
+        },
+        cssClass: 'custom-modal'
+      });
+      await modal.present();
+    }
+  }
 };
 </script>
+
+
 
 <style scoped>
 .coffee-container {

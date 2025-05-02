@@ -9,35 +9,26 @@ import SpecialsPage from '../pages/SpecialsPage.vue';
 import OrdersPage from '../pages/OrdersPage.vue';
 import ReviewPage from '../pages/ReviewPage.vue';
 import FeedbackPage from '../pages/FeedbackPage.vue';
-import ShopPickPage from '../pages/ShopPickPage.vue';
-import TestPage from '../pages/TestPage.vue';
 
-// Добавляем импорт компонента модального окна
 import NotFoundPage from "@/pages/NotFoundPage.vue";
 import CoffeeDetail from "@/pages/CoffeeDetail.vue";
 import ProfilePage from "@/pages/ProfilePage.vue";
 import AuthorizationPage from "@/pages/AuthorizationPage.vue";
 import FavoritesPage from "@/pages/FavoritesPage.vue";
+import InfoPage from "@/pages/InfoPage.vue";
 
 const routes = [
-	{
-		path: '/shop',
-		component: ShopPickPage,
-		meta: {
-			isMenuDisabled: true
-		}
-	},
 	{
 		path: '/',
 		component: CoffeePage
 	},
-
+	{
+		path: '/info',
+		component: InfoPage,
+	},
 	{
 		path: '/coffee/:id',
 		component: CoffeeDetail,
-		meta: {
-			isModal: true
-		}
 	},
 	{
 		path: '/cart',
@@ -69,10 +60,7 @@ const routes = [
 		path: '/feedback',
 		component: FeedbackPage
 	},
-	{
-		path: '/test',
-		component: TestPage
-	},
+
 	{
 		path: '/auth',
 		component: AuthorizationPage
@@ -87,18 +75,9 @@ const routes = [
 		name: 'Favorites',
 		component: FavoritesPage
 	},
-	/*
-	{
-		path: '/coffee/:id',
-		component: Modal,
-		meta: {
-			isModal: true
-		}
-	},
-	*/
 	{
 		path: '/:catchAll(.*)',
-		component: NotFoundPage // Перенаправление на страницу 404 для всех несуществующих маршрутов
+		component: NotFoundPage
 	}
 
 ];

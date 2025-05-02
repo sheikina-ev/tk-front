@@ -1,34 +1,33 @@
 <template>
   <base-layout page-title="Избранные товары">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 mb-28">
-      <h1 class="page-header mt-10 mb-6 text-3xl font-bold text-gray-900">Избранные товары</h1>
+    <div class="favPage mx-auto px-4 sm:px-6 lg:px-8 mb-28">
+      <h1 class="text-3xl font-bold text-gray-900 mt-10 mb-6 text-center">Избранные товары</h1>
 
-      <!-- Если нет избранных товаров -->
-      <div v-if="favorites.length === 0" class="text-center text-[#61473b] mt-10 text-lg">
+      <div v-if="favorites.length === 0" class="text-center mt-52 text-lg">
         У вас нет избранных товаров.
       </div>
 
-      <!-- Если есть избранные товары -->
-      <div v-else class="favorites-grid">
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <div
             v-for="item in favorites"
             :key="item.id"
-            class="favorite-card"
+            @click="openModal(item)"
+            class="cursor-pointer border-2 border-custom-color1 rounded-lg p-4 shadow-lg transition-transform transform hover:-translate-y-1 flex flex-col items-center"
         >
           <img
               :src="item.image"
               :alt="item.product_name"
-              class="favorite-image"
+              class="w-full h-48 object-cover rounded-lg mb-4"
           />
-          <h3 class="favorite-title">{{ item.name }}</h3>
-          <p class="favorite-price">{{ item.price }} ₽</p>
+          <h3 class="text-custom-color1 font-semibold text-lg mb-2">{{ item.product_name }}</h3>
+          <p class="text-custom-color1 text-base mb-4">{{ item.price }} ₽</p>
 
           <ion-button
               fill="outline"
               color="danger"
               expand="block"
-              @click="removeFavorite(item.id)"
-              class="remove-btn"
+              @click.stop="removeFavorite(item.id)"
+              class="rounded-lg py-2 px-4"
           >
             Удалить
           </ion-button>
@@ -41,15 +40,15 @@
 </template>
 
 <script>
-import {  IonButton } from '@ionic/vue';
+import { modalController, IonButton } from '@ionic/vue';
 import BaseLayout from "@/components/base/BaseLayout.vue";
 import AppFooter from "@/components/base/AppFooter.vue";
+import CoffeeDetail from "@/pages/CoffeeDetail.vue";
 
 export default {
   components: {
     AppFooter,
     BaseLayout,
-
     IonButton,
   },
   computed: {
@@ -61,78 +60,18 @@ export default {
     removeFavorite(productId) {
       this.$store.commit('removeFavorite', productId);
     },
-  },
+    async openModal(product) {
+      const modal = await modalController.create({
+        component: CoffeeDetail,
+        componentProps: {
+          coffeeItem: product
+        },
+        swipeToClose: true,
+        presentingElement: document.querySelector('ion-router-outlet')
+      });
+
+      await modal.present();
+    }
+  }
 };
 </script>
-
-<style scoped>
-.container {
-  min-height: calc(70vh - 175px); /* Высота видимой части окна минус высота футера */
-}
-.page-header {
-  color: #1f2937;
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.favorites-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-}
-
-.favorite-card {
-  background: #f9d9b8;
-  border-radius: 10px;
-  border: 2px solid #61473b;
-  padding: 20px;
-  position: relative;
-  width: 280px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
-}
-
-.favorite-card:hover {
-  transform: translateY(-5px);
-}
-
-.favorite-image {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-.favorite-title {
-  color: #61473b;
-  font-weight: 600;
-  font-size: 1.125rem;
-  margin-bottom: 8px;
-}
-
-.favorite-price {
-  color: #61473b;
-  font-size: 1rem;
-  margin-bottom: 12px;
-}
-
-.remove-btn {
-  --border-radius: 12px;
-  --padding-start: 12px;
-  --padding-end: 12px;
-  transition: background-color 0.3s ease;
-}
-
-.remove-btn:hover {
-  background-color: #ff4f4f;
-}
-
-@media (max-width: 768px) {
-  .favorites-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-</style>

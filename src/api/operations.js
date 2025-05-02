@@ -38,7 +38,7 @@ export default {
 		return api.get('special/get');
 	},
 	getInfoPage(code) {
-		return api.get('info/page/' + code);
+		return api.get(`info/page?code=${code}`);
 	},
 	sendReview(params) {
 		return api.post('review/send', params);

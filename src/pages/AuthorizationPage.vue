@@ -31,9 +31,8 @@
 
           <!-- Ссылка на условия -->
           <div class="mt-6 text-center">
-            <div class="bottom-link-wrap flex justify-center mt-4">
+            <div class="bottom-link-wrap flex justify-center mt-4" >
               <a @click="openPolicyModal" class="text-xs text-gray-500 hover:underline cursor-pointer">
-
                 Обработка персональных данных</a>
             </div>
           </div>
@@ -42,7 +41,7 @@
       <!-- Модалка для обработки персональных данных -->
       <ion-modal :is-open="isPolicyModalOpen" @didDismiss="closePolicyModal">
         <div class="modal-content p-6 bg-white rounded-lg shadow-lg text-center">
-          <h2 class="text-lg font-bold mb-4">Обработка персональных данных</h2>
+          <h2 class="text-lg font-bold mb-4 text-black">Обработка персональных данных</h2>
           <p class="text-sm text-gray-600 text-left">
             Мы заботимся о безопасности ваших данных и соблюдаем требования законодательства о защите персональной
             информации.
@@ -87,11 +86,13 @@ export default {
     IonModal
   },
   setup() {
+    // Получаем доступ к роутеру
     const router = useRouter();
     return {router};
   },
   data() {
     return {
+      // Состояние модального окна политики конфиденциальности
       isPolicyModalOpen: false
     };
   },
@@ -101,6 +102,7 @@ export default {
     }
   },
   methods: {
+    // Открытие и закрытие модального окна политики
     openPolicyModal() {
       this.isPolicyModalOpen = true;
     },
@@ -117,6 +119,7 @@ export default {
 
       toast.present();
     },
+    // Авторизация пользователя и переход в профиль
     async authorize(params) {
       const response = await this.$store.dispatch('login', {params: params});
 
@@ -129,8 +132,8 @@ export default {
       } else {
         this.throwToast('Ошибка авторизации');
       }
-    }
-    ,
+    },
+    // Показываем диалоговое окно для ввода кода из SMS
     async showConfirmationPrompt(params, message = '') {
       const alert = await alertController.create({
         cssClass: 'auth-code-prompt',
@@ -178,6 +181,7 @@ export default {
 
       return alert.present();
     },
+    // Отправляем введённый код на сервер и проверяем
     async sendConfirmationCode(params) {
       console.log("Отправляем код для подтверждения:", params);
 
@@ -190,7 +194,6 @@ export default {
 
       if (response) {
         console.log("Ответ от сервера (проверка кода):", response);
-
         if (response.status === 'OK') {
           this.authorize(params);
         } else {
@@ -201,6 +204,7 @@ export default {
         this.showConfirmationPrompt(params);
       }
     },
+    // Отправляем запрос на получение кода подтверждения
     async requestConfirmationCode(e) {
       e.preventDefault();
 
@@ -231,9 +235,7 @@ export default {
 }
 </script>
 
-
 <style scoped>
-
 .modal-content {
   max-width: 400px;
   margin: auto;

@@ -2,16 +2,16 @@
   <ion-page id="main">
     <ion-header>
       <ion-toolbar>
-        <div class="header-container bg-custom-color flex items-center justify-between px-5 md:px-0 relative z-10">
+        <div class="flex items-center justify-between px-5 md:px-0 relative z-10 bg-custom-color">
           <router-link to="/" class="logo-link">
-            <img src="@/assets/img/logoHeader.png" alt="Logo" class="logo mx-4 my-4 w-24 md:ml-315" />
+            <img src="@/assets/img/logoHeader.png" alt="Logo" class="mx-4 my-4 w-24 md:ml-315" />
           </router-link>
 
           <!-- Контейнер для кнопок выбора точки и корзины -->
-          <div class="action-buttons flex items-center space-x-1 mr-4 md:mr-315">
+          <div class="flex items-center space-x-1 mr-4 md:mr-315 flex-shrink-0 overflow-x-auto">
             <!-- Кнопка для выбора точки -->
-            <ion-button fill="clear" @click="openModal" class="select-shop-button">
-              <ion-card class="shop-card" :class="{ 'selected': activeShop }">
+            <ion-button fill="clear" @click="openModal" class="p-0">
+              <ion-card class="bg-transparent shadow-none p-2" :class="{ 'selected': activeShop }">
                 <ion-card-content class="text-center text-[#61473b]">
                   <span v-if="activeShop">{{ activeShop.store_name }}</span>
                   <span v-else>Выбрать точку</span>
@@ -19,24 +19,24 @@
               </ion-card>
             </ion-button>
 
-            <div class="flex items-center space-x-2 md:mr-315">
-              <ion-button fill="clear" @click="$router.push('/cart')" class="basket-button p-0">
-                <div class="basket-container relative flex items-center">
+            <div class="flex items-center space-x-2">
+              <ion-button fill="clear" @click="$router.push('/cart')" class="p-0">
+                <div class="relative flex items-center">
                   <img
                       src="../../../public/assets/img/basket.png"
                       height="28"
                       width="33"
                       alt="Basket Icon"
-                      class="basket-icon m-0"
+                      class="m-0"
                   />
-                  <ion-badge v-if="cartCount > 0" color="danger" class="badge ml-2 absolute top-0 right-0">
+                  <ion-badge v-if="cartCount > 0" color="danger" class="absolute top-0 right-0 ml-2">
                     {{ cartCount }}
                   </ion-badge>
                 </div>
               </ion-button>
 
               <!-- Иконка профиля -->
-              <ion-button fill="clear" @click="goToProfile" class="profile-button p-0">
+              <ion-button fill="clear" @click="goToProfile" class="p-0">
                 <img
                     src="@/assets/img/profile-icon.png"
                     alt="Profile Icon"
@@ -45,8 +45,8 @@
               </ion-button>
 
               <!-- Иконка избранного -->
-              <ion-button fill="clear" @click="$router.push('/favorites')" class="favorites-button p-0">
-                <ion-icon :icon="isFavorite ? heart : heartOutline" class="text-black icon-size" />
+              <ion-button fill="clear" @click="$router.push('/favorites')" class="p-0">
+                <ion-icon :icon="isFavorite ? heart : heartOutline" class="text-black w-7 h-7 block sm:block" />
               </ion-button>
             </div>
           </div>
@@ -82,7 +82,6 @@
               </div>
             </div>
           </ion-modal>
-
         </div>
       </ion-toolbar>
     </ion-header>
@@ -156,17 +155,12 @@ export default {
         console.error('Ошибка загрузки товаров:', error);
       }
     },
-     loadProducts(shopId) {
-      return this.$store.dispatch('loadProducts', shopId);
-    },
     goToProfile() {
       this.$router.push(this.isAuthenticated ? '/profile' : '/auth');
     }
   },
 };
 </script>
-
-
 <style scoped>
 .modal-container {
   background-color: #f9d9b8;
@@ -187,51 +181,4 @@ export default {
   width: 500px;
 }
 
-.close-button {
-  background-color: #61473b !important;
-  color: white;
-  margin-top: 10px;
-}
-
-ul li {
-  transition: background-color 0.3s ease;
-}
-
-ul li:hover {
-  background-color: #61473b;
-  color: white;
-}
-
-.select-shop-button ion-card {
-  background-color: transparent; /* Убираем фон */
-  box-shadow: none; /* Убираем тень */
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-.basket-button ion-card {
-  background-color: transparent;
-  box-shadow: none;
-  color: #61473b;
-}
-
-.action-buttons {
-  margin-right: 1rem;
-}
-
-@media (min-width: 768px) {
-  .action-buttons {
-    margin-right: 315px; /* Отступ справа, как у логотипа */
-  }
-}
-
-.basket-button {
-  margin-left: -8px; /* Перемещаем кнопку корзины чуть левее */
-}
-
-/* Новое CSS правило для одинакового размера иконок */
-.icon-size {
-  width: 28px;
-  height: 28px;
-}
 </style>

@@ -2,248 +2,165 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-back-button default-href="/coffee" text="" :icon="chevronBack"></ion-back-button>
-        </ion-buttons>
-        <ion-title>{{ coffeeItem && Object.keys(coffeeItem).length > 0 ? coffeeItem.product_name : 'Загрузка...' }}</ion-title>
-      </ion-toolbar>
-
-
-    </ion-header>
-    <ion-content>
-      <form id="coffee-detail">
-        <input type="hidden" name="id" :value="coffeeItem.id">
-        <input type="hidden" name="price" :value="coffeeItem.price">
-
-        <div class="coffee-picture-container" :style="coffeeItem.image ? `background-image:url('`+coffeeItem.image+`')` : `background-image:url('../assets/img/no-image-contrast.jpg')`">
-          <div v-if="coffeeItem.constructor === Object" class="coffee-picture-info-wrap">
-          </div>
-          <div v-else class="coffee-picture-info-wrap no-padding">
-            <ion-skeleton-text animated></ion-skeleton-text>
-          </div>
-        </div>
-
-        <div v-if="coffeeItem.constructor === Object" class="coffee-info-container">
-          <p v-if="coffeeItem.product_description" class="">{{ coffeeItem.product_description }}</p>
-          <p v-else class=""><i>Описание отсутствует</i></p>
-        </div>
-        <div v-else class="coffee-info-container">
-          <ion-skeleton-text animated></ion-skeleton-text>
-        </div>
-
-        <div v-if="coffeeItem.options && coffeeItem.options.length > 0" class="coffee-modifiers-container">
-          <ion-list v-for="groups in coffeeItem.options" :key="groups.id">
-            <ion-radio-group @ionChange="setRadioOption" name="options" :allow-empty-selection="groups.min_amount === 1 || groups.required ? `false` : `true`" v-if="groups.max_amount === 1" :value="groups.min_amount === 1 || groups.required ? groups.values[0].id : ``">
-              <input @change="calculatePrice" type="hidden" name="options" :value="groups.min_amount === 1 || groups.required ? groups.values[0].id : ``">
-              <h3>{{ groups.name }}</h3>
-              <ion-item lines="none" v-for="option in groups.values" :key="option.id">
-                <ion-radio :value="option.id" slot="start"></ion-radio>
-                <ion-label class="option-label"><span>{{ option.name }}</span><span v-if="option.price > 0">{{ option.price }} руб.</span></ion-label>
-              </ion-item>
-            </ion-radio-group>
-            <div v-else-if="groups.max_amount > 1" class="checkbox-wrap">
-              <h3>{{ groups.name }}</h3>
-              <ion-item lines="none" v-for="option in groups.values" :key="option.id">
-                <ion-checkbox @ionChange="calculatePrice" name="options" :value="option.id" slot="start" :checked="(groups.min_amount === 1 || groups.required) && groups.values[0] === option ? `true` : `false`"></ion-checkbox>
-                <ion-label>{{ option.name }}</ion-label>
-                <ion-note v-if="option.price > 0" slot="end">{{ option.price }} руб.</ion-note>
-                <ion-note v-else slot="end">&nbsp;</ion-note>
-              </ion-item>
-            </div>
-          </ion-list>
-        </div>
-        <div v-else-if="coffeeItem.constructor !== Object" class="coffee-modifiers-container">
-          <ion-list>
-            <div class="checkbox-wrap">
-              <h3><ion-skeleton-text animated></ion-skeleton-text></h3>
-              <ion-item lines="none">
-                <ion-checkbox slot="start" disabled="true"></ion-checkbox>
-                <ion-label><ion-skeleton-text animated></ion-skeleton-text></ion-label>
-              </ion-item>
-              <ion-item lines="none">
-                <ion-checkbox slot="start" disabled="true"></ion-checkbox>
-                <ion-label><ion-skeleton-text animated></ion-skeleton-text></ion-label>
-              </ion-item>
-              <ion-item lines="none">
-                <ion-checkbox slot="start" disabled="true"></ion-checkbox>
-                <ion-label><ion-skeleton-text animated></ion-skeleton-text></ion-label>
-              </ion-item>
-              <ion-item lines="none">
-                <ion-checkbox slot="start" disabled="true"></ion-checkbox>
-                <ion-label><ion-skeleton-text animated></ion-skeleton-text></ion-label>
-              </ion-item>
-            </div>
-          </ion-list>
-        </div>
-
-        <div v-if="coffeeItem.energyAmount !== 'NaN' && coffeeItem.proteinsAmount !== 'NaN' && coffeeItem.fatAmount !== 'NaN' && coffeeItem.carbohydratesAmount !== 'NaN'" class="coffee-calorific-info-container">
-          <h3>Калорийность "{{ coffeeItem.product_name }}"</h3>
-          <div class="wrap">
-            <div class="item">
-              <div class="value">{{ coffeeItem.energyAmount && coffeeItem.energyAmount !== 'NaN' ? coffeeItem.energyAmount : 0 }}</div>
-              <div class="label">Ккал</div>
-            </div>
-            <div class="item">
-              <div class="value">{{ coffeeItem.proteinsAmount && coffeeItem.proteinsAmount !== 'NaN' ? coffeeItem.proteinsAmount : 0 }}</div>
-              <div class="label">Белки, г</div>
-            </div>
-            <div class="item">
-              <div class="value">{{ coffeeItem.fatAmount && coffeeItem.fatAmount !== 'NaN' ? coffeeItem.fatAmount : 0 }}</div>
-              <div class="label">Жиры, г</div>
-            </div>
-            <div class="item">
-              <div class="value">{{ coffeeItem.carbohydratesAmount && coffeeItem.carbohydratesAmount !== 'NaN' ? coffeeItem.carbohydratesAmount : 0 }}</div>
-              <div class="label">Углеводы, г</div>
-            </div>
-          </div>
-        </div>
-      </form>
-    </ion-content>
-    <ion-footer>
-      <ion-toolbar class="overview-footer" color="light">
-        <ion-button :disabled="coffeeItem && useCart && coffeeItem.price > 0 ? `false` : `true`" @click="addToCart" expand="block" type="submit" color="primary">
-          <div class="content">
-            <span><ion-icon :icon="cartOutline"></ion-icon>Заказать</span>
-            <span>{{ calcPrice }} руб.</span>
-          </div>
-        </ion-button>
         <ion-buttons slot="end">
-          <ion-button @click="toggleFavorite">
-            <ion-icon :icon="isFavorite ? heart : heartOutline" class="favorite-icon"></ion-icon>
+          <ion-button @click="dismissModal">
+            <ion-icon :icon="closeOutline"></ion-icon>
           </ion-button>
-
         </ion-buttons>
       </ion-toolbar>
+    </ion-header>
 
-    </ion-footer>
+    <ion-content class="no-scroll">
+      <div class="flex flex-col items-center p-6 bg-gray-100 min-h-full">
+        <form id="coffee-detail" class="flex flex-col gap-6 w-full max-w-xl bg-white p-6 rounded-2xl shadow-xl animate-fade-in">
+          <input type="hidden" name="id" :value="coffeeItem.id">
+          <input type="hidden" name="price" :value="coffeeItem.price">
+
+          <div class="flex gap-5 items-center">
+            <div
+                class="relative w-28 h-28 rounded-xl bg-center bg-cover shadow-md"
+                :style="coffeeItem.image ? 'background-image:url(' + coffeeItem.image + ')' : 'background-image:url(../assets/img/no-image-contrast.jpg)'">
+              <div class="absolute inset-0 bg-black/30 rounded-xl"></div>
+            </div>
+
+            <div>
+              <h1 class="text-xl font-bold text-gray-800">{{ coffeeItem.product_name || 'Название товара не известно' }}</h1>
+              <p class="text-sm text-gray-500">{{ coffeeItem.product_description || 'Описание отсутствует' }}</p>
+            </div>
+          </div>
+
+          <div v-if="coffeeItem.energyAmount !== 'NaN' && coffeeItem.proteinsAmount !== 'NaN'">
+            <h3 class="text-lg font-semibold text-gray-700">Калорийность "{{ coffeeItem.product_name }}"</h3>
+            <div class="grid grid-cols-2 gap-3 mt-2">
+              <div class="bg-gray-200 px-4 py-3 rounded-lg text-center text-sm text-gray-800">
+                {{ formattedNutrition.energyAmount }} Ккал
+              </div>
+              <div class="bg-gray-200 px-4 py-3 rounded-lg text-center text-sm text-gray-800">
+                {{ formattedNutrition.proteinsAmount }} г Белков
+              </div>
+              <div class="bg-gray-200 px-4 py-3 rounded-lg text-center text-sm text-gray-800">
+                {{ formattedNutrition.fatAmount }} г Жиров
+              </div>
+              <div class="bg-gray-200 px-4 py-3 rounded-lg text-center text-sm text-gray-800">
+                {{ formattedNutrition.carbohydratesAmount }} г Углеводов
+              </div>
+            </div>
+          </div>
+
+          <div v-if="options.length > 0">
+            <ion-list v-for="group in options" :key="group.id">
+              <ion-radio-group @ionChange="e => setRadioOption(group.id, e.detail.value)" :value="selectedOptions[group.id] || ''">
+                <h3 class="text-base font-medium text-gray-600">{{ group.name }}</h3>
+                <ion-item lines="none" v-for="option in group.values" :key="option.id" class="rounded-lg mb-2 shadow-sm">
+                  <ion-radio :value="option.id" slot="start"></ion-radio>
+                  <ion-label class="text-sm">{{ option.name }} - {{ option.price }} руб.</ion-label>
+                </ion-item>
+              </ion-radio-group>
+              <input type="hidden" name="options" :value="selectedOptions[group.id] || ''">
+            </ion-list>
+          </div>
+
+          <ion-toolbar class="pt-4" color="light">
+            <ion-button
+                :disabled="calcPrice <= 0"
+                @click.prevent="addToCart"
+                expand="block"
+                type="button"
+                color="primary"
+            >
+              <div class="flex justify-between w-full items-center">
+                <span class="flex items-center gap-2">
+                  <ion-icon :icon="cartOutline" class="text-lg"></ion-icon>
+                  Заказать
+                </span>
+                <span>{{ calcPrice }} руб.</span>
+              </div>
+            </ion-button>
+
+            <ion-buttons slot="end">
+              <ion-button @click="toggleFavorite">
+                <ion-icon :icon="isFavorite ? heart : heartOutline" class="favorite-icon"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </form>
+      </div>
+    </ion-content>
   </ion-page>
 </template>
-<style>
-.favorite-icon {
-  font-size: 24px;
-  transition: color 0.3s ease;
-}
 
-
-</style>
 <script>
-import { IonPage, IonHeader, IonTitle, IonContent, IonToolbar, IonBackButton, IonButtons, IonFooter, IonIcon, IonButton, toastController, IonRadioGroup, IonRadio, IonCheckbox, IonLabel, IonNote, IonList, IonItem, IonSkeletonText } from '@ionic/vue';
-import { chevronBack, cartOutline } from 'ionicons/icons';
-// import CoffeeOverview from '../components/coffee/CoffeeOverview.vue';
-import { useRouter } from 'vue-router';
-import { heart, heartOutline } from 'ionicons/icons';
+import {
+  IonPage, IonHeader, IonContent, IonToolbar,
+  IonButtons, IonButton, IonIcon, IonRadioGroup,
+  IonRadio, IonLabel, IonItem,
+  modalController, toastController,
+} from '@ionic/vue';
+import { cartOutline, closeOutline, heart, heartOutline } from 'ionicons/icons';
+import { useRouter } from "vue-router";
 
 export default {
+  name: 'ProductModal',
+
+  props: {
+    coffeeItem: {
+      type: Object,
+      required: true,
+      default: () => ({})
+    }
+  },
   components: {
-    IonPage,
-    IonHeader,
-    IonTitle,
-    IonContent,
-    IonToolbar,
-    IonButtons,
-    IonBackButton,
-    // CoffeeOverview,
-    IonFooter,
-    IonIcon,
-    IonButton,
-    IonRadioGroup,
-    IonRadio,
-    IonCheckbox,
-    IonLabel,
-    IonNote,
-    IonList,
-    IonItem,
-    IonSkeletonText
+    IonPage, IonHeader, IonContent, IonToolbar,
+    IonButtons, IonButton, IonIcon, IonRadioGroup,
+    IonRadio, IonLabel, IonItem,
   },
   data() {
     return {
-      isFavoriteLocal: false, // Статус избранного
-      productId: this.$route.params.id,
+      options: [],   // Группы опций (например, размер, добавки)
+      selectedOptions: {}, // Выбранные пользователем опции
       calcPrice: 0,
-      useCart: true,
+      isFavoriteLocal: false,
+    };
+  },
+  computed: {
+    formattedNutrition() {
+      return {
+        // Форматируем данные по питательной ценности
+        carbohydratesAmount: this.coffeeItem.carbohydratesAmount ? parseFloat(this.coffeeItem.carbohydratesAmount).toFixed(1) : '0.0',
+        energyAmount: this.coffeeItem.energyAmount ? parseFloat(this.coffeeItem.energyAmount).toFixed(1) : '0.0',
+        fatAmount: this.coffeeItem.fatAmount ? parseFloat(this.coffeeItem.fatAmount).toFixed(1) : '0.0',
+        proteinsAmount: this.coffeeItem.proteinsAmount ? parseFloat(this.coffeeItem.proteinsAmount).toFixed(1) : '0.0',
+      };
+    },
+    // Проверка, находится ли товар в избранном (через Vuex)
+    isFavorite() {
+      return this.$store.getters.isFavorite(this.coffeeItem.id);
     }
   },
   setup() {
     const router = useRouter();
     return {
-      router,
-      chevronBack,
+      closeOutline,
       cartOutline,
       heart,
-      heartOutline
-    }
+      heartOutline,
+      router
+    };
   },
-
-  async ionViewWillEnter() {
-    this.$store.commit('clearState', 'product');
-    this.useCart = true;
-    const response = this.$store.dispatch('getProduct', {params: {id: this.productId}});
-
-    if(response) {
-      // All good
-    } else {
-      // Not good
-    }
-  },
-  computed: {
-    coffeeItem() {
-
-      var product = this.$store.getters.product;
-      if(product) {
-        product.carbohydratesAmount = parseFloat(product.carbohydratesAmount).toFixed(1);
-        product.energyAmount = parseFloat(product.energyAmount).toFixed(1);
-        product.fatAmount = parseFloat(product.fatAmount).toFixed(1);
-        product.proteinsAmount = parseFloat(product.proteinsAmount).toFixed(1);
-      }
-
-      return product;
-    },
-    isFavorite() {
-      return this.$store.getters.isFavorite(this.coffeeItem.id); // Проверяем, является ли товар избранным
-    }
-  },
-
-  watch: {
-    coffeeItem(val) {
-      if(val !== false && val !== undefined) this.calculatePrice();
+  mounted() {
+    // Загружаем опции товара при монтировании
+    if (this.coffeeItem?.id) {
+      this.fetchProductOptions();
+      this.isFavoriteLocal = localStorage.getItem(this.favoriteKey) === 'true';
     }
   },
   methods: {
-    async addToCart() {
-      // e.preventDefault();
-      this.useCart = false;
-      var params = {};
-      const form = document.getElementById('coffee-detail');
-      const formData = new FormData(form);
-      const toast = await toastController.create({
-        message: 'Товар добавлен в корзину',
-        position: 'bottom',
-        cssClass: 'toast-mb',
-        mode: 'md',
-        duration: 1000
-      });
-
-      for(var pair of formData.entries()) {
-        if(pair[1] == '') continue;
-
-        if(params[pair[0]] !== undefined) {
-          if(typeof params[pair[0]] === 'string') {
-            params[pair[0]] = [params[pair[0]], pair[1]];
-          } else {
-            params[pair[0]].push(pair[1]);
-          }
-        } else {
-          params[pair[0]] = [pair[1]];
-        }
-      }
-
-      this.$store.dispatch('addToCart', params);
-      await toast.present();
-      this.router.go(-1); // Might need to check if previous page is equal to '/coffee' (TODO)
+    dismissModal() {
+      modalController.dismiss();
     },
+    // Переключение избранного
     async toggleFavorite() {
       const product = this.$store.getters.product;
-
       if (this.$store.getters.isFavorite(product.id)) {
         // Удаляем из избранного
         this.$store.commit('removeFavorite', product.id);
@@ -270,48 +187,100 @@ export default {
         await toast.present();
       }
     },
-
-    setRadioOption(e) {
-      const radioGroup = e.target;
-      const hiddenInput = radioGroup.querySelector('input[name="'+radioGroup.name+'"]');
-
-      hiddenInput.value = typeof radioGroup.value === 'undefined' ? '' : radioGroup.value;
-
-      if ("createEvent" in document) {
-        var evt = document.createEvent("HTMLEvents");
-        evt.initEvent("change", false, true);
-        hiddenInput.dispatchEvent(evt);
-      } else {
-        hiddenInput.fireEvent("onchange");
+    // Показываем всплывающее сообщение
+    showToast(message, color) {
+      toastController.create({
+        message,
+        position: 'bottom',
+        cssClass: 'toast-mb',
+        mode: 'md',
+        duration: 1000,
+        color,
+      }).then(toast => toast.present());
+    },
+    // Получаем доступные опции для товара
+    async fetchProductOptions() {
+      try {
+        const response = await this.$store.dispatch('getProduct', {params: {id: this.coffeeItem.id}});
+        if (response?.product?.options) {
+          this.options = response.product.options;
+          response.product.options.forEach(group => {
+            if (group.required && group.values.length > 0) {
+              this.selectedOptions[group.id] = group.values[0].id;
+            }
+          });
+          this.calculatePrice();
+        }
+      } catch (error) {
+        console.error('Ошибка при получении опций:', error);
       }
     },
+    // Установка выбранной опции
+    setRadioOption(groupId, value) {
+      this.selectedOptions[groupId] = value;
+      this.calculatePrice();
+    },
+    // Пересчитываем итоговую цену
     calculatePrice() {
-      const that = this;
-      setTimeout(function() {
-        // var params = {};
-        var calcPrice = that.coffeeItem.price;
-        const form = document.getElementById('coffee-detail');
-        const formData = new FormData(form);
-
-        for(var pair of formData.entries()) {
-          if(pair[1] == '' || pair[0] != 'options') continue;
-
-          let group = that.coffeeItem.options.find(group => {
-            return group.values.some(modifier => {
-              return modifier.id == pair[1];
-            });
-          });
-
-          let option = group.values.find(modifier => {
-            return modifier.id == pair[1];
-          });
-
-          calcPrice += option.price || 0;
+      let total = parseFloat(this.coffeeItem.price) || 0;
+      for (const groupId in this.selectedOptions) {
+        const selectedId = this.selectedOptions[groupId];
+        const group = this.options.find(g => g.id == groupId);
+        const option = group?.values.find(v => v.id == selectedId);
+        if (option?.price) {
+          total += parseFloat(option.price);
         }
+      }
+      this.calcPrice = total;
+    },
+    // Добавление товара в корзину
+    async addToCart() {
+      try {
+        // Сбор выбранных модификаторов
+        const selectedModifiers = Object.entries(this.selectedOptions)
+            .map(([groupId, selectedId]) => {
+              const group = this.options.find(g => g.id == groupId);
+              const option = group?.values.find(v => v.id == selectedId);
+              return option ? {
+                id: option.id,
+                name: option.name,
+                price: option.price,
+                productId: option.productId || option.id,
+                productGroupId: group.id,
+                amount: 1
+              } : null;
+            })
+            .filter(Boolean);
 
-        that.calcPrice = calcPrice;
-      }, 100);
+        // Уникальный ключ строки заказа (с учетом модификаторов)
+        const modifiersPart = selectedModifiers.map(m => `${m.id}:${m.name}:${m.price}`).sort().join('|');
+        const lineId = `${this.coffeeItem.id}_${modifiersPart || 'no_mods'}`;
+
+        const product = {
+          _uniqueKey: lineId,
+          line_id: lineId,
+          id: this.coffeeItem.id,
+          productId: this.coffeeItem.id,
+          name: this.coffeeItem.product_name,
+          description: this.coffeeItem.product_description || '',
+          image: this.coffeeItem.image || '',
+          base_price: parseFloat(this.coffeeItem.price),
+          price: this.calcPrice,
+          amount: 1,
+          modifiers: selectedModifiers
+        };
+
+        // Добавление в корзину через Vuex
+        await this.$store.dispatch('addToCart', product);
+
+        this.showToast('Товар добавлен в корзину', 'success');
+        this.dismissModal();
+      } catch (error) {
+        console.error('Ошибка при добавлении в корзину:', error);
+        this.showToast('Не удалось добавить товар в корзину', 'error');
+      }
     }
+
   }
-}
+};
 </script>

@@ -1,64 +1,56 @@
 <template>
-  <!-- Отображение информации о заказе -->
-  <ion-card v-if="!loading && order" class="order-tracking">
-    <ion-card-header>
-      <div class="flex-between">
-        <span>№{{ order.id }}</span>
+  <div class="p-4">
+    <!-- Отображение информации о заказе -->
+    <div v-if="!loading && order" class="bg-white rounded-2xl  p-4 mb-6">
+      <div class="flex justify-between items-center border-b pb-2 mb-4 text-gray-600 text-sm">
+        <span class="font-semibold">№{{ order.id }}</span>
         <span>{{ order.time }} {{ order.date }}</span>
       </div>
-    </ion-card-header>
-
-    <ion-card-content>
-      <!-- Список всех товаров из текущего заказа -->
+      <!-- Список товаров -->
       <order-item-position
           v-for="product in order.items"
           :key="product.id"
           :product="product"
       />
 
-      <!-- Сумма заказа -->
-      <div class="flex-between order-total">
+      <!-- Итого -->
+      <div class="flex justify-between items-center mt-4 font-semibold text-lg text-gray-800">
         <span>Итого</span>
         <span>{{ order.total_sum }} руб.</span>
       </div>
 
       <!-- Адрес магазина -->
-      <div v-if="order.store?.store_name" class="order-address">
+      <div v-if="order.store?.store_name" class="mt-2 text-sm text-gray-500 italic">
         {{ order.store.store_name }}
       </div>
 
-      <!-- Кнопка для повторения заказа -->
-      <div class="button-container">
-        <ion-button expand="block" @click="repeatOrder">
+      <!-- Кнопка повторения заказа -->
+      <div class="mt-6">
+        <ion-button expand="block" @click="repeatOrder" class="w-full">
           Повторить заказ
         </ion-button>
       </div>
-    </ion-card-content>
-  </ion-card>
+    </div>
 
-  <!-- Скелетон для загрузки данных -->
-  <ion-card v-if="loading" class="order-tracking">
-    <ion-card-header>
-      <div class="flex-between">
+    <!-- Скелетон при загрузке -->
+    <div v-if="loading" class="bg-white rounded-2xl shadow-md p-4">
+      <div class="flex justify-between items-center mb-4">
         <ion-skeleton-text animated style="width: 3em" />
         <ion-skeleton-text animated style="width: 9em" />
       </div>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-skeleton-text animated style="width: 100%" />
-      <ion-skeleton-text animated style="width: 100%" />
-      <ion-skeleton-text animated style="width: 12em" />
-    </ion-card-content>
-  </ion-card>
+      <div class="space-y-2">
+        <ion-skeleton-text animated style="width: 100%" />
+        <ion-skeleton-text animated style="width: 100%" />
+        <ion-skeleton-text animated style="width: 12em" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import {
-  IonCard,
-  IonCardHeader,
-  IonCardContent,
-  IonSkeletonText,
   IonButton,
+  IonSkeletonText,
   toastController
 } from '@ionic/vue';
 import OrderItemPosition from './OrderItemPosition.vue';
@@ -66,84 +58,117 @@ import api from "@/api/operations";
 
 export default {
   name: 'OrderItem',
-  props: ['order'],
+  props: ['order'],  // Получаем объект заказа как пропс
   components: {
-    IonCard,
-    IonCardHeader,
-    IonCardContent,
-    IonSkeletonText,
     IonButton,
+    IonSkeletonText,
     OrderItemPosition
   },
   data() {
     return {
-      loading: false, // Состояние загрузки
+      loading: false,  // Переменная для отслеживания загрузки данных
     };
   },
   methods: {
     // Метод для повторения заказа
     async repeatOrder() {
       try {
-        const orderId = this.order.id; // Получаем ID текущего заказа
-        const orderDetails = await this.getOrderDetails(orderId); // Получаем детали заказа
+        const orderId = this.order.id;  // Получаем ID текущего заказа
+        const orderDetails = await this.getOrderDetails(orderId);  // Получаем детали заказа
 
         if (orderDetails && orderDetails.products) {
-          this.addProductsToCart(orderDetails.products); // Добавляем продукты в корзину
+          // Если заказ существует и у него есть товары, добавляем их в корзину
+          this.addProductsToCart(orderDetails.products);
         } else {
+          // Если товаров в заказе нет, показываем ошибку
           this.showErrorToast('Не удалось получить товары из заказа.');
         }
       } catch (error) {
         console.error(error);
+        // Если произошла ошибка, показываем ошибку
         this.showErrorToast('Ошибка при повторении заказа.');
       }
     },
 
-// Метод для добавления товаров в корзину
+    // Метод для добавления товаров из заказа в корзину
     addProductsToCart(products) {
+      const productCatalog = this.$store.state.products;  // Получаем каталог продуктов из хранилища
+
+      // Функция для нормализации пути к изображению товара
+      const normalizeImagePath = (path) => {
+        if (!path) return '/assets/img/no-image.jpg';  // Если путь не указан, возвращаем путь к картинке по умолчанию
+        return path.startsWith('/') ? path : '/' + path;  // Если путь не начинается с '/', добавляем '/'
+      };
+
+      // Проходим по всем товарам из заказа
       products.forEach(product => {
+        const amount = parseInt(product.amount, 10) || 1;  // Определяем количество товара
+        const price = parseFloat(product.price) || 0;  // Определяем цену товара
+
+        // Ищем товар в каталоге по ID
+        const catalogMatch = productCatalog.find(p =>
+            p.id === product.productId || p.id === product.line_id
+        );
+
+        // Формируем объект товара для корзины
         const cartProduct = {
-          productId: product.productId || product.line_id,
-          name: product.name || "Неизвестный продукт",
-          price: product.price || 0,
-          amount: product.amount || 1,
-          image: product.image || "default_image.jpg",
-          modifiers: product.modifiers || [],
-          _uniqueKey: Date.now() + Math.random(),
+          productId: product.productId || product.line_id,  // Используем productId или line_id
+          name: product.name || catalogMatch?.name || "Неизвестный продукт",  // Имя товара
+          price,  // Цена товара
+          amount,  // Количество товара
+          image: normalizeImagePath(product.image || catalogMatch?.image),  // Изображение товара
+          modifiers: product.modifiers || [],  // Модификаторы товара
+          _uniqueKey: Date.now() + Math.random(),  // Уникальный ключ для товара
         };
 
-        const existingProduct = this.$store.state.cart.find(item => item.productId === cartProduct.productId);
+        // Проверяем, есть ли уже такой товар в корзине
+        const existingProductIndex = this.$store.state.cart.findIndex(item =>
+            item.productId === cartProduct.productId &&
+            JSON.stringify(item.modifiers) === JSON.stringify(cartProduct.modifiers)  // Сравниваем по модификаторам
+        );
 
-        if (existingProduct) {
-          this.$store.dispatch('updateCartProductAmount', {
+        if (existingProductIndex !== -1) {
+          // Если товар уже есть в корзине, обновляем его количество
+          const existingProduct = this.$store.state.cart[existingProductIndex];
+          const updatedAmount = existingProduct.amount + cartProduct.amount;
+
+          // Обновляем количество товара в корзине
+          this.$store.commit('updateCartProductAmount', {
             productId: cartProduct.productId,
-            amount: existingProduct.amount + cartProduct.amount,
+            amount: updatedAmount,
+            modifiers: cartProduct.modifiers,
           });
         } else {
+          // Если товара нет в корзине, добавляем его
           this.$store.dispatch('addToCart', cartProduct);
         }
       });
 
+      // Показываем сообщение об успешном добавлении товаров в корзину
       this.showToast('Товары добавлены в корзину!');
+      // Перенаправляем пользователя в корзину
       this.$router.push({ path: 'cart' });
-    }
-    ,
+    },
 
-    // Метод для получения данных о заказе
+    // Метод для получения деталей заказа по ID
     async getOrderDetails(orderId) {
       try {
-        const response = await api.OrderHistory(orderId);
+        const response = await api.OrderHistory(orderId);  // Запрос к API для получения данных о заказе
         if (response.status === 200) {
+          // Если запрос успешен, возвращаем данные
           return response.data;
         } else {
+          // Если запрос не успешен, показываем ошибку
           this.showErrorToast('Не удалось получить информацию о заказе.');
         }
       } catch (error) {
         console.error(error);
+        // Если произошла ошибка, показываем ошибку
         this.showErrorToast('Ошибка при получении данных.');
       }
     },
 
-    // Метод для отображения сообщения об ошибке
+    // Метод для показа ошибки через Toast
     async showErrorToast(message) {
       const toast = await toastController.create({
         message,
@@ -155,7 +180,7 @@ export default {
       await toast.present();
     },
 
-    // Метод для отображения общего сообщения
+    // Метод для показа успешного сообщения через Toast
     async showToast(message) {
       const toast = await toastController.create({
         message,
@@ -169,25 +194,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.button-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.flex-between {
-  display: flex;
-  justify-content: space-between;
-}
-
-.order-total {
-  font-weight: bold;
-  font-size: 1.2em;
-}
-
-.order-address {
-  margin-top: 10px;
-  font-style: italic;
-}
-</style>

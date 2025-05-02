@@ -99,6 +99,13 @@ const store = createStore({
 		favorites: state => state.favorites  // Возвращаем все избранные товары
 	},
 	mutations: {
+		updateCartProductAmount(state, { productId, amount }) {
+			const product = state.cart.find(item => item.productId === productId);
+			if (product) {
+				product.amount = amount;
+			}
+			localStorage.setItem('cart', JSON.stringify(state.cart));
+		},
 		incrementLineIdCount(state) {
 			state.lineIdCount += 1; // инкрементируем счетчик
 		},
@@ -139,26 +146,26 @@ const store = createStore({
 			state.product = product;
 		},
 		addToCart(state, payload) {
-			state.cart.push(payload);
-			state.lineIdCount = payload.line_id;
-			/* const item_id = payload.item_id;
-			const line_id = state.lineIdCount + 1;
-			const product = state.product;
-			const item = {
-				line_id: line_id,
-				item_id: item_id,
-				product_name: product.product_name,
-				weight: Math.round(product.weight * 1000),
-				weight_unit: 'мл',
-				amount: 1,
-				price: product.price
-			};
+			// Находим товар в корзине с таким же productId и modifiers
+			const existing = state.cart.find(item =>
+				item.productId === payload.productId &&
+				JSON.stringify(item.modifiers) === JSON.stringify(payload.modifiers)
+			);
 
-			state.cart.push(item);
-			state.lineIdCount = line_id; */
+			if (existing) {
+				// Если товар уже есть в корзине, увеличиваем его количество
+				existing.amount += payload.amount;
+			} else {
+				// Если товара нет в корзине, добавляем его и увеличиваем уникальный идентификатор
+				payload.line_id = ++state.lineIdCount;
+				state.cart.push(payload);
+			}
+
+			// Сохраняем обновленную корзину в localStorage
 			localStorage.setItem('cart', JSON.stringify(state.cart));
-
 		},
+
+
 		calculateCartTotal(state) {
 			var total = 0;
 			const cart = state.cart;
@@ -182,20 +189,16 @@ const store = createStore({
 			state.orders = payload;
 		},
 		// Placeholders
-		changeAmount(state, payload) {
-			const line_id = payload.line_id;
-			const action = payload.action;
-			const item = state.cart.find(item => item.line_id === line_id);
+		changeAmount(state, { _uniqueKey, action }) {
+			const item = state.cart.find(item => item._uniqueKey === _uniqueKey);
+			if (!item) return;
 
 			switch (action) {
 				case 'increase':
 					item.amount++;
 					break;
 				case 'decrease':
-					if(item.amount > 1) item.amount--;
-					break;
-				default:
-					// duh
+					if (item.amount > 1) item.amount--;
 					break;
 			}
 		},
@@ -246,6 +249,7 @@ const store = createStore({
 		}
 	},
 	actions: {
+
 		async auth({ commit }) {
 			const userData = await Storage.get({ key: 'userData' });
 			if (userData.value === null || userData.value === 'undefined') return false;
@@ -389,7 +393,7 @@ const store = createStore({
 
 				commit('setProduct', data.product);
 
-				return true
+				return data
 			} catch(err) {
 				console.log(err);
 				// loading.dismiss();
@@ -466,57 +470,17 @@ const store = createStore({
 
 			return false;
 		},
-		addToCart({ commit, state }, params) {
-			const line_id = state.lineIdCount + 1;
+		addToCart({ commit, state }, product) {
+			const existingItem = state.cart.find(item => item._uniqueKey === product._uniqueKey);
 
-			let fields = {
-				line_id: line_id,
-				type: 'Product',
-				productId: params.productId,
-				name: params.name,
-				price: parseFloat(params.price),
-				amount: +params.amount || 1,
-				image: params.image || '',
-				modifiers: []
-			};
-
-			// Обработка опций, если есть
-			if (params.options && params.options.length > 0 && params.productOptions) {
-				params.options.forEach(optionId => {
-					const group = params.productOptions.find(group =>
-						group.values.some(value => value.id == Number(optionId))
-					);
-
-					if (!group) {
-						return;
-					}
-
-					const option = group.values.find(value => value.id == Number(optionId));
-
-					if (!option) {
-						return;
-					}
-
-					const modifier = {
-						productId: option.guid,
-						name: option.name,
-						amount: 1,
-						productGroupId: group.guid,
-					};
-
-					fields.modifiers.push(modifier);
-
-					if (option.price > 0) {
-						fields.price += parseFloat(option.price);
-					}
-				});
+			if (existingItem) {
+				existingItem.amount += product.amount || 1;
+			} else {
+				commit('addToCart', product);
 			}
 
-			commit('addToCart', fields);
-			commit('incrementLineIdCount');
 			commit('calculateCartTotal');
-		}
-		,
+		},
 		async logout({ commit }) {
 			commit('setUser', null); // Очистка данных пользователя
 			localStorage.removeItem('user'); // Удаление пользователя из localStorage

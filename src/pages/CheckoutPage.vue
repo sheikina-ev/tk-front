@@ -175,6 +175,27 @@ export default {
       // Копируем корзину для отправки
       let items = JSON.parse(JSON.stringify(this.cart));
 
+      // Добавляем productId, если его нет
+      // Добавляем productId если оно отсутствует, или выводим ошибку
+      items = items.map(item => {
+        if (!item.productId && !item.id) {
+          this.throwToast('Ошибка: один или несколько товаров не имеют productId.');
+          return null;  // Останавливаем выполнение, если товара нет
+        }
+        return {
+          ...item,
+          productId: item.productId || item.id || null
+        };
+      }).filter(item => item !== null);  // Убираем товары с null
+
+
+      // Проверка на отсутствие productId
+      const invalidItems = items.filter(item => !item.productId);
+      if (invalidItems.length > 0) {
+        this.throwToast('Ошибка: один или несколько товаров не имеют productId.');
+        return;
+      }
+
       // Собираем данные формы
       const formData = new FormData(event.target);
       let orderFields = {};
@@ -196,12 +217,8 @@ export default {
         bonus: parseFloat(orderFields.bonus) || 0
       };
 
-
-
       try {
         const response = await this.$store.dispatch('sendOrder', { order: orderFields });
-
-        // Проверяем ответ от сервера
         if (response.status === "Error") {
           this.throwToast(`Ошибка: ${response.message} ${response.errorMessage}`);
         } else if (response.errorMessage === 'Доступ запрещён') {
@@ -211,7 +228,6 @@ export default {
           this.$store.dispatch('clearCart');
           localStorage.removeItem('cart');
 
-          // Если есть ссылка на оплату, показываем модальное окно
           if (response?.data?.link) {
             const modal = await modalController.create({
               component: CheckoutModal,
@@ -221,21 +237,16 @@ export default {
             await modal.present();
 
             modal.onDidDismiss().then(() => {
-              // После закрытия модального окна переходим на страницу успеха
               this.$router.push({ path: '/order-success', query: { orderId } });
             });
           } else {
-            // Если оплаты нет, сразу переходим на страницу успеха
             this.$router.push({ path: '/order-success', query: { orderId } });
           }
         }
       } catch (error) {
         this.throwToast('Возникла ошибка при отправке заказа. Попробуйте снова!');
       }
-    }
-
-    ,
-
+    },
     async openModal(type) {
       if (type === 'policy') {
         const modal = await modalController.create({
